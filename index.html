@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蒙倩品牌主体财务看板 - 截止2026年07月02日</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f5f7fa;color:#333;padding:20px}
+
+/* ===== 登录层 ===== */
+.login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f7fa;z-index:9999;display:flex;justify-content:center;align-items:center}
+.login-card{background:#fff;border-radius:16px;padding:48px 40px;box-shadow:0 8px 32px rgba(0,0,0,.12);text-align:center;max-width:400px;width:90%}
+.login-card .lock-icon{font-size:48px;margin-bottom:16px}
+.login-card h2{font-size:20px;color:#1a3a5c;margin-bottom:8px;font-weight:700}
+.login-card .sub{font-size:13px;color:#888;margin-bottom:24px}
+.login-card input{width:100%;padding:12px 16px;border:2px solid #e0e0e0;border-radius:10px;font-size:16px;text-align:center;outline:none;letter-spacing:4px;transition:border-color .2s}
+.login-card input:focus{border-color:#2a5f8e}
+.login-card .login-btn{width:100%;margin-top:16px;padding:12px;background:linear-gradient(135deg,#1a3a5c,#2a5f8e);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:opacity .2s}
+.login-card .login-btn:hover{opacity:.9}
+.login-card .login-btn:disabled{opacity:.5;cursor:not-allowed}
+.login-card .error-msg{color:#c62828;font-size:13px;margin-top:12px;display:none}
+.login-card .error-msg.show{display:block}
+.login-shake{animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+
+/* ===== 看板主体 ===== */
+.dashboard{max-width:1600px;margin:0 auto;display:none}
+.dashboard.visible{display:block}
+.header{background:linear-gradient(135deg,#1a3a5c,#2a5f8e);color:#fff;padding:24px 32px;border-radius:12px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.header h1{font-size:22px;font-weight:700}.header .subtitle{font-size:13px;opacity:.8;margin-top:4px}.header .info{text-align:right;font-size:12px;opacity:.7}
+.stats-row{display:grid;grid-template-columns:repeat(9,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);text-align:center}
+.stat-card .label{font-size:12px;color:#888;margin-bottom:4px}.stat-card .value{font-size:20px;font-weight:700}
+.stat-card.green .value{color:#2e7d32}.stat-card.orange .value{color:#e65100}.stat-card.red .value{color:#c62828}.stat-card.blue .value{color:#1565c0}.stat-card.purple .value{color:#6a1b9a}
+.safety-banner{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 16px;font-size:12px;color:#795548;margin-bottom:16px;display:flex;gap:20px;flex-wrap:wrap}
+.safety-banner span{display:inline-flex;align-items:center;gap:4px}
+.sticky-area{position:sticky;top:0;z-index:50;background:#f5f7fa;padding-top:0}
+.filters{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:0}
+.filter-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.filter-row:last-child{margin-bottom:0}
+.filter-row .filter-label{font-size:12px;color:#666;font-weight:600;white-space:nowrap}
+.filter-btn{padding:4px 12px;border-radius:16px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:12px;transition:all .15s}
+.filter-btn:hover{border-color:#2a5f8e}.filter-btn.active{background:#2a5f8e;color:#fff;border-color:#2a5f8e}
+.search-box{flex:1;min-width:160px;position:relative}
+.search-box input{width:100%;padding:6px 10px 6px 28px;border:1px solid #ddd;border-radius:16px;font-size:12px;outline:none}
+.search-box input:focus{border-color:#2a5f8e}.search-box .search-icon{position:absolute;left:8px;top:6px;color:#999;font-size:12px}
+.table-scroll-area{overflow-x:auto;overflow-y:auto;max-height:calc(100vh - 280px);margin-top:12px;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);background:#fff}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#2a5f8e;color:#fff;padding:10px 10px;text-align:center;font-weight:600;white-space:nowrap;position:sticky;top:0;z-index:10}
+thead th:first-child{border-radius:10px 0 0 0}thead th:last-child{border-radius:0 10px 0 0}
+tbody td{padding:8px 10px;border-bottom:1px solid #f0f0f0;text-align:center;vertical-align:middle}
+tbody tr:hover{background:#f0f7ff!important}
+tbody tr.row-safe{background:#f1f8e9}tbody tr.row-warn{background:#fff8e1}tbody tr.row-danger{background:#ffebee}
+.company-name{font-weight:600;text-align:left;white-space:nowrap}
+.shop-list{text-align:left;font-size:11px;color:#666;max-width:180px;line-height:1.5;word-break:break-all}
+.num{text-align:right;font-family:'SF Mono','Consolas',monospace;font-size:12px;white-space:nowrap;line-height:1.4}.fn{font-size:12px}.wn{font-size:10px;color:#888}
+.status-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600}
+.status-badge.safe{background:#c8e6c9;color:#1b5e20}.status-badge.warn{background:#ffe0b2;color:#e65100}.status-badge.danger{background:#ffcdd2;color:#b71c1c}
+.ratio{font-family:'SF Mono','Consolas',monospace;font-size:12px;white-space:nowrap}
+.dot-green,.dot-blue,.dot-red{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:3px}
+.dot-green{background:#43a047}.dot-blue{background:#1e88e5}.dot-red{background:#e53935}
+.filter-divider{width:1px;height:24px;background:#e0e0e0}
+.rule-note{background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:10px 16px;font-size:12px;color:#1565c0;margin-bottom:16px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.rule-note span{display:inline-flex;align-items:center;gap:4px}
+.rule-note .tag{background:#1565c0;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600}
+
+/* ===== 底部退出按钮 ===== */
+.logout-bar{text-align:right;padding:8px 0 0;margin-bottom:8px}
+.logout-btn{background:none;border:1px solid #ccc;border-radius:6px;padding:4px 14px;font-size:12px;color:#888;cursor:pointer;transition:all .15s}
+.logout-btn:hover{background:#ffebee;border-color:#ef9a9a;color:#c62828}
+
+@media(max-width:768px){body{padding:10px}.header{padding:16px;flex-direction:column;text-align:center}.header .info{text-align:center;margin-top:8px}.stats-row{grid-template-columns:repeat(3,1fr)}.filter-row{flex-direction:column;align-items:stretch}.table-scroll-area{max-height:calc(100vh - 320px)}table{font-size:11px}td,th{padding:5px 6px}}
+</style>
+</head>
+<body>
+
+<!-- ===== 登录层 ===== -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card" id="loginCard">
+    <div class="lock-icon">🔐</div>
+    <h2>蒙倩品牌主体财务看板</h2>
+    <div class="sub">请输入访问密码</div>
+    <input type="password" id="passwordInput" placeholder="输入密码" autocomplete="off" onkeydown="if(event.key==='Enter')checkPassword()">
+    <button class="login-btn" id="loginBtn" onclick="checkPassword()">验证进入</button>
+    <div class="error-msg" id="errorMsg">❌ 密码错误，请重试</div>
+  </div>
+</div>
+
+<!-- ===== 看板主体 ===== -->
+<div class="dashboard" id="dashboard">
+  <div class="logout-bar">
+    <button class="logout-btn" onclick="logout()">🚪 退出登录</button>
+  </div>
+  <div class="header">
+    <div><h1>📊 蒙倩品牌主体财务看板</h1><div class="subtitle">截止2026年07月02日 · 数据截至2026年6月</div></div>
+    <div class="info"><div>生成日期：2026-07-02</div><div style="margin-top:4px"><span id="stats-summary"></span></div></div>
+  </div>
+  <div class="stats-row" id="statsCards"></div>
+  <div class="rule-note">
+    <span class="tag">判定规则</span>
+    <span>状态：≥400万🔴超标 / ≤25万🟢安全 / 25万~400万+支出≥64%🟢安全 / 支出&lt;64%🟠需开发票</span>
+    <span>占比：低于中心值×0.9标🔵偏低 / 高于中心值×1.1标🔴超标 / 区间内🟢安全</span>
+  </div>
+  <div class="safety-banner" id="safetyBanner"></div>
+  <div class="sticky-area">
+    <div class="filters">
+      <div class="filter-row">
+        <span class="filter-label">使用状态：</span>
+        <button class="filter-btn active" data-filter="all" data-group="activeStatus">全部</button>
+        <button class="filter-btn" data-filter="使用中" data-group="activeStatus">✅ 使用中</button>
+        <button class="filter-btn" data-filter="旧主体" data-group="activeStatus">⏹ 旧主体</button>
+        <div class="filter-divider"></div>
+        <span class="filter-label">经营状态：</span>
+        <button class="filter-btn active" data-filter="all" data-group="status">全部</button>
+        <button class="filter-btn" data-filter="安全" data-group="status">🟢 安全</button>
+        <button class="filter-btn" data-filter="需发票" data-group="status">🟠 需开发票</button>
+        <button class="filter-btn" data-filter="超标主体" data-group="status">🔴 超标主体</button>
+        <div class="filter-divider"></div>
+        <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="搜索主体公司/店铺名..."></div>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">💰 销售额区间：</span>
+        <button class="filter-btn active" data-filter="all" data-group="sales">全部</button>
+        <button class="filter-btn" data-filter="r1" data-group="sales">≤25万</button>
+        <button class="filter-btn" data-filter="r2" data-group="sales">25万~400万</button>
+        <button class="filter-btn" data-filter="r3" data-group="sales">≥400万</button>
+        <div class="filter-divider"></div>
+        <span class="filter-label">📅 季度：</span>
+        <button class="filter-btn active" data-filter="all" data-group="quarter">全部</button>
+        <button class="filter-btn" data-filter="2025-Q3" data-group="quarter">25年Q3</button>
+        <button class="filter-btn" data-filter="2025-Q4" data-group="quarter">25年Q4</button>
+        <button class="filter-btn" data-filter="2026-Q1" data-group="quarter">26年Q1</button>
+        <button class="filter-btn" data-filter="2026-Q2" data-group="quarter">26年Q2</button>
+        <button class="filter-btn" data-filter="2026-Q3" data-group="quarter">26年Q3</button>
+        <button class="filter-btn" data-filter="2026-Q4" data-group="quarter">26年Q4</button>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">📊 推广占比：</span>
+        <button class="filter-btn active" data-filter="all" data-group="promo">全部</button>
+        <button class="filter-btn" data-filter="ok" data-group="promo">🟢安全</button>
+        <button class="filter-btn" data-filter="low" data-group="promo">🔵偏低</button>
+        <button class="filter-btn" data-filter="high" data-group="promo">🔴超标</button>
+        <div class="filter-divider"></div>
+        <span class="filter-label">📦 仓储占比：</span>
+        <button class="filter-btn active" data-filter="all" data-group="ware">全部</button>
+        <button class="filter-btn" data-filter="ok" data-group="ware">🟢安全</button>
+        <button class="filter-btn" data-filter="low" data-group="ware">🔵偏低</button>
+        <button class="filter-btn" data-filter="high" data-group="ware">🔴超标</button>
+        <div class="filter-divider"></div>
+        <span class="filter-label">💰 货款占比：</span>
+        <button class="filter-btn active" data-filter="all" data-group="goods">全部</button>
+        <button class="filter-btn" data-filter="ok" data-group="goods">🟢安全</button>
+        <button class="filter-btn" data-filter="low" data-group="goods">🔵偏低</button>
+        <button class="filter-btn" data-filter="high" data-group="goods">🔴超标</button>
+        <div class="filter-divider"></div>
+        <span class="filter-label">🔴 总支出占比：</span>
+        <button class="filter-btn active" data-filter="all" data-group="totalExp">全部</button>
+        <button class="filter-btn" data-filter="ok" data-group="totalExp">🟢安全</button>
+        <button class="filter-btn" data-filter="low" data-group="totalExp">🔵偏低</button>
+        <button class="filter-btn" data-filter="high" data-group="totalExp">🔴超标</button>
+      </div>
+    </div>
+    <div class="table-scroll-area">
+      <table>
+        <thead><tr>
+          <th>主体公司</th><th>使用状态</th><th>关联店铺</th><th>统计周期</th><th>总销售额</th><th>推广费</th><th>技术费</th>
+          <th>仓储快递</th><th>货款支出</th><th>其他支出</th><th>总支出</th><th>总支出占比</th><th>推广占比</th>
+          <th>技术占比</th><th>仓储占比</th><th>货款占比</th><th>其他占比</th><th>状态</th>
+        </tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 密码验证 =====
+const PASSWORD_HASH = '030399ee247e9f25189d627e54eaee29b38ff79467597d0ea082c3d940e3199d';
+
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function checkPassword() {
+    const input = document.getElementById('passwordInput');
+    const btn = document.getElementById('loginBtn');
+    const error = document.getElementById('errorMsg');
+    const card = document.getElementById('loginCard');
+    const pwd = input.value.trim();
+
+    if (!pwd) {
+        input.focus();
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '验证中...';
+
+    try {
+        const hash = await sha256(pwd);
+        if (hash === PASSWORD_HASH) {
+            sessionStorage.setItem('dashboard_auth', 'true');
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('dashboard').classList.add('visible');
+            initDashboard();
+        } else {
+            error.classList.add('show');
+            card.classList.remove('login-shake');
+            void card.offsetWidth;
+            card.classList.add('login-shake');
+            input.value = '';
+            input.focus();
+        }
+    } catch(e) {
+        error.textContent = '❌ 验证失败，请刷新页面重试';
+        error.classList.add('show');
+    }
+
+    btn.disabled = false;
+    btn.textContent = '验证进入';
+}
+
+function logout() {
+    sessionStorage.removeItem('dashboard_auth');
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.getElementById('dashboard').classList.remove('visible');
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('errorMsg').classList.remove('show');
+    document.getElementById('passwordInput').focus();
+}
+
+// 页面加载时检查登录状态
+(function() {
+    if (sessionStorage.getItem('dashboard_auth') === 'true') {
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('dashboard').classList.add('visible');
+        initDashboard();
+    } else {
+        document.getElementById('passwordInput').focus();
+    }
+})();
+
+// ===== 看板数据与逻辑 =====
+const QDATA = {"full": [{"company": "徐州市诗澳沂运输有限公司", "pddShops": "蒙倩化妆品官方旗舰店", "activeStatus": "旧主体", "period": "2025-07 ~ 2026-04", "totalSales": 7752385.0, "promo": 2462748.0, "tech": 199834.0, "ware": 742160.9, "goods": 1023050.0, "other": 0.0, "totalExp": 4427792.9, "totalExpRatio": 0.5712, "promoRatio": 0.3177, "techRatio": 0.0258, "wareRatio": 0.0957, "goodsRatio": 0.132, "otherRatio": 0.0, "status": "超标主体"}, {"company": "徐州市镭聚商贸有限公司", "pddShops": "蒙倩个护官方旗舰店、蒙倩官方旗舰店", "activeStatus": "旧主体", "period": "2025-07 ~ 2026-01", "totalSales": 7096236.0, "promo": 2699972.0, "tech": 154383.0, "ware": 0.0, "goods": 0.0, "other": 0.0, "totalExp": 2854355.0, "totalExpRatio": 0.4022, "promoRatio": 0.3805, "techRatio": 0.0218, "wareRatio": 0.0, "goodsRatio": 0.0, "otherRatio": 0.0, "status": "超标主体"}, {"company": "新沂市盼月亮物流有限公司", "pddShops": "蒙倩彩妆官方旗舰店、蒙倩洗护官方旗舰店、蒙倩美容护肤官方旗舰店", "activeStatus": "旧主体", "period": "2025-08 ~ 2026-03", "totalSales": 5284197.0, "promo": 2010897.0, "tech": 83099.0, "ware": 0.0, "goods": 0.0, "other": 0.0, "totalExp": 2093996.0, "totalExpRatio": 0.3963, "promoRatio": 0.3805, "techRatio": 0.0157, "wareRatio": 0.0, "goodsRatio": 0.0, "otherRatio": 0.0, "status": "超标主体"}, {"company": "新沂市涛之叶种植有限公司", "pddShops": "蒙倩美发官方旗舰店", "activeStatus": "旧主体", "period": "2025-09 ~ 2026-04", "totalSales": 5038304.0, "promo": 1726361.0, "tech": 83047.0, "ware": 477964.89, "goods": 1627050.0, "other": 0.0, "totalExp": 3914422.89, "totalExpRatio": 0.7769, "promoRatio": 0.3426, "techRatio": 0.0165, "wareRatio": 0.0949, "goodsRatio": 0.3229, "otherRatio": 0.0, "status": "超标主体"}, {"company": "新沂市盼快物流有限公司", "pddShops": "蒙倩旗舰店", "activeStatus": "旧主体", "period": "2025-09 ~ 2026-04", "totalSales": 4893655.0, "promo": 1702516.0, "tech": 72360.0, "ware": 599000.0, "goods": 1238934.0, "other": 0.0, "totalExp": 3612810.0, "totalExpRatio": 0.7383, "promoRatio": 0.3479, "techRatio": 0.0148, "wareRatio": 0.1224, "goodsRatio": 0.2532, "otherRatio": 0.0, "status": "超标主体"}, {"company": "新沂市田密尔种植有限公司", "pddShops": "蒙倩洗发水官方旗舰店", "activeStatus": "旧主体", "period": "2025-09 ~ 2026-04", "totalSales": 4476366.0, "promo": 1804591.0, "tech": 73917.0, "ware": 282415.2, "goods": 1107971.0, "other": 0.0, "totalExp": 3268894.2, "totalExpRatio": 0.7302, "promoRatio": 0.4031, "techRatio": 0.0165, "wareRatio": 0.0631, "goodsRatio": 0.2475, "otherRatio": 0.0, "status": "超标主体"}, {"company": "新沂龙莱科技术有限公司", "pddShops": "蒙倩美发旗舰店", "activeStatus": "旧主体", "period": "2026-01 ~ 2026-04", "totalSales": 2148146.0, "promo": 847018.0, "tech": 27760.0, "ware": 306236.0, "goods": 58890.0, "other": 0.0, "totalExp": 1239904.0, "totalExpRatio": 0.5772, "promoRatio": 0.3943, "techRatio": 0.0129, "wareRatio": 0.1426, "goodsRatio": 0.0274, "otherRatio": 0.0, "status": "需发票"}, {"company": "新沂市亭亭种植有限公司", "pddShops": "CS旗舰店", "activeStatus": "旧主体", "period": "2025-08 ~ 2026-03", "totalSales": 1771147.0, "promo": 578812.0, "tech": 32277.0, "ware": 261340.0, "goods": 493800.0, "other": 0.0, "totalExp": 1366229.0, "totalExpRatio": 0.7714, "promoRatio": 0.3268, "techRatio": 0.0182, "wareRatio": 0.1476, "goodsRatio": 0.2788, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市桃田种植有限公司", "pddShops": "蒙倩知己官方旗舰店、蒙倩美妆旗舰店", "activeStatus": "旧主体", "period": "2025-11 ~ 2026-04", "totalSales": 1765251.0, "promo": 641515.0, "tech": 25269.0, "ware": 261487.0, "goods": 451600.0, "other": 0.0, "totalExp": 1379871.0, "totalExpRatio": 0.7817, "promoRatio": 0.3634, "techRatio": 0.0143, "wareRatio": 0.1481, "goodsRatio": 0.2558, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂蔚蓝商贸有限公司", "pddShops": "OKCS旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2025-08 ~ 2026-04", "totalSales": 1459365.0, "promo": 560200.0, "tech": 20475.0, "ware": 184553.0, "goods": 438000.0, "other": 0.0, "totalExp": 1203228.0, "totalExpRatio": 0.8245, "promoRatio": 0.3839, "techRatio": 0.014, "wareRatio": 0.1265, "goodsRatio": 0.3001, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市莱之蔻种植有限公司", "pddShops": "蒙倩染发官方旗舰店", "activeStatus": "旧主体", "period": "2025-09 ~ 2026-04", "totalSales": 1040324.0, "promo": 419717.0, "tech": 18405.0, "ware": 119184.2, "goods": 421300.0, "other": 0.0, "totalExp": 978606.2, "totalExpRatio": 0.9407, "promoRatio": 0.4035, "techRatio": 0.0177, "wareRatio": 0.1146, "goodsRatio": 0.405, "otherRatio": 0.0, "status": "需发票"}, {"company": "新沂卓略咨询服务有限公司", "pddShops": "蒙倩洗护旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-02 ~ 2026-04", "totalSales": 385197.0, "promo": 153590.0, "tech": 7013.0, "ware": 49926.0, "goods": 140000.0, "other": 0.0, "totalExp": 350529.0, "totalExpRatio": 0.91, "promoRatio": 0.3987, "techRatio": 0.0182, "wareRatio": 0.1296, "goodsRatio": 0.3634, "otherRatio": 0.0, "status": "需发票"}, {"company": "徐州市磊子帆宠物护理有限公司", "pddShops": "蒙倩染发膏官方旗舰店", "activeStatus": "旧主体", "period": "2026-02 ~ 2026-04", "totalSales": 230978.0, "promo": 90626.0, "tech": 2238.0, "ware": 29934.53, "goods": 70000.0, "other": 0.0, "totalExp": 192798.53, "totalExpRatio": 0.8347, "promoRatio": 0.3924, "techRatio": 0.0097, "wareRatio": 0.1296, "goodsRatio": 0.3031, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂康之佳电子商务有限公司", "pddShops": "蒙倩洗护发官方旗舰店", "activeStatus": "旧主体", "period": "2026-03 ~ 2026-04", "totalSales": 123491.0, "promo": 49751.0, "tech": 2381.0, "ware": 15761.5, "goods": 35000.0, "other": 0.0, "totalExp": 102893.5, "totalExpRatio": 0.8332, "promoRatio": 0.4029, "techRatio": 0.0193, "wareRatio": 0.1276, "goodsRatio": 0.2834, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市义坤中药材种植有限公司", "pddShops": "蒙倩洗护发官方旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-03 ~ 2026-04", "totalSales": 119206.0, "promo": 48830.0, "tech": 2310.0, "ware": 15650.0, "goods": 35000.0, "other": 0.0, "totalExp": 101790.0, "totalExpRatio": 0.8539, "promoRatio": 0.4096, "techRatio": 0.0194, "wareRatio": 0.1313, "goodsRatio": 0.2936, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市汇普美容有限公司", "pddShops": "蒙倩旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 87643.0, "promo": 33215.0, "tech": 1687.0, "ware": 10726.0, "goods": 29000.0, "other": 0.0, "totalExp": 74628.0, "totalExpRatio": 0.8515, "promoRatio": 0.379, "techRatio": 0.0192, "wareRatio": 0.1224, "goodsRatio": 0.3309, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市东正种植有限公司", "pddShops": "蒙倩美发官方旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 47751.0, "promo": 18895.0, "tech": 952.0, "ware": 5771.0, "goods": 16500.0, "other": 0.0, "totalExp": 42118.0, "totalExpRatio": 0.882, "promoRatio": 0.3957, "techRatio": 0.0199, "wareRatio": 0.1209, "goodsRatio": 0.3455, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市妙彩化妆品有限公司", "pddShops": "蒙倩染发官方旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 55811.0, "promo": 21552.0, "tech": 1096.0, "ware": 6991.0, "goods": 19000.0, "other": 0.0, "totalExp": 48639.0, "totalExpRatio": 0.8715, "promoRatio": 0.3862, "techRatio": 0.0196, "wareRatio": 0.1253, "goodsRatio": 0.3404, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂兆品源商贸有限公司", "pddShops": "OKCS洗护旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 39775.0, "promo": 15418.0, "tech": 780.0, "ware": 5253.0, "goods": 13000.0, "other": 0.0, "totalExp": 34451.0, "totalExpRatio": 0.8661, "promoRatio": 0.3876, "techRatio": 0.0196, "wareRatio": 0.1321, "goodsRatio": 0.3268, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市亦寻商贸有限公司", "pddShops": "OKCS美发旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-03 ~ 2026-04", "totalSales": 38167.0, "promo": 15578.0, "tech": 782.0, "ware": 5224.0, "goods": 12000.0, "other": 0.0, "totalExp": 33584.0, "totalExpRatio": 0.8799, "promoRatio": 0.4082, "techRatio": 0.0205, "wareRatio": 0.1369, "goodsRatio": 0.3144, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂莱伊蔻商贸有限公司", "pddShops": "OKCS旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 28175.0, "promo": 11375.0, "tech": 545.0, "ware": 3647.0, "goods": 9000.0, "other": 0.0, "totalExp": 24567.0, "totalExpRatio": 0.8719, "promoRatio": 0.4037, "techRatio": 0.0193, "wareRatio": 0.1294, "goodsRatio": 0.3194, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂滋华源商贸有限公司", "pddShops": "OKCS染发旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 26484.0, "promo": 10147.0, "tech": 500.0, "ware": 3557.0, "goods": 8500.0, "other": 0.0, "totalExp": 22704.0, "totalExpRatio": 0.8573, "promoRatio": 0.3831, "techRatio": 0.0189, "wareRatio": 0.1343, "goodsRatio": 0.3209, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂壹零玖商贸有限公司", "pddShops": "蒙倩个护旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 22460.0, "promo": 8501.0, "tech": 428.0, "ware": 2910.0, "goods": 7500.0, "other": 0.0, "totalExp": 19339.0, "totalExpRatio": 0.861, "promoRatio": 0.3785, "techRatio": 0.0191, "wareRatio": 0.1296, "goodsRatio": 0.3339, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市汇艺美术培训有限公司", "pddShops": "OKCS染发膏旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 20525.0, "promo": 7749.0, "tech": 385.0, "ware": 2732.0, "goods": 7000.0, "other": 0.0, "totalExp": 17866.0, "totalExpRatio": 0.8705, "promoRatio": 0.3775, "techRatio": 0.0188, "wareRatio": 0.1331, "goodsRatio": 0.341, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂酷发商贸有限公司", "pddShops": "OKCS染发膏旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 26836.0, "promo": 10385.0, "tech": 510.0, "ware": 3609.0, "goods": 8500.0, "other": 0.0, "totalExp": 23004.0, "totalExpRatio": 0.8572, "promoRatio": 0.387, "techRatio": 0.019, "wareRatio": 0.1345, "goodsRatio": 0.3167, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂翠华商贸有限公司", "pddShops": "蒙倩旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 23265.0, "promo": 8885.0, "tech": 454.0, "ware": 3014.0, "goods": 7500.0, "other": 0.0, "totalExp": 19853.0, "totalExpRatio": 0.8533, "promoRatio": 0.3819, "techRatio": 0.0195, "wareRatio": 0.1296, "goodsRatio": 0.3224, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市优中贸易有限公司", "pddShops": "蒙倩染发旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 19550.0, "promo": 7458.0, "tech": 383.0, "ware": 2536.0, "goods": 6500.0, "other": 0.0, "totalExp": 16877.0, "totalExpRatio": 0.8633, "promoRatio": 0.3815, "techRatio": 0.0196, "wareRatio": 0.1297, "goodsRatio": 0.3325, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂棠梨商贸有限公司", "pddShops": "OKCS旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-03 ~ 2026-04", "totalSales": 11367.0, "promo": 4475.0, "tech": 226.0, "ware": 1451.0, "goods": 3600.0, "other": 0.0, "totalExp": 9752.0, "totalExpRatio": 0.8579, "promoRatio": 0.3937, "techRatio": 0.0199, "wareRatio": 0.1276, "goodsRatio": 0.3167, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市亿家旺商贸有限公司", "pddShops": "蒙倩洗护旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 10111.0, "promo": 3985.0, "tech": 205.0, "ware": 1319.0, "goods": 3300.0, "other": 0.0, "totalExp": 8809.0, "totalExpRatio": 0.8712, "promoRatio": 0.3941, "techRatio": 0.0203, "wareRatio": 0.1305, "goodsRatio": 0.3264, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市博越服饰经营部", "pddShops": "蒙倩洗护官方旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 9663.0, "promo": 3805.0, "tech": 190.0, "ware": 1320.0, "goods": 3200.0, "other": 0.0, "totalExp": 8515.0, "totalExpRatio": 0.8812, "promoRatio": 0.3938, "techRatio": 0.0197, "wareRatio": 0.1366, "goodsRatio": 0.3312, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂康立商贸有限公司", "pddShops": "蒙倩染发膏旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 8858.0, "promo": 3433.0, "tech": 177.0, "ware": 1147.0, "goods": 2900.0, "other": 0.0, "totalExp": 7657.0, "totalExpRatio": 0.8644, "promoRatio": 0.3876, "techRatio": 0.02, "wareRatio": 0.1295, "goodsRatio": 0.3274, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂威曼齐商贸有限公司", "pddShops": "OKCS旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 8693.0, "promo": 3415.0, "tech": 174.0, "ware": 1130.0, "goods": 2900.0, "other": 0.0, "totalExp": 7619.0, "totalExpRatio": 0.8765, "promoRatio": 0.3928, "techRatio": 0.02, "wareRatio": 0.13, "goodsRatio": 0.3336, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂领道商贸有限公司", "pddShops": "OKCS洗护旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 5326.0, "promo": 2080.0, "tech": 109.0, "ware": 681.0, "goods": 1700.0, "other": 0.0, "totalExp": 4570.0, "totalExpRatio": 0.8581, "promoRatio": 0.3905, "techRatio": 0.0205, "wareRatio": 0.1279, "goodsRatio": 0.3192, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂隆茂商贸有限公司", "pddShops": "OKCS美发旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 4544.0, "promo": 1770.0, "tech": 89.0, "ware": 585.0, "goods": 1500.0, "other": 0.0, "totalExp": 3944.0, "totalExpRatio": 0.868, "promoRatio": 0.3895, "techRatio": 0.0196, "wareRatio": 0.1287, "goodsRatio": 0.3301, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂尚金商贸有限公司", "pddShops": "OKCS染发膏旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 3323.0, "promo": 1288.0, "tech": 66.0, "ware": 432.0, "goods": 1100.0, "other": 0.0, "totalExp": 2886.0, "totalExpRatio": 0.8685, "promoRatio": 0.3876, "techRatio": 0.0199, "wareRatio": 0.13, "goodsRatio": 0.331, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂市北茗雪商贸有限公司", "pddShops": "蒙倩染发旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 2236.0, "promo": 875.0, "tech": 45.0, "ware": 291.0, "goods": 700.0, "other": 0.0, "totalExp": 1911.0, "totalExpRatio": 0.8547, "promoRatio": 0.3913, "techRatio": 0.0201, "wareRatio": 0.1301, "goodsRatio": 0.3131, "otherRatio": 0.0, "status": "安全"}, {"company": "新沂朗图商贸有限公司", "pddShops": "OKCS洗护旗舰店丶蒙倩", "activeStatus": "旧主体", "period": "2026-04 ~ 2026-04", "totalSales": 1493.0, "promo": 570.0, "tech": 30.0, "ware": 191.0, "goods": 500.0, "other": 0.0, "totalExp": 1291.0, "totalExpRatio": 0.8647, "promoRatio": 0.3818, "techRatio": 0.0201, "wareRatio": 0.1279, "goodsRatio": 0.3349, "otherRatio": 0.0, "status": "安全"}]}
+
+let initDone = false;
+function initDashboard() {
+    if (initDone) return;
+    initDone = true;
+    renderTable();
+    renderStats();
+    renderSafetyBanner();
+    setTimeout(setupFilters, 100);
+}
+
+function getActiveData(){var q=filters.quarter;if(q==="all")return QDATA.full;if(QDATA[q])return QDATA[q];return []}
+const filters={status:"all",activeStatus:"all",search:"",sales:"all",quarter:"all",promo:"all",ware:"all",goods:"all",totalExp:"all"}
+let sortCol = null, sortAsc = true;
+function getSortVal(d, col) {
+    if(col===0) return d.company;
+    if(col===1) return d.activeStatus;
+    if(col===2) return d.pddShops;
+    if(col===3) return d.period;
+    if(col===4) return d.totalSales;
+    if(col===5) return d.promo;
+    if(col===6) return d.tech;
+    if(col===7) return d.ware;
+    if(col===8) return d.goods;
+    if(col===9) return d.other;
+    if(col===10) return d.totalExp;
+    if(col===11) return d.totalExpRatio;
+    if(col===12) return d.promoRatio;
+    if(col===13) return d.techRatio;
+    if(col===14) return d.wareRatio;
+    if(col===15) return d.goodsRatio;
+    if(col===16) return d.otherRatio;
+    if(col===17) return d.status;
+    return '';
+}
+function checkRatio(v, low, high){if(v==null||isNaN(v))return"";return v<low?"low":v>high?"high":"ok"}
+function fmtMoney(v){var a="¥"+Math.round(v||0).toLocaleString("zh-CN");var b=((v||0)/10000).toFixed(2);return '<span class="fn">'+a+'</span><br><span class="wn">('+b+'万)</span>'}
+function fmtPct(v){return(v*100).toFixed(2)+"%"}
+function safePct(v){return(v==null||!isFinite(v))?"-":fmtPct(v)}
+function getSalesBucket(ts){if(ts<=250000)return"r1";if(ts<4000000)return"r2";return"r3"}
+function getRowClass(s){return s==="安全"?"row-safe":s==="需发票"?"row-warn":"row-danger"}
+function getBadge(s){const m={安全:["safe","🟢"],需发票:["warn","🟠"],超标主体:["danger","🔴"]};const[c,i]=m[s]||["",""];return'<span class="status-badge '+c+'">'+i+' '+s+'</span>'}
+function ratioCell(r, low, high){const s=checkRatio(r,low,high);const dot=s==="ok"?"🟢":s==="low"?"🔵":"🔴";const cls=s==="ok"?"dot-green":s==="low"?"dot-blue":"dot-red";return'<span class="ratio"><span class="'+cls+'"></span>'+safePct(r)+'</span>'}
+
+function renderStats() {
+    const src = getActiveData();
+    const ts = src.reduce((s,d)=>s+d.totalSales,0);
+    const te = src.reduce((s,d)=>s+d.totalExp,0);
+    const safe = src.filter(d=>d.status==='安全').length;
+    const warn = src.filter(d=>d.status==='需发票').length;
+    const danger = src.filter(d=>d.status==='超标主体').length;
+    const ac = src.filter(d=>d.activeStatus==='使用中').length;
+    const oc = src.filter(d=>d.activeStatus==='旧主体').length;
+    const er = ts>0?te/ts:0;
+    document.getElementById('statsCards').innerHTML =
+        '<div class="stat-card blue"><div class="label">🏪 主体总数</div><div class="value">'+src.length+'</div></div>' +
+        '<div class="stat-card blue"><div class="label">💰 总销售额</div><div class="value">'+fmtMoney(ts)+'</div></div>' +
+        '<div class="stat-card green"><div class="label">🟢 安全</div><div class="value">'+safe+'</div></div>' +
+        '<div class="stat-card orange"><div class="label">🟠 需开发票</div><div class="value">'+warn+'</div></div>' +
+        '<div class="stat-card red"><div class="label">🔴 超标主体</div><div class="value">'+danger+'</div></div>' +
+        '<div class="stat-card purple"><div class="label">📊 总支出</div><div class="value">'+fmtMoney(te)+'</div></div>' +
+        '<div class="stat-card'+(er>0.7106*1.1?' red':er<0.7106*0.9?' green':' green')+'"><div class="label">📈 支出占比</div><div class="value">'+fmtPct(er)+'</div></div>'+
+        '<div class="stat-card blue"><div class="label">✅ 使用中</div><div class="value">'+ac+'</div></div>' +
+        '<div class="stat-card" style="background:#f5f5f5"><div class="label">⏹ 旧主体</div><div class="value" style="color:#888">'+oc+'</div></div>';
+}
+
+function renderSafetyBanner() {
+    const src = getActiveData();
+    const ts = src.reduce((s,x)=>s+x.totalSales,0);
+    const tp = src.reduce((s,x)=>s+x.promo,0);
+    const tt = src.reduce((s,x)=>s+x.tech,0);
+    const tw = src.reduce((s,x)=>s+x.ware,0);
+    const tg = src.reduce((s,x)=>s+x.goods,0);
+    const to = src.reduce((s,x)=>s+x.other,0);
+    const te = src.reduce((s,x)=>s+x.totalExp,0);
+    document.getElementById('safetyBanner').innerHTML =
+        '<span>💰 总销售额：<strong>'+fmtMoney(ts)+'</strong></span>' +
+        '<span>📢 推广费：'+fmtMoney(tp)+'（'+safePct(tp/ts)+'）</span>' +
+        '<span>⚙️ 技术费：'+fmtMoney(tt)+'（'+safePct(tt/ts)+'）</span>' +
+        '<span>📦 仓储快递：'+fmtMoney(tw)+'（'+safePct(tw/ts)+'）</span>' +
+        '<span>💳 货款支出：'+fmtMoney(tg)+'（'+safePct(tg/ts)+'）</span>' +
+        '<span>📋 其他支出：'+fmtMoney(to)+'（'+safePct(to/ts)+'）</span>' +
+        '<span>📊 总支出：<strong>'+fmtMoney(te)+'</strong>（'+safePct(te/ts)+'）</span>';
+}
+
+function renderTable() {
+    let src = getActiveData();
+    const filtered = src.filter(d => {
+        if(filters.status !== "all" && d.status !== filters.status) return false;
+        if(filters.activeStatus !== "all" && d.activeStatus !== filters.activeStatus) return false;
+        if(filters.search && !d.company.includes(filters.search) && (!d.pddShops || !d.pddShops.includes(filters.search))) return false;
+        if(filters.sales !== "all" && getSalesBucket(d.totalSales) !== filters.sales) return false;
+        if(filters.promo !== "all" && checkRatio(d.promoRatio, 0.331*0.9, 0.331*1.1) !== filters.promo) return false;
+        if(filters.ware !== "all" && checkRatio(d.wareRatio, 0.087*0.9, 0.087*1.1) !== filters.ware) return false;
+        if(filters.goods !== "all" && checkRatio(d.goodsRatio, 0.2676*0.9, 0.2676*1.1) !== filters.goods) return false;
+        if(filters.totalExp !== "all" && checkRatio(d.totalExpRatio, 0.7106*0.9, 0.7106*1.1) !== filters.totalExp) return false;
+        return true;
+    }).sort((a,b)=>{
+        var va = getSortVal(a, sortCol);
+        var vb = getSortVal(b, sortCol);
+        if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase()}
+        return va<vb?(sortAsc?-1:1):va>vb?(sortAsc?1:-1):0;
+    });
+    document.getElementById("tableBody").innerHTML = filtered.map(d => {
+        const cls = getRowClass(d.status);
+        var shops = d.pddShops ? d.pddShops.split('、').join('<br>') : '—';
+        var sic = d.activeStatus==='使用中'?'<span style="color:#2e7d32">✅ 使用中</span>':'<span style="color:#888">⏹ 旧主体</span>';
+        return '<tr class="'+cls+'"><td class="company-name">'+d.company+'</td><td style="font-size:11px;font-weight:600">'+sic+'</td><td class="shop-list">'+shops+'</td><td style="font-size:11px;color:#555">'+d.period+'</td><td class="num" style="font-weight:700">'+fmtMoney(d.totalSales)+'</td><td class="num">'+fmtMoney(d.promo)+'</td><td class="num">'+fmtMoney(d.tech)+'</td><td class="num">'+fmtMoney(d.ware)+'</td><td class="num">'+fmtMoney(d.goods)+'</td><td class="num">'+fmtMoney(d.other)+'</td><td class="num"><strong>'+fmtMoney(d.totalExp)+'</strong></td><td class="num"><strong>'+ratioCell(d.totalExpRatio, 0.7106*0.9, 0.7106*1.1)+'</strong></td><td>'+ratioCell(d.promoRatio, 0.331*0.9, 0.331*1.1)+'</td><td>'+ratioCell(d.techRatio, 0.0255*0.9, 0.0255*1.1)+'</td><td>'+ratioCell(d.wareRatio, 0.087*0.9, 0.087*1.1)+'</td><td>'+ratioCell(d.goodsRatio, 0.2676*0.9, 0.2676*1.1)+'</td><td>'+safePct(d.otherRatio)+'</td><td>'+getBadge(d.status)+'</td></tr>';
+    }).join("");
+    document.getElementById("stats-summary").textContent = "显示 "+filtered.length+"/"+src.length+" 个主体";
+}
+
+function setupFilters() {
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const group = this.dataset.group;
+            const filter = this.dataset.filter;
+            document.querySelectorAll('.filter-btn[data-group="'+group+'"]').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            filters[group] = filter;
+            renderTable();
+            renderStats();
+            renderSafetyBanner();
+        });
+    });
+    document.getElementById('searchInput').addEventListener('input', function() {
+        filters.search = this.value;
+        renderTable();
+        renderStats();
+        renderSafetyBanner();
+    });
+    document.querySelectorAll('thead th').forEach(function(th, idx) {
+        th.style.cursor = 'pointer';
+        th.addEventListener('click', function() {
+            if(sortCol===idx){sortAsc=!sortAsc}else{sortCol=idx;sortAsc=true}
+            document.querySelectorAll('thead th').forEach(function(t){t.textContent=t.textContent.replace(/ ?[▲▼]/g,'')});
+            this.textContent += sortAsc?' ▲':' ▼';
+            renderTable();
+        });
+    });
+}
+</script>
+</body>
+</html>
