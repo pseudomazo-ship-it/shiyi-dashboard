@@ -224,7 +224,7 @@ let authRan = false;
 function showDashboard() {
     if (authRan) return;
     authRan = true;
-    if (typeof renderTable === 'function') {  }
+    if (typeof renderTable === 'function') { renderTable(); renderStats(); renderSafetyBanner(); setTimeout(setupFilters, 100); }
 }
 // ===== End Password Authentication =====
 
