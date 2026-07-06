@@ -403,6 +403,16 @@ function setupFilters() {
         });
     });
 }
+
+let initDone = false;
+function initDashboard() {
+    if (initDone) return;
+    initDone = true;
+    renderTable();
+    renderStats();
+    renderSafetyBanner();
+    setTimeout(setupFilters, 100);
+}
 </script>
 </body>
 </html>
