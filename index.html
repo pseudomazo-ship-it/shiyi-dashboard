@@ -81,7 +81,7 @@ tbody tr.row-safe{background:#f1f8e9}tbody tr.row-warn{background:#fff8e1}tbody 
 @keyframes live-pulse{0%{box-shadow:0 0 0 0 rgba(67,160,71,0.6)}70%{box-shadow:0 0 0 8px rgba(67,160,71,0)}100%{box-shadow:0 0 0 0 rgba(67,160,71,0)}}
 </style>
 </head>
-<body>
+<body data-v="07152009">
 <div class="login-overlay" id="loginOverlay">
   <div class="login-card" id="loginCard">
     <div class="lock-icon">🔐</div>
@@ -354,11 +354,9 @@ function setupFilters() {
 }
 function applyColVis() {
     for (var i = 0; i < 20; i++) {
-        var visible = colVis[i];
-        document.querySelectorAll('thead th:nth-child('+(i+1)+'), tbody td.c'+i).forEach(function(el) {
-            if (visible) el.classList.remove('col-hidden');
-            else el.classList.add('col-hidden');
-        });
+        var d = colVis[i] ? '' : 'none';
+        document.querySelectorAll('thead th:nth-child('+(i+1)+')').forEach(function(el){el.style.display=d;});
+        document.querySelectorAll('tbody td.c'+i).forEach(function(el){el.style.display=d;});
     }
 }
 
