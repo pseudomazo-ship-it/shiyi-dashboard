@@ -50,7 +50,6 @@ tbody tr.row-safe{background:#f1f8e9}tbody tr.row-warn{background:#fff8e1}tbody 
 .rule-note .tag{background:#1565c0;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600}
 .column-toggle-row{background:#e8eaf6;padding:10px 20px;border-radius:8px;border:2px solid #5c6bc0;flex-wrap:wrap;gap:6px 12px;margin-top:4px;box-shadow:0 2px 8px rgba(92,107,192,0.15)}
 .column-toggle-row .filter-label{color:#283593;font-size:13px;font-weight:700;letter-spacing:1px}
-td.c5,td.c6,td.c7,td.c8,td.c9,td.c12,td.c13,td.c14,td.c15,td.c16,thead th:nth-child(6),thead th:nth-child(7),thead th:nth-child(8),thead th:nth-child(9),thead th:nth-child(10),thead th:nth-child(13),thead th:nth-child(14),thead th:nth-child(15),thead th:nth-child(16),thead th:nth-child(17){display:none!important}
 .col-toggle{font-size:11px;color:#555;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:3px}
 .col-toggle input{cursor:pointer;margin:0}
 .col-hidden{display:none!important}
@@ -243,6 +242,7 @@ function safePct(v){return(v==null||!isFinite(v))?"-":fmtPct(v)}
 function getSalesBucket(ts){if(ts<=250000)return"r1";if(ts<4000000)return"r2";return"r3"}
 function getRowClass(s){return s==="安全"?"row-safe":s==="需发票"?"row-warn":"row-danger"}
 function getBadge(s){const m={安全:["safe","🟢"],需发票:["warn","🟠"],超标主体:["danger","🔴"]};const[c,i]=m[s]||["",""];return'<span class="status-badge '+c+'">'+i+' '+s+'</span>'}
+function dsp(i){ return colVis[i] ? '' : 'style="display:none"'; }
 function ratioCell(r, low, high){const s=checkRatio(r,low,high);const dot=s==="ok"?"🟢":s==="low"?"🔵":"🔴";const cls=s==="ok"?"dot-green":s==="low"?"dot-blue":"dot-red";return'<span class="ratio"><span class="'+cls+'"></span>'+safePct(r)+'</span>'}
 
 function renderStats() {
@@ -310,9 +310,9 @@ function renderTable() {
         var sic = d.activeStatus==='使用中'?'<span style="color:#2e7d32">✅ 使用中</span>':'<span style="color:#888">⏹ 旧主体</span>';
         var invAmt = d.invoice > 0 ? fmtMoney(d.invoice) : '<span style="color:#bbb">¥0</span>';
         var invRatio = d.invoice > 0 ? safePct(d.invoiceRatio) : '<span style="color:#bbb">-</span>';
-        return '<tr class="'+cls+'"><td class="company-name c0">'+d.company+'</td><td class="c1" style="font-size:11px;font-weight:600">'+sic+'</td><td class="c2 shop-list">'+shops+'</td><td class="c3" style="font-size:11px;color:#555">'+d.period+'</td><td class="c4 num" style="font-weight:700">'+fmtMoney(d.totalSales)+'</td><td class="c5 num">'+fmtMoney(d.promo)+'</td><td class="c6 num">'+fmtMoney(d.tech)+'</td><td class="c7 num">'+fmtMoney(d.ware)+'</td><td class="c8 num">'+fmtMoney(d.goods)+'</td><td class="c9 num">'+fmtMoney(d.other)+'</td><td class="c10 num"><strong>'+fmtMoney(d.totalExp)+'</strong></td><td class="c11 num"><strong>'+ratioCell(d.totalExpRatio, 0.7106*0.9, 0.7106*1.1)+'</strong></td><td class="c12">'+ratioCell(d.promoRatio, 0.331*0.9, 0.331*1.1)+'</td><td class="c13">'+ratioCell(d.techRatio, 0.0255*0.9, 0.0255*1.1)+'</td><td class="c14">'+ratioCell(d.wareRatio, 0.087*0.9, 0.087*1.1)+'</td><td class="c15">'+ratioCell(d.goodsRatio, 0.2676*0.9, 0.2676*1.1)+'</td><td class="c16">'+safePct(d.otherRatio)+'</td><td class="c17 num">'+invAmt+'</td><td class="c18 num"><strong>'+invRatio+'</strong></td><td class="c19">'+getBadge(d.status)+'</td></tr>';
+        return '<tr class="'+cls+'"><td class="company-name c0">'+d.company+'</td><td class="c1" style="font-size:11px;font-weight:600">'+sic+'</td><td class="c2 shop-list">'+shops+'</td><td class="c3" style="font-size:11px;color:#555">'+d.period+'</td><td class="c4 num" style="font-weight:700">'+fmtMoney(d.totalSales)+'</td><td class="c5 num" '+dsp(5)+'>'+fmtMoney(d.promo)+'</td><td class="c6 num" '+dsp(6)+'>'+fmtMoney(d.tech)+'</td><td class="c7 num" '+dsp(7)+'>'+fmtMoney(d.ware)+'</td><td class="c8 num" '+dsp(8)+'>'+fmtMoney(d.goods)+'</td><td class="c9 num" '+dsp(9)+'>'+fmtMoney(d.other)+'</td><td class="c10 num" '+dsp(10)+'><strong>'+fmtMoney(d.totalExp)+'</strong></td><td class="c11 num" '+dsp(11)+'><strong>'+ratioCell(d.totalExpRatio, 0.7106*0.9, 0.7106*1.1)+'</strong></td><td class="c12" '+dsp(12)+'>'+ratioCell(d.promoRatio, 0.331*0.9, 0.331*1.1)+'</td><td class="c13" '+dsp(13)+'>'+ratioCell(d.techRatio, 0.0255*0.9, 0.0255*1.1)+'</td><td class="c14" '+dsp(14)+'>'+ratioCell(d.wareRatio, 0.087*0.9, 0.087*1.1)+'</td><td class="c15" '+dsp(15)+'>'+ratioCell(d.goodsRatio, 0.2676*0.9, 0.2676*1.1)+'</td><td class="c16" '+dsp(16)+'>'+safePct(d.otherRatio)+'</td><td class="c17 num" '+dsp(17)+'>'+invAmt+'</td><td class="c18 num" '+dsp(18)+'><strong>'+invRatio+'</strong></td><td class="c19" '+dsp(19)+'>'+getBadge(d.status)+'</td></tr>';
     }).join("");
-    applyColVis();
+    syncTh();
     document.getElementById("stats-summary").textContent = "显示 "+filtered.length+"/"+src.length+" 个主体";
 }
 
@@ -349,15 +349,15 @@ function setupFilters() {
         cb.addEventListener('change', function() {
             var col = parseInt(this.closest('.col-toggle').dataset.col);
             colVis[col] = this.checked;
-            applyColVis();
+            renderTable();
         });
     });
 }
-function applyColVis() {
+function syncTh() {
     for (var i = 0; i < 20; i++) {
         var d = colVis[i] ? 'table-cell' : 'none';
-        document.querySelectorAll('thead th:nth-child('+(i+1)+')').forEach(function(el){el.style.display=d;});
-        document.querySelectorAll('tbody td.c'+i).forEach(function(el){el.style.display=d;});
+        var ths = document.querySelectorAll('thead th:nth-child('+(i+1)+')');
+        for (var j = 0; j < ths.length; j++) ths[j].style.display = d;
     }
 }
 
