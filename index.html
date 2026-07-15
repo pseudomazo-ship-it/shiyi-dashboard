@@ -90,7 +90,7 @@ tbody tr.row-safe{background:#f1f8e9}tbody tr.row-warn{background:#fff8e1}tbody 
   <div class="logout-bar"><button class="logout-btn" onclick="logout()">🚪 退出登录</button></div>
   <div class="header">
     <div><h1>📊 蒙倩品牌主体财务看板</h1><div class="subtitle">截止2026年07月13日 · 数据截至2026年6月</div></div>
-    <div class="info"><div>生成日期：2026-07-13</div><div style="margin-top:4px"><span id="stats-summary"></span></div><div style="margin-top:8px"><div class="live-indicator"><span class="live-dot"></span><span>同步于 <span class="live-time" id="liveTime">--:--:--</span></span></div></div></div>
+    <div class="info"><div>生成日期：2026-07-13</div><div style="margin-top:4px"><span id="stats-summary"></span></div><div style="margin-top:8px"><div class="live-indicator"><span class="live-dot"></span><span class="live-time" id="liveTime">----年--月--日 --:--:--</span></div></div></div>
   </div>
   <div class="stats-row" id="statsCards"></div>
   <div class="rule-note">
@@ -177,7 +177,7 @@ function logout(){sessionStorage.removeItem('db_auth');document.getElementById('
 (function(){if(sessionStorage.getItem('db_auth')==='1'){document.getElementById('loginOverlay').style.display='none';document.getElementById('dashboard').classList.add('visible');showDashboard();}else{document.getElementById('passwordInput').focus();}})();
 let _authRan=false;
 
-function updateLiveTime(){const e=document.getElementById('liveTime');if(e){const d=new Date();const h=String(d.getHours()).padStart(2,'0');const m=String(d.getMinutes()).padStart(2,'0');const s=String(d.getSeconds()).padStart(2,'0');e.textContent=h+':'+m+':'+s;}}
+function updateLiveTime(){const e=document.getElementById('liveTime');if(e){const d=new Date();const y=d.getFullYear();const mo=String(d.getMonth()+1).padStart(2,'0');const da=String(d.getDate()).padStart(2,'0');const h=String(d.getHours()).padStart(2,'0');const m=String(d.getMinutes()).padStart(2,'0');const s=String(d.getSeconds()).padStart(2,'0');e.textContent=y+'年'+mo+'月'+da+'日 '+h+':'+m+':'+s;}}
 updateLiveTime();
 setInterval(updateLiveTime, 1000);
 
