@@ -356,7 +356,7 @@ function setupFilters() {
 }
 function applyColVis() {
     for (var i = 0; i < 20; i++) {
-        var d = colVis[i] ? '' : 'none';
+        var d = colVis[i] ? 'table-cell' : 'none';
         document.querySelectorAll('thead th:nth-child('+(i+1)+')').forEach(function(el){el.style.display=d;});
         document.querySelectorAll('tbody td.c'+i).forEach(function(el){el.style.display=d;});
     }
