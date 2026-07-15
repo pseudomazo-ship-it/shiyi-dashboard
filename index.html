@@ -45,8 +45,8 @@ tbody tr.row-safe{background:#f1f8e9}tbody tr.row-warn{background:#fff8e1}tbody 
 .rule-note{background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:10px 16px;font-size:12px;color:#1565c0;margin-bottom:16px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
 .rule-note span{display:inline-flex;align-items:center;gap:4px}
 .rule-note .tag{background:#1565c0;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600}
-.column-toggle-row{background:#fafafa;padding:8px 16px;border-radius:8px;border:1px solid #eee;flex-wrap:wrap;gap:6px 12px}
-.column-toggle-row .filter-label{color:#444}
+.column-toggle-row{background:linear-gradient(135deg,#f0f4ff,#fff);padding:10px 20px;border-radius:8px;border:1.5px solid #c5cae9;flex-wrap:wrap;gap:6px 12px;margin-top:4px}
+.column-toggle-row .filter-label{color:#1a3a5c;font-size:13px;font-weight:700;letter-spacing:1px}
 .col-toggle{font-size:11px;color:#555;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:3px}
 .col-toggle input{cursor:pointer;margin:0}
 .col-hidden{display:none!important}
@@ -169,11 +169,11 @@ tbody tr.row-safe{background:#f1f8e9}tbody tr.row-warn{background:#fff8e1}tbody 
         <label class="col-toggle" data-col="9"><input type="checkbox" checked> 其他支出</label>
         <label class="col-toggle" data-col="10"><input type="checkbox" checked> 总支出</label>
         <label class="col-toggle" data-col="11"><input type="checkbox" checked> 总支出占比</label>
-        <label class="col-toggle" data-col="12"><input type="checkbox" checked> 推广占比</label>
-        <label class="col-toggle" data-col="13"><input type="checkbox" checked> 技术占比</label>
-        <label class="col-toggle" data-col="14"><input type="checkbox" checked> 仓储占比</label>
-        <label class="col-toggle" data-col="15"><input type="checkbox" checked> 货款占比</label>
-        <label class="col-toggle" data-col="16"><input type="checkbox" checked> 其他占比</label>
+        <label class="col-toggle" data-col="12"><input type="checkbox"> 推广占比</label>
+        <label class="col-toggle" data-col="13"><input type="checkbox"> 技术占比</label>
+        <label class="col-toggle" data-col="14"><input type="checkbox"> 仓储占比</label>
+        <label class="col-toggle" data-col="15"><input type="checkbox"> 货款占比</label>
+        <label class="col-toggle" data-col="16"><input type="checkbox"> 其他占比</label>
         <label class="col-toggle" data-col="17"><input type="checkbox" checked> 开票金额</label>
         <label class="col-toggle" data-col="18"><input type="checkbox" checked> 开票占比</label>
         <label class="col-toggle" data-col="19"><input type="checkbox" checked> 状态</label>
@@ -196,7 +196,7 @@ const PASSWORD_HASH='030399ee247e9f25189d627e54eaee29b38ff79467597d0ea082c3d940e
 async function sha256(m){const b=new TextEncoder().encode(m);const h=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
 async function checkPassword(){const i=document.getElementById('passwordInput'),btn=document.getElementById('loginBtn'),e=document.getElementById('errorMsg'),c=document.getElementById('loginCard'),p=i.value.trim();if(!p){i.focus();return;}btn.disabled=true;btn.textContent='验证中...';try{const h=await sha256(p);if(h===PASSWORD_HASH){sessionStorage.setItem('db_auth','1');document.getElementById('loginOverlay').style.display='none';document.getElementById('dashboard').classList.add('visible');showDashboard();}else{e.classList.add('show');c.classList.remove('login-shake');void c.offsetWidth;c.classList.add('login-shake');i.value='';i.focus();}}catch(x){e.textContent='❌ 验证失败：'+x.message;e.classList.add('show');}btn.disabled=false;btn.textContent='验证进入';}
 function logout(){sessionStorage.removeItem('db_auth');document.getElementById('loginOverlay').style.display='flex';document.getElementById('dashboard').classList.remove('visible');document.getElementById('passwordInput').value='';document.getElementById('errorMsg').classList.remove('show');document.getElementById('passwordInput').focus();}
-(function(){if(sessionStorage.getItem('db_auth')==='1'){document.getElementById('loginOverlay').style.display='none';document.getElementById('dashboard').classList.add('visible');showDashboard();}else{document.getElementById('passwordInput').focus();}})();
+(function(){document.getElementById('passwordInput').focus();})();
 let _authRan=false;
 function showDashboard(){if(_authRan)return;_authRan=true;kickDashboard();}
 function updateLiveTime(){var e=document.getElementById('liveTime');if(e){var d=new Date();e.textContent=d.getFullYear()+'年'+String(d.getMonth()+1).padStart(2,'0')+'月'+String(d.getDate()).padStart(2,'0')+'日 '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');}}
@@ -207,7 +207,7 @@ const QDATA = {"full": [{"company": "徐州市诗澳沂运输有限公司", "pdd
 
 function getActiveData(){var q=filters.quarter;if(q==="all")return QDATA.full;if(QDATA[q])return QDATA[q];return []}
 const filters={status:"all",activeStatus:"all",search:"",sales:"all",quarter:"all",promo:"all",ware:"all",goods:"all",totalExp:"all"}
-let colVis = {0:true,1:true,2:true,3:true,4:true,5:true,6:true,7:true,8:true,9:true,10:true,11:true,12:true,13:true,14:true,15:true,16:true,17:true,18:true,19:true};
+let colVis = {0:true,1:true,2:true,3:true,4:true,5:true,6:true,7:true,8:true,9:true,10:true,11:true,12:false,13:false,14:false,15:false,16:false,17:true,18:true,19:true};
 let sortCol = null, sortAsc = true;
 function getSortVal(d, col) {
     if(col===0) return d.company;
