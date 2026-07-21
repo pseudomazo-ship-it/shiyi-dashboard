@@ -321,6 +321,28 @@ function renderTable() {
 }
 
 function setupFilters() {
+    // Quarter → month mapping
+    var q2m = {'2025-Q3':['2025-07','2025-08','2025-09'],'2025-Q4':['2025-10','2025-11','2025-12'],'2026-Q1':['2026-01','2026-02','2026-03'],'2026-Q2':['2026-04','2026-05','2026-06'],'2026-Q3':['2026-07','2026-08','2026-09'],'2026-Q4':['2026-10','2026-11','2026-12']};
+    function updateMonthVis() {
+        var mfr = document.getElementById('monthFilterRow');
+        var q = filters.quarter;
+        if (q === 'all') {
+            mfr.style.display = 'none';
+            filters.month = 'all';
+            document.querySelectorAll('.filter-btn[data-group="month"]').forEach(function(b){b.classList.toggle('active',b.dataset.filter==='all')});
+        } else {
+            mfr.style.display = '';
+            var months = q2m[q] || [];
+            document.querySelectorAll('.filter-btn[data-group="month"]').forEach(function(b){
+                b.style.display = months.indexOf(b.dataset.filter)>=0 ? '' : 'none';
+            });
+            // Reset month if current selection not in this quarter
+            if (months.indexOf(filters.month) < 0) {
+                filters.month = 'all';
+                document.querySelectorAll('.filter-btn[data-group="month"]').forEach(function(b){b.classList.toggle('active',b.dataset.filter==='all')});
+            }
+        }
+    }
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const group = this.dataset.group;
@@ -328,9 +350,7 @@ function setupFilters() {
             document.querySelectorAll('.filter-btn[data-group="'+group+'"]').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             filters[group] = filter;
-            // Mutual exclusion: quarter ↔ month
-            if(group==='quarter'&&filter!=='all'){filters.month='all';document.getElementById('monthFilterRow').style.display='none'}
-            if(group==='month'&&filter!=='all'){filters.quarter='all';document.querySelectorAll('.filter-btn[data-group="quarter"]').forEach(function(b){b.classList.toggle('active',b.dataset.filter==='all')})}
+            if (group === 'quarter') updateMonthVis();
             renderTable();
             renderStats();
             renderSafetyBanner();
@@ -343,6 +363,7 @@ function setupFilters() {
         var parts = mk.split('-');
         var label = parts[0].slice(2)+'年'+parts[1]+'月';
         if(label==='26年06月')label='26年6月';
+        if(label==='26年07月')label='26年7月';
         var btn = document.createElement('button');
         btn.className = 'filter-btn';
         btn.dataset.filter = mk;
@@ -351,39 +372,16 @@ function setupFilters() {
         btn.addEventListener('click', function(){
             document.querySelectorAll('.filter-btn[data-group="month"]').forEach(function(b){b.classList.toggle('active',b.dataset.filter===mk)});
             filters.month = mk;
-            filters.quarter = 'all';
-            document.querySelectorAll('.filter-btn[data-group="quarter"]').forEach(function(b){b.classList.toggle('active',b.dataset.filter==='all')});
             renderTable();
             renderStats();
             renderSafetyBanner();
         });
         mfr.appendChild(btn);
     });
-    // Show month filter when month "all" is de-selected... Actually, let user toggle month view via quarter row
-    // Add a "📆 按月" toggle button in the quarter row
-    var tb = document.createElement('button');
-    tb.className = 'filter-btn';
-    tb.textContent = '📆 按月';
-    tb.style.marginLeft = '8px';
-    tb.id = 'toggleMonthBtn';
-    tb.addEventListener('click', function(){
-        var mfr = document.getElementById('monthFilterRow');
-        var show = mfr.style.display === 'none';
-        mfr.style.display = show ? '' : 'none';
-        if(show){
-            filters.quarter='all';
-            document.querySelectorAll('.filter-btn[data-group="quarter"]').forEach(function(b){b.classList.toggle('active',b.dataset.filter==='all')});
-        }else{
-            filters.month='all';
-            document.querySelectorAll('.filter-btn[data-group="month"]').forEach(function(b){b.classList.toggle('active',b.dataset.filter==='all')});
-        }
-        renderTable();
-        renderStats();
-        renderSafetyBanner();
-    });
-    // Insert toggle button after quarter buttons
-    var qr = document.querySelector('.filter-btn[data-group="quarter"][data-filter="2026-Q4"]');
-    if(qr) qr.parentNode.insertBefore(tb, qr.nextSibling);
+    // Restore "按月" label and remove old toggle code
+    var mfLabel = document.querySelector('#monthFilterRow .filter-label');
+    if (mfLabel) mfLabel.textContent = '📆 月度：';
+    updateMonthVis();
     document.getElementById('searchInput').addEventListener('input', function() {
         filters.search = this.value;
         renderTable();
