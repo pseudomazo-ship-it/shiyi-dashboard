@@ -199,83 +199,92 @@ function showMatrix(w){
     
     html+='</div>';
     
-    // 详细比价表
-    html+=`<div style="background:#fff;border-radius:10px;padding:12px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px"><div style="font-weight:600;margin-bottom:8px">📊 各省三网比价明细</div>`;
-    html+=`<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#f7fafc">`;
-    html+=`<th style="padding:6px 4px;text-align:left;border-bottom:1px solid #e2e8f0">省份</th>`;
-    html+=`<th style="padding:6px 4px;text-align:center;border-bottom:1px solid #e2e8f0;color:#4C72B0">邮政</th>`;
-    html+=`<th style="padding:6px 4px;text-align:center;border-bottom:1px solid #e2e8f0;color:#DD8452">圆通</th>`;
-    html+=`<th style="padding:6px 4px;text-align:center;border-bottom:1px solid #e2e8f0;color:#55A868">中通</th>`;
-    html+=`<th style="padding:6px 4px;text-align:center;border-bottom:1px solid #e2e8f0">推荐</th>`;
-    html+=`<th style="padding:6px 4px;text-align:center;border-bottom:1px solid #e2e8f0">仓库</th></tr></thead><tbody>`;
+    // 详细比价表 —— 优化版：简短表头 + 到仓价列 + 分区段落 + 加收行内标注
+    const zones=[['一区',['湖北']],['二区1',['湖南','江西','安徽','河南']],['二区2',['广东','陕西','山东','浙江','河北','山西','江苏','福建','重庆','上海']],['三区1',['贵州','天津','广西','四川','甘肃','宁夏']],['三区2',['云南','北京','内蒙古','海南']],['三区3',['辽宁']],['四区',['吉林','黑龙江']],['五区',['新疆','西藏','青海']]];
+    html+=`<div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px">`;
+    html+=`<div style="font-weight:700;font-size:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center"><span>📊 各省三网比价明细</span><span style="font-size:11px;font-weight:400;color:#a0aec0">邮政/圆通=到仓价含+0.3 | 中通=广西云仓直发</span></div>`;
+    html+=`<table style="width:100%;border-collapse:collapse;font-size:12.5px;font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif"><thead><tr style="background:#f7fafc">`;
+    html+=`<th style="padding:7px 6px;text-align:left;border-bottom:2px solid #e2e8f0;width:26%">省份</th>`;
+    html+=`<th style="padding:7px 4px;text-align:center;border-bottom:2px solid #e2e8f0;width:13%;color:#4C72B0">邮政</th>`;
+    html+=`<th style="padding:7px 4px;text-align:center;border-bottom:2px solid #e2e8f0;width:13%;color:#DD8452">圆通</th>`;
+    html+=`<th style="padding:7px 4px;text-align:center;border-bottom:2px solid #e2e8f0;width:13%;color:#55A868">中通</th>`;
+    html+=`<th style="padding:7px 4px;text-align:center;border-bottom:2px solid #e2e8f0;width:15%">推荐</th>`;
+    html+=`<th style="padding:7px 6px;text-align:center;border-bottom:2px solid #e2e8f0;width:20%">仓库 → 到仓价</th></tr></thead><tbody>`;
     
-    for(const prov of allProvs){
-        const pv=postalP(prov,w),yv=ytoP2(prov,w),zv=ztoP(prov,'',w);
-        const pvS=pv?+(pv+S).toFixed(2):null, yvS=yv?+(yv+S).toFixed(2):null;
-        const cand=[];
-        if(pvS)cand.push({n:'邮政',p:pvS});if(yvS)cand.push({n:'圆通',p:yvS});if(zv)cand.push({n:'中通',p:zv});
-        let best='-',wh='-',minP=null,realP='';
-        if(cand.length){
-            const mc=cand.reduce((a,b)=>a.p<b.p?a:b);
-            best=mc.n;minP=mc.p;
-            // 业务规则
-            if(prov==='海南'){best='圆通';wh='襄阳仓(+0.3)';realP='¥'+yvS;}
-            else if(best==='中通'){wh='广西云仓';realP='¥'+zv.toFixed(2);}
-            else if(best==='圆通'){wh='襄阳仓(+0.3)';realP='¥'+yvS;}
-            else if(best==='邮政'){wh='襄阳仓(+0.3)';realP='¥'+pvS;}
-        }
+    for(const [zn,zp] of zones){
+        // 分区标题行
+        html+=`<tr><td colspan="6" style="padding:5px 8px;background:#f8fafc;font-size:11px;color:#718096;font-weight:600;border-bottom:1px solid #e2e8f0;letter-spacing:1px">${zn}</td></tr>`;
         
-        let rowColor='';
-        if(wh.startsWith('广西云仓'))rowColor='background:#f0fff4';
-        else if(wh.startsWith('襄阳仓')&&best==='圆通')rowColor='background:#fffaf0';
-        else if(wh.startsWith('襄阳仓')&&best==='邮政')rowColor='background:#eff6ff';
-        
-        html+=`<tr style="${rowColor}">`;
-        html+=`<td style="padding:4px;border-bottom:1px solid #f0f0f0;font-weight:600">${prov}</td>`;
-        html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0">${pv?'¥'+pv.toFixed(2):'-'}</td>`;
-        html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0">${yv?'¥'+yv.toFixed(2):'-'}</td>`;
-        html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0">${zv?'¥'+zv.toFixed(2):'-'}</td>`;
-        html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-weight:700;color:#006100">${best}</td>`;
-        html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">${wh}<br><span style="font-size:10px;color:#333">${realP}</span></td></tr>`;
-        
-        // 广东特殊城市
-        if(prov==='广东'){
-            for(const city of['广州','深圳']){
-                const zvc=ztoP('广东',city,w),yvc=ytoP2('广东',w),pv2=postalP('广东',w);
-                html+=`<tr style="background:#fffaf0"><td style="padding:4px;border-bottom:1px solid #f0f0f0;color:#e53e3e;font-size:11px">└ ${prov}-${city}</td>`;
-                html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">¥${pv2?(pv2+S).toFixed(2):'-'}</td>`;
-                html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">¥${yvc?(yvc+S).toFixed(2):'-'}</td>`;
-                html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">¥${zvc?zvc.toFixed(2):'-'}(+0.5)</td>`;
-                html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px;color:#e53e3e;font-weight:700">圆通</td>`;
-                html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px;color:#e53e3e">襄阳仓(+0.3)<br><span style="font-size:9px;color:#333">¥${(yvc+S).toFixed(2)}</span></td></tr>`;
+        for(const prov of zp){
+            const pv=postalP(prov,w),yv=ytoP2(prov,w),zv=ztoP(prov,'',w);
+            const pvS=pv?+(pv+S).toFixed(2):null, yvS=yv?+(yv+S).toFixed(2):null;
+            const cand=[];
+            if(pvS)cand.push({n:'邮政',p:pvS});if(yvS)cand.push({n:'圆通',p:yvS});if(zv)cand.push({n:'中通',p:zv});
+            let best='-',wh='-',whPrice='-',whColor='#718096',bg='';
+            if(cand.length){
+                const mc=cand.reduce((a,b)=>a.p<b.p?a:b);
+                best=mc.n;
+                if(prov==='海南'){best='圆通';wh='襄阳仓';whPrice=yvS;whColor='#DD8452';bg='#fff8f0';}
+                else if(best==='中通'){wh='广西云仓';whPrice=zv.toFixed(2);whColor='#38a169';bg='#f0fff4';}
+                else if(best==='圆通'){wh='襄阳仓';whPrice=yvS;whColor='#DD8452';bg='#fff8f0';}
+                else if(best==='邮政'){wh='襄阳仓';whPrice=pvS;whColor='#4C72B0';bg='#f0f4ff';}
             }
-        }
-        // 四川特殊城市
-        if(prov==='四川'){
-            for(const city of['阿坝州','甘孜州','凉山州']){
-                const zvc=ztoP('四川',city,w),yvc=ytoP2('四川',w),pv2=postalP('四川',w);
-                const cBest='邮政';
-                html+=`<tr style="background:#eff6ff"><td style="padding:4px;border-bottom:1px solid #f0f0f0;color:#e53e3e;font-size:11px">└ ${prov}-${city}</td>`;
-                html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">¥${pv2?(pv2+S).toFixed(2):'-'}</td>`;
-                html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">¥${yvc?(yvc+S).toFixed(2):'-'}</td>`;
-                html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">¥${zvc?zvc.toFixed(2):'-'}(特殊计价)</td>`;
-                html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px;color:#e53e3e;font-weight:700">${cBest}</td>`;
-                html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px;color:#e53e3e">襄阳仓(+0.3)<br><span style="font-size:9px;color:#333">¥${(pv2+S).toFixed(2)}</span></td></tr>`;
+            const whLabel=wh==='广西云仓'?wh:`${wh} <span style="font-size:10px;color:#a0aec0">+0.3</span>`;
+            
+            html+=`<tr style="${bg}">`;
+            html+=`<td style="padding:5px 6px;border-bottom:1px solid #edf2f7;font-weight:600;font-size:12.5px">${prov}</td>`;
+            html+=`<td style="padding:5px 4px;text-align:center;border-bottom:1px solid #edf2f7;color:${pvS?'#2d3748':'#cbd5e0'}">${pvS?'¥'+pvS:'-'}</td>`;
+            html+=`<td style="padding:5px 4px;text-align:center;border-bottom:1px solid #edf2f7;color:${yvS?'#2d3748':'#cbd5e0'}">${yvS?'¥'+yvS:'-'}</td>`;
+            html+=`<td style="padding:5px 4px;text-align:center;border-bottom:1px solid #edf2f7;color:${zv?'#2d3748':'#cbd5e0'}">${zv?'¥'+zv.toFixed(2):'-'}</td>`;
+            html+=`<td style="padding:5px 4px;text-align:center;border-bottom:1px solid #edf2f7;font-weight:700;color:${whColor};font-size:13px">${best}</td>`;
+            html+=`<td style="padding:5px 6px;text-align:center;border-bottom:1px solid #edf2f7;font-size:12px">${whLabel}<br><span style="font-weight:700;color:${whColor}">¥${whPrice}</span></td></tr>`;
+            
+            // 广东特殊城市
+            if(prov==='广东'){
+                for(const city of['广州','深圳']){
+                    const zvc=ztoP('广东',city,w),yvc=ytoP2('广东',w),pv2=postalP('广东',w);
+                    const yv2S=yvc?+(yvc+S).toFixed(2):null,pv2S=pv2?+(pv2+S).toFixed(2):null;
+                    html+=`<tr style="background:#fff5f0">`;
+                    html+=`<td style="padding:3px 6px 3px 20px;border-bottom:1px solid #f0e0d0;font-size:11px;color:#c05621"><span style="color:#e53e3e">•</span> ${city} <span style="color:#a0aec0;font-size:10px">中通+0.5</span></td>`;
+                    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #f0e0d0;font-size:11px;color:#cbd5e0">${pv2S?'¥'+pv2S:'-'}</td>`;
+                    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #f0e0d0;font-size:11px;font-weight:700;color:#DD8452">¥${yv2S}</td>`;
+                    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #f0e0d0;font-size:11px;text-decoration:line-through;color:#cbd5e0">¥${zvc?zvc.toFixed(2):'-'}</td>`;
+                    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #f0e0d0;font-size:11px;font-weight:700;color:#DD8452">圆通</td>`;
+                    html+=`<td style="padding:3px 6px;text-align:center;border-bottom:1px solid #f0e0d0;font-size:11px">襄阳仓 <span style="color:#a0aec0">+0.3</span><br><span style="font-weight:700;color:#DD8452">¥${yv2S}</span></td></tr>`;
+                }
             }
-        }
-        // 河北特殊城市
-        if(prov==='河北'){
-            const city='北戴河区',zvc=ztoP('河北',city,w),yvc=ytoP2('河北',w),pv2=postalP('河北',w);
-            const pv2S=pv2?+(pv2+S).toFixed(2):null, yv2S=yvc?+(yvc+S).toFixed(2):null;
-            const best2=(zvc&&(!yv2S||zvc<=yv2S)&&(!pv2S||zvc<=pv2S))?'中通':(yv2S&&(!pv2S||yv2S<=pv2S)?'圆通':'邮政');
-            const wh2=best2==='中通'?'广西云仓':'襄阳仓(+0.3)';
-            const rp2=best2==='中通'?'¥'+zvc.toFixed(2):(best2==='圆通'?'¥'+yv2S:'¥'+pv2S);
-            html+=`<tr style="background:#eff6ff"><td style="padding:4px;border-bottom:1px solid #f0f0f0;color:#e53e3e;font-size:11px">└ ${prov}-${city}</td>`;
-            html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">¥${pv2S||'-'}</td>`;
-            html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">¥${yv2S||'-'}</td>`;
-            html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px">¥${zvc?zvc.toFixed(2):'-'}(+0.5)</td>`;
-            html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px;color:#e53e3e;font-weight:700">${best2}</td>`;
-            html+=`<td style="padding:4px;text-align:center;border-bottom:1px solid #f0f0f0;font-size:11px;color:#e53e3e">${wh2}<br><span style="font-size:9px;color:#333">${rp2}</span></td></tr>`;
+            // 四川特殊城市
+            if(prov==='四川'){
+                for(const city of['阿坝州','甘孜州','凉山州']){
+                    const zvc=ztoP('四川',city,w),yvc=ytoP2('四川',w),pv2=postalP('四川',w);
+                    const pv2S=pv2?+(pv2+S).toFixed(2):null,yv2S=yvc?+(yvc+S).toFixed(2):null;
+                    html+=`<tr style="background:#f0f4ff">`;
+                    html+=`<td style="padding:3px 6px 3px 20px;border-bottom:1px solid #e0e4f0;font-size:11px;color:#4C51bf"><span style="color:#e53e3e">•</span> ${city} <span style="color:#a0aec0;font-size:10px">中通特殊计价</span></td>`;
+                    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;font-weight:700;color:#4C72B0">¥${pv2S}</td>`;
+                    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;color:#cbd5e0">${yv2S?'¥'+yv2S:'-'}</td>`;
+                    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;text-decoration:line-through;color:#cbd5e0">¥${zvc?zvc.toFixed(2):'-'}</td>`;
+                    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;font-weight:700;color:#4C72B0">邮政</td>`;
+                    html+=`<td style="padding:3px 6px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px">襄阳仓 <span style="color:#a0aec0">+0.3</span><br><span style="font-weight:700;color:#4C72B0">¥${pv2S}</span></td></tr>`;
+                }
+            }
+            // 河北特殊城市
+            if(prov==='河北'){
+                const city='北戴河区',zvc=ztoP('河北',city,w),yvc=ytoP2('河北',w),pv2=postalP('河北',w);
+                const pv2S=pv2?+(pv2+S).toFixed(2):null,yv2S=yvc?+(yvc+S).toFixed(2):null;
+                const b2=(zvc&&(!yv2S||zvc<=yv2S)&&(!pv2S||zvc<=pv2S))?'中通':(yv2S&&(!pv2S||yv2S<=pv2S)?'圆通':'邮政');
+                const w2=b2==='中通'?'广西云仓':'襄阳仓';
+                const rp2=b2==='中通'?zvc.toFixed(2):(b2==='圆通'?yv2S:pv2S);
+                const wb2=b2==='中通'?'#f0fff4':'#f0f4ff';
+                const wc2=b2==='中通'?'#38a169':'#4C72B0';
+                const wl2=b2==='中通'?'广西云仓':`襄阳仓 <span style="font-size:9px;color:#a0aec0">+0.3</span>`;
+                html+=`<tr style="background:${wb2}">`;
+                html+=`<td style="padding:3px 6px 3px 20px;border-bottom:1px solid #e0e4f0;font-size:11px;color:#4C51bf"><span style="color:#e53e3e">•</span> ${city} <span style="color:#a0aec0;font-size:10px">中通+0.5</span></td>`;
+                html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;${b2==='邮政'?'font-weight:700;':''}color:${b2==='邮政'?'#4C72B0':'#cbd5e0'}">${pv2S?'¥'+pv2S:'-'}</td>`;
+                html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;${b2==='圆通'?'font-weight:700;':''}color:${b2==='圆通'?'#DD8452':'#cbd5e0'}">${yv2S?'¥'+yv2S:'-'}</td>`;
+                html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;text-decoration:${b2==='中通'?'none':'line-through'};color:${b2==='中通'?'#2d3748':'#cbd5e0'}">¥${zvc?zvc.toFixed(2):'-'}</td>`;
+                html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;font-weight:700;color:${wc2}">${b2}</td>`;
+                html+=`<td style="padding:3px 6px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px">${wl2}<br><span style="font-weight:700;color:${wc2}">¥${rp2}</span></td></tr>`;
+            }
         }
     }
     html+=`</tbody></table></div>`;
