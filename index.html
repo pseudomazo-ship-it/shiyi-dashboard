@@ -2,199 +2,816 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>快递决策看板</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#eef4fa">
+<title>快递决策看板｜2026/07/25费率</title>
 <style>
-:root{--green:#48bb78;--blue:#667eea;--orange:#DD8452;--red:#e53e3e;--bg:#f5f7fa;--card:#fff;}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:#2d3748;min-height:100vh}
-.header{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:20px 24px;text-align:center}
-.header h1{font-size:22px;margin-bottom:4px}
-.header p{font-size:12px;opacity:.85}
-.container{max-width:1200px;margin:0 auto;padding:16px}
-.weight-bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
-.wbtn{padding:10px 20px;border:2px solid #e2e8f0;border-radius:10px;background:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;color:#4a5568}
-.wbtn:hover{border-color:var(--blue);color:var(--blue)}
-.wbtn.active{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 4px 12px rgba(102,126,234,.3)}
-.mode-bar{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
-.mbtn{padding:8px 16px;border:2px solid #e2e8f0;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;color:#4a5568}
-.mbtn:hover{border-color:#764ba2;color:#764ba2}
-.mbtn.active{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-color:#764ba2}
-.matrix{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
-.row{background:var(--card);border-radius:10px;padding:12px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);border-left:4px solid #ddd}
-.row.gx{border-left-color:var(--green);background:#f0fff4}
-.row.yto{border-left-color:var(--orange);background:#fffaf0}
-.row.post{border-left-color:var(--blue);background:#eff6ff}
-.row-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;color:#fff}
-.badge-gx{background:var(--green)}
-.badge-yto{background:var(--orange)}
-.badge-post{background:var(--blue)}
-.courier-tag{font-size:12px;color:#718096}
-.row-body{font-size:13px;line-height:1.8;color:#2d3748}
-.row-body .exc{color:var(--red);font-weight:600}
-.not-send{font-size:12px;color:var(--red);margin-top:4px}
-.login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s}
-.login-overlay.hidden{opacity:0;pointer-events:none}
-.login-box{background:#fff;border-radius:16px;padding:40px 32px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:360px;width:90%}
-.login-box h2{font-size:20px;color:#2d3748;margin-bottom:6px}
-.login-box p{font-size:13px;color:#718096;margin-bottom:20px}
-.login-box input{width:100%;padding:12px 16px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;text-align:center;outline:none;transition:border-color .2s;letter-spacing:4px}
-.login-box input:focus{border-color:#667eea}
-.login-box .err{color:#e53e3e;font-size:12px;margin-top:8px;min-height:18px}
-.login-box button{width:100%;padding:12px;margin-top:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:opacity .2s}
-.login-box button:hover{opacity:.9}
-.footer{text-align:center;font-size:11px;color:#a0aec0;padding:12px}
+:root{
+  --bg:#eef4fa;--panel:#ffffff;--panel-2:#f7fafc;--line:#d8e2ec;
+  --text:#1e293b;--muted:#64748b;--blue:#2563eb;--orange:#ea580c;
+  --green:#16a34a;--red:#dc2626;--amber:#d97706;--purple:#7c3aed;
+  --postal:#2563eb;--yto:#ea580c;--zto:#16a34a;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;background:
+  radial-gradient(circle at 8% -8%,rgba(59,130,246,.14),transparent 28rem),
+  radial-gradient(circle at 95% 5%,rgba(139,92,246,.10),transparent 24rem),var(--bg);
+  color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+}
+button,input,select{font:inherit}
+button{color:inherit}
+.app{max-width:1440px;margin:0 auto;padding:24px}
+.hero{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:end;
+  padding:24px 26px;border:1px solid var(--line);border-radius:20px;
+  background:linear-gradient(135deg,#ffffff,#edf5ff);
+  box-shadow:0 16px 46px rgba(71,85,105,.10)
+}
+.eyebrow{color:var(--blue);font-size:12px;font-weight:800;letter-spacing:.14em;margin-bottom:8px}
+h1{font-size:clamp(26px,4vw,42px);line-height:1.08;margin:0 0 10px;letter-spacing:-.04em}
+.hero p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}
+.hero-meta{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.meta-chip,.tag{border:1px solid #cbd9e8;background:#f8fbff;color:#475569;border-radius:999px;padding:7px 10px;font-size:12px;white-space:nowrap}
+.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(71,85,105,.06)}
+.mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px}
+.mode-btn{
+  min-height:76px;padding:12px 14px;border:1px solid transparent;border-radius:12px;
+  background:transparent;text-align:left;cursor:pointer;transition:.2s ease
+}
+.mode-btn:hover{background:#f1f5f9}
+.mode-btn.active{background:linear-gradient(135deg,#e8f1ff,#f2efff);border-color:#9db9e4}
+.mode-btn strong{display:block;font-size:14px;margin-bottom:5px}
+.mode-btn span{display:block;color:var(--muted);font-size:12px;line-height:1.45}
+.weight-box{padding:12px 14px}
+.label-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}
+.label-row label{font-size:13px;font-weight:800}
+.current-weight{color:var(--blue);font-size:12px;font-weight:800}
+.weight-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.weight-chip{
+  padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;
+  color:#475569;font-size:12px;font-weight:700;cursor:pointer
+}
+.weight-chip:hover,.weight-chip.active{border-color:var(--blue);background:#e8f1ff;color:#1d4ed8}
+.weight-input{display:flex;align-items:center;gap:6px;margin-left:auto}
+.weight-input input{
+  width:92px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;
+  background:#fff;color:var(--text);outline:none
+}
+.weight-input input:focus,.search-input:focus,.select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(96,165,250,.12)}
+.weight-input button,.primary-btn{
+  padding:8px 12px;border:1px solid #3b82f6;border-radius:9px;background:#2563eb;
+  color:#fff;font-weight:800;cursor:pointer
+}
+.notice{
+  display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px 14px;
+  border:1px solid rgba(245,158,11,.3);border-radius:12px;background:rgba(245,158,11,.08);
+  color:#92400e;font-size:12px;line-height:1.6
+}
+.notice strong{white-space:nowrap}
+.section{margin-top:18px}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:10px}
+.section-head h2{font-size:17px;margin:0}
+.section-head p{font-size:12px;color:var(--muted);margin:4px 0 0;line-height:1.5}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.kpi{padding:16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.96);box-shadow:0 8px 22px rgba(71,85,105,.05)}
+.kpi-label{color:var(--muted);font-size:12px;margin-bottom:8px}
+.kpi-value{font-size:27px;font-weight:900;letter-spacing:-.03em}
+.kpi-sub{color:var(--muted);font-size:11px;margin-top:5px}
+.postal-text{color:var(--postal)}.yto-text{color:var(--yto)}.zto-text{color:var(--zto)}.amber-text{color:#d97706}
+.decision-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.decision-grid.two{grid-template-columns:repeat(2,1fr)}
+.decision-card{position:relative;overflow:hidden;padding:16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.96);box-shadow:0 8px 22px rgba(71,85,105,.05)}
+.decision-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+.decision-card.postal{--accent:var(--postal)}.decision-card.yto{--accent:var(--yto)}.decision-card.zto{--accent:var(--zto)}
+.decision-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:12px}
+.courier{font-size:16px;font-weight:900}
+.warehouse{color:var(--muted);font-size:11px;margin-top:4px}
+.count{font-size:24px;font-weight:900;color:var(--accent)}
+.province-list{display:flex;gap:6px;flex-wrap:wrap;align-content:flex-start;min-height:58px}
+.province-pill{padding:5px 7px;border-radius:6px;background:#f1f5f9;color:#334155;border:1px solid #dbe4ee;font-size:11px}
+.province-pill.exception{background:#fff7ed;color:#c2410c;border-color:#fed7aa;font-weight:800}
+.empty{color:var(--muted);font-size:12px}
+.spotlight{display:grid;grid-template-columns:320px minmax(0,1fr);gap:14px}
+.lookup{padding:16px}
+.lookup h3,.rule-panel h3{font-size:14px;margin:0 0 12px}
+.field{margin-bottom:10px}
+.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:6px}
+.select,.search-input{
+  width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:9px;
+  background:#fff;color:var(--text);outline:none
+}
+.spot-result{padding:18px;display:grid;grid-template-columns:minmax(190px,.8fr) minmax(0,1.2fr);gap:20px;align-items:center}
+.result-eyebrow{font-size:11px;color:var(--muted);margin-bottom:8px}
+.result-route{font-size:23px;font-weight:900;line-height:1.25}
+.result-price{font-size:30px;font-weight:900;margin-top:8px}
+.reason{color:var(--muted);font-size:12px;line-height:1.6;margin-top:8px}
+.price-compare{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.price-compare.two{grid-template-columns:repeat(2,1fr)}
+.price-box{padding:12px;border:1px solid var(--line);border-radius:11px;background:#f8fafc}
+.price-box.best{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.price-name{font-size:11px;color:var(--muted)}
+.price-number{font-size:18px;font-weight:900;margin-top:5px}
+.price-note{font-size:10px;color:var(--muted);margin-top:4px;min-height:14px}
+.rule-panel{padding:16px}
+.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.rule{padding:11px;border-radius:10px;background:#f8fafc;border:1px solid #dbe4ee}
+.rule b{font-size:12px;display:block;margin-bottom:5px}.rule span{font-size:11px;color:var(--muted);line-height:1.5}
+.table-panel{overflow:hidden}
+.table-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.table-title{font-size:14px;font-weight:900}
+.table-title small{display:block;color:var(--muted);font-size:10px;font-weight:500;margin-top:4px}
+.search-input{width:230px}
+.table-wrap{overflow:auto;max-height:650px}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:970px}
+thead{position:sticky;top:0;z-index:3;background:#e8f0f8}
+th{padding:11px 10px;color:#334155;text-align:left;border-bottom:1px solid #cbd8e6;white-space:nowrap}
+th[data-sort]{cursor:pointer;user-select:none}
+th[data-sort]:hover{color:#0f172a}
+td{padding:10px;border-bottom:1px solid #e2e8f0;color:#334155;vertical-align:middle}
+tbody tr:hover{background:#f4f8fc}
+.sub-row td:first-child{padding-left:28px;color:#7c3aed}
+.sub-row{background:#faf8ff}
+.money{text-align:right;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.recommend{display:inline-flex;align-items:center;gap:6px;font-weight:900}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.policy{display:inline-block;padding:4px 7px;border-radius:6px;border:1px solid var(--line);font-size:10px;white-space:nowrap}
+.policy.speed{color:#b45309;border-color:#fcd34d;background:#fffbeb}
+.policy.price{color:#15803d;border-color:#86efac;background:#f0fdf4}
+.policy.business{color:#7c3aed;border-color:#c4b5fd;background:#faf5ff}
+.delta-cost{color:#d97706;font-size:10px;display:block;margin-top:3px}
+.footer{display:flex;justify-content:space-between;gap:16px;padding:20px 4px 4px;color:#64748b;font-size:11px}
+.login-overlay{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;z-index:99;
+  background:linear-gradient(135deg,#dbeafe 0,#eef2ff 50%,#f5f3ff 100%);
+  transition:opacity .25s ease,visibility .25s ease
+}
+.login-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.login-box{width:min(400px,100%);padding:32px;border:1px solid #cbd8e6;border-radius:20px;background:#fff;box-shadow:0 24px 80px rgba(71,85,105,.18)}
+.lock{display:grid;place-items:center;width:46px;height:46px;border-radius:13px;background:rgba(96,165,250,.12);color:var(--blue);font-size:22px;margin-bottom:18px}
+.login-box h2{font-size:22px;margin:0 0 7px}.login-box p{font-size:12px;color:var(--muted);margin:0 0 18px}
+.password-row{display:flex;gap:8px}
+.password-row input{flex:1;min-width:0;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);outline:none}
+.password-row button{padding:0 16px;border:1px solid #3b82f6;border-radius:10px;background:#2563eb;color:#fff;font-weight:800;cursor:pointer}
+.login-error{min-height:18px;color:#f87171;font-size:11px;margin-top:8px}
+@media(max-width:1000px){
+  .toolbar,.spotlight{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(3,1fr)}
+  .decision-grid,.decision-grid.two{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.hero-meta{justify-content:flex-start}
+}
+@media(max-width:680px){
+  .app{padding:12px}.hero{padding:20px}.toolbar{gap:10px}.mode-switch{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,1fr)}.kpi:last-child{grid-column:1/-1}
+  .spot-result{grid-template-columns:1fr}.price-compare,.price-compare.two{grid-template-columns:1fr}
+  .rules{grid-template-columns:repeat(2,1fr)}.table-tools{align-items:stretch;flex-direction:column}
+  .search-input{width:100%}.weight-input{margin-left:0;width:100%}.weight-input input{flex:1}
+  .footer{flex-direction:column}.hero-meta{display:none}
+}
 </style>
 </head>
 <body>
 <div class="login-overlay" id="loginOverlay">
-<div class="login-box">
-<h2>🔐 快递决策看板</h2><p>请输入访问密码</p>
-<input type="password" id="pwdInput" placeholder="请输入密码" onkeydown="if(event.key==='Enter')checkPwd()">
-<div class="err" id="pwdErr"></div>
-<button onclick="checkPwd()">验证进入</button>
-</div></div>
-<div class="header">
-<h1>📦 快递决策看板 2026.7.25</h1>
-<p>🏭 襄阳仓(圆通/邮政) | 🏭 广西云仓(中通) | 两板块切换查看</p>
+  <div class="login-box">
+    <div class="lock">🔐</div>
+    <h2>快递决策看板</h2>
+    <p>输入访问密码后查看全国快递分配与价格明细</p>
+    <div class="password-row">
+      <input id="passwordInput" type="password" autocomplete="current-password" placeholder="请输入密码" aria-label="访问密码">
+      <button id="loginButton" type="button">进入</button>
+    </div>
+    <div class="login-error" id="loginError" aria-live="polite"></div>
+  </div>
 </div>
-<div class="container">
-<div class="weight-bar" id="weight-bar"></div>
-<div class="mode-bar" id="mode-bar">
-<button class="mbtn active" data-mode="1">板块一 · 三网比价</button>
-<button class="mbtn" data-mode="2">板块二 · 圆通vs邮政</button>
-</div>
-<div id="result-area"><div style="text-align:center;color:#a0aec0;padding:40px;font-size:14px">请点击重量段查看决策</div></div>
-<div class="footer">数据2026.7.25 | 襄阳仓+0.3元 | 板块二：湖北周边邮政时效优先</div>
-</div>
+
+<main class="app">
+  <header class="hero">
+    <div>
+      <div class="eyebrow">MENGQIAN · LOGISTICS CONTROL</div>
+      <h1>快递决策看板</h1>
+      <p>按区域、重量、价格及时效规则，输出仓库与快递决策。中通价格表：2026/04/03执行；邮政、圆通按本次提供表格。</p>
+    </div>
+    <div class="hero-meta">
+      <span class="meta-chip">广西云仓 · 中通</span>
+      <span class="meta-chip">襄阳仓 · 圆通 / 邮政</span>
+      <span class="meta-chip">全国 31 省级地区</span>
+    </div>
+  </header>
+
+  <section class="toolbar">
+    <div class="panel mode-switch" id="modeSwitch">
+      <button class="mode-btn active" data-mode="1" type="button">
+        <strong>板块一｜两仓三网决策</strong>
+        <span>广西云仓中通 + 襄阳仓圆通、邮政</span>
+      </button>
+      <button class="mode-btn" data-mode="2" type="button">
+        <strong>板块二｜襄阳仓两网决策</strong>
+        <span>仅比较圆通、邮政，不让中通参与</span>
+      </button>
+    </div>
+    <div class="panel weight-box">
+      <div class="label-row">
+        <label>选择计费重量</label>
+        <span class="current-weight" id="currentWeightLabel">300g</span>
+      </div>
+      <div class="weight-controls" id="weightControls">
+        <button class="weight-chip active" data-weight="300" type="button">0–300g</button>
+        <button class="weight-chip" data-weight="500" type="button">300–500g</button>
+        <button class="weight-chip" data-weight="1000" type="button">500g–1kg</button>
+        <button class="weight-chip" data-weight="2000" type="button">1–2kg</button>
+        <button class="weight-chip" data-weight="3000" type="button">2–3kg</button>
+        <button class="weight-chip" data-weight="3500" type="button">3kg以上</button>
+        <div class="weight-input">
+          <input id="customWeight" type="number" min="1" max="5000" step="1" placeholder="精确克重" aria-label="精确克重">
+          <button id="applyWeight" type="button">计算</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="notice" id="modeNotice"></div>
+  <div id="dashboard"></div>
+
+  <footer class="footer">
+    <span>襄阳仓是因为成本原因加0.3调整。</span>
+    <span>看板版本：2026/07/26</span>
+  </footer>
+</main>
+
 <script>
-function checkPwd(){
-const p=document.getElementById('pwdInput').value;
-if(p==='mq520520'){document.getElementById('loginOverlay').classList.add('hidden');}
-else{document.getElementById('pwdErr').textContent='密码错误，请重试';}
-}
-// ========== 数据 ==========
-const postalZones={
-'一区':[['湖北'],[1.40,1.60,1.75,2.50,3.20,4.00,1.50]],
-'二区1':[['湖南','江西','安徽','河南'],[1.40,1.60,1.75,2.50,3.20,4.00,1.50]],
-'二区2':[['广东','陕西','山东','浙江','河北','山西','江苏','福建','重庆','上海'],[1.40,1.65,1.80,2.60,3.20,4.00,1.50]],
-'三区1':[['贵州','天津','广西','四川','甘肃','宁夏'],[1.50,1.75,1.90,2.90,4.00,4.00,1.50]],
-'三区2':[['云南','北京','内蒙古','海南'],[2.00,2.60,3.10,3.60,4.60,4.00,1.50]],
-'三区3':[['辽宁'],[2.00,2.60,3.10,3.60,5.00,4.00,1.50]],
-'四区':[['吉林','黑龙江'],[2.10,2.60,3.10,3.60,5.00,5.00,2.00]],
-'五区':[['新疆','西藏','青海'],[12.00,12.00,16.00,28.00,40.00,16.00,12.00]],
+const ACCESS_PASSWORD = 'mq520520';
+const XIANGYANG_ADJUSTMENT = 0.30;
+const HB_AROUND = new Set(['湖北','湖南','江西','安徽','河南','陕西','重庆']);
+const POSTAL_SLA = {
+  '北京': '3天内送达',
+  '上海': '3天内送达',
+  '广东-深圳': '3天内送达',
+  '广东-广州': '2天内送达'
 };
-const allProvs=[];for(const z in postalZones)allProvs.push(...postalZones[z][0]);
-const ytoP={};
-['北京','天津','河北','山西','内蒙古','辽宁','吉林','黑龙江','上海','江苏','浙江','安徽','福建','江西','山东','河南','湖北','湖南','广东','广西','海南','重庆','四川','贵州','云南','陕西','甘肃','青海','宁夏'].forEach(p=>ytoP[p]=1.95);
-ytoP['北京']=2.75;ytoP['上海']=2.75;ytoP['海南']=2.0;ytoP['重庆']=2.0;ytoP['四川']=2.0;ytoP['贵州']=2.0;ytoP['云南']=2.0;ytoP['甘肃']=2.0;ytoP['青海']=2.0;ytoP['宁夏']=2.0;ytoP['内蒙古']=2.0;ytoP['辽宁']=2.0;ytoP['吉林']=2.0;ytoP['黑龙江']=2.0;
-const ztoR={
-'江苏省':[1.35,1.60,2.65,3.10,9.80,11.80],'浙江省':[1.35,1.60,2.65,3.10,9.80,11.80],'安徽省':[1.35,1.60,2.65,3.10,9.80,11.80],'江西省':[1.35,1.60,2.65,3.10,9.80,11.80],'福建省':[1.35,1.60,2.65,3.10,9.80,11.80],'海南省':[1.35,1.60,2.65,3.10,9.80,11.80],'广东省':[1.35,1.60,2.65,3.10,9.80,11.80],'广西省':[1.35,1.60,2.65,3.10,9.80,11.80],'湖北省':[1.35,1.60,2.65,3.10,9.80,11.80],'湖南省':[1.35,1.60,2.65,3.10,9.80,11.80],'河南省':[1.35,1.60,2.65,3.10,9.80,11.80],'上海':[1.35,1.60,2.65,3.10,9.80,11.80],'北京':[1.35,1.60,2.65,3.10,9.80,11.80],'四川省':[1.35,1.60,2.65,3.55,9.80,11.80],'重庆':[1.35,1.60,2.65,3.55,9.80,11.80],'贵州省':[1.35,1.60,2.65,3.55,9.80,11.80],'云南省':[1.35,1.60,2.65,3.55,9.80,11.80],'山东省':[1.35,1.60,2.65,3.55,9.80,11.80],'河北省':[1.35,1.60,2.65,3.55,9.80,11.80],'天津':[1.35,1.60,2.65,3.55,9.80,11.80],'山西省':[1.35,1.60,2.65,3.55,9.80,11.80],'陕西省':[1.35,1.60,2.65,3.55,9.80,11.80],'辽宁省':[1.35,1.60,6.70,15.35,14.30,17.30],'吉林省':[1.35,1.60,6.70,15.35,17.30,21.30],'黑龙江省':[1.35,1.60,6.70,15.35,19.30,23.80],'宁夏':[1.35,1.60,7.70,15.35,21.80,26.80],'甘肃省':[1.35,1.60,7.70,15.35,21.80,26.80],'青海省':[1.35,1.60,7.70,15.35,21.80,26.80],'内蒙古':[1.35,1.60,7.70,15.35,21.80,26.80],'西藏':null,'新疆':null};
-const ztoSc={'上海':1,'海南':1,'北京':'bj'};
-const citySc={'广州':0.5,'深圳':0.5,'阿坝州':'sp','甘孜州':'sp','凉山州':'sp','北戴河区':0.5,'海港区':0.3,'山海关区':0.3,'昌黎县':0.3};
-const HB_AROUND=new Set(['湖北','湖南','江西','安徽','河南','陕西','重庆']);
 
-function postalP(prov,w){for(const z in postalZones){const arr=postalZones[z];if(arr[0].includes(prov)){const p=arr[1];if(w<=300)return+(p[0]+0.3).toFixed(2);if(w<=500)return+(p[1]+0.3).toFixed(2);if(w<=1000)return+(p[2]+0.3).toFixed(2);if(w<=2000)return+(p[3]+0.3).toFixed(2);if(w<=3000)return+(p[4]+0.3).toFixed(2);if(w<=5000){const kg=w/1000;return+(p[5]+(kg-1)*p[6]+0.3).toFixed(2);}}}return null;}
-function ytoP2(prov,w){const b=ytoP[prov];if(!b)return null;if(w<=1000)return+(b+0.3).toFixed(2);if(w<=2000)return+(b+0.5).toFixed(2);if(w<=3200)return+(b+0.7).toFixed(2);return null;}
-function ztoP(prov,city,w){const key=prov+'省';const arr=ztoR[key]||ztoR[prov];if(!arr)return null;if(prov==='西藏'||prov==='新疆'){const kg=w/1000;return+(20.1+Math.max(0,kg-1)*18.1).toFixed(2);}const cs=citySc[city]||0;if(cs==='sp'){const kg=w/1000;return+(20.1+Math.max(0,kg-1)*18.1).toFixed(2);}let price;if(w<=500)price=arr[0];else if(w<=1000)price=arr[1];else if(w<=2000)price=arr[2];else if(w<=3000)price=arr[3];else if(w<=4000)price=arr[4];else if(w<=5000)price=arr[5];else price=arr[0]+(w/1000-1)*arr[5];const sc=ztoSc[prov];if(typeof sc==='number')price+=sc;else if(sc==='bj')price+=w<=3000?1:(w/1000)*0.5;if(typeof cs==='number')price+=cs;return+price.toFixed(2);}
+const postalZones = {
+  '一区': [['湖北'], [1.40,1.60,1.75,2.50,3.20,4.00,1.50]],
+  '二区1': [['湖南','江西','安徽','河南'], [1.40,1.60,1.75,2.50,3.20,4.00,1.50]],
+  '二区2': [['广东','陕西','山东','浙江','河北','山西','江苏','福建','重庆','上海'], [1.40,1.65,1.80,2.60,3.20,4.00,1.50]],
+  '三区1': [['贵州','天津','广西','四川','甘肃','宁夏'], [1.50,1.75,1.90,2.90,4.00,4.00,1.50]],
+  '三区2': [['云南','北京','内蒙古','海南'], [2.00,2.60,3.10,3.60,4.60,4.00,1.50]],
+  '三区3': [['辽宁'], [2.00,2.60,3.10,3.60,5.00,4.00,1.50]],
+  '四区': [['吉林','黑龙江'], [2.10,2.60,3.10,3.60,5.00,5.00,2.00]],
+  '五区': [['新疆','西藏','青海'], [12.00,12.00,16.00,28.00,40.00,16.00,12.00]]
+};
 
-const weights=[300,500,1000,2000,3000,3500];
-const wLabels=['0-300g','300-500g','500-1kg','1-2kg','2-3kg','3kg以上'];
-let currentMode=1,currentWeight=weights[0];
+const zoneOrder = Object.entries(postalZones).map(([zone, value]) => ({zone, provinces:value[0]}));
+const allProvinces = zoneOrder.flatMap(item => item.provinces);
 
-// Init
-const bar=document.getElementById('weight-bar');
-wLabels.forEach((l,i)=>{const b=document.createElement('button');b.className='wbtn';b.textContent=l;b.onclick=()=>{document.querySelectorAll('.wbtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentWeight=weights[i];showMatrix();};bar.appendChild(b);});
-bar.children[0].classList.add('active');
-document.getElementById('mode-bar').addEventListener('click',e=>{if(e.target.classList.contains('mbtn')){document.querySelectorAll('.mbtn').forEach(x=>x.classList.remove('active'));e.target.classList.add('active');currentMode=parseInt(e.target.dataset.mode);showMatrix();}});
+// 圆通详细价格表（省份版）；新疆、西藏未出现在价格表中，按不可用处理。
+const ytoRates = {
+  '北京':[2.75,3.40,3.60],
+  '天津':[1.95,2.60,2.80],
+  '河北':[1.95,2.60,2.80],
+  '山西':[1.95,2.60,2.80],
+  '内蒙古':[2.00,2.80,3.40],
+  '辽宁':[2.00,2.80,3.40],
+  '吉林':[2.00,2.80,3.40],
+  '黑龙江':[2.00,2.80,3.40],
+  '上海':[2.75,3.40,3.60],
+  '江苏':[1.95,2.60,2.80],
+  '浙江':[1.95,2.60,2.80],
+  '安徽':[1.95,2.60,2.80],
+  '福建':[1.95,2.60,2.80],
+  '江西':[1.95,2.60,2.80],
+  '山东':[1.95,2.60,2.80],
+  '河南':[1.95,2.60,2.80],
+  '湖北':[1.95,2.60,2.80],
+  '湖南':[1.95,2.60,2.80],
+  '广东':[1.95,2.60,2.80],
+  '广西':[1.95,2.60,2.80],
+  '海南':[2.00,2.80,3.40],
+  '重庆':[2.00,2.80,3.40],
+  '四川':[2.00,2.80,3.40],
+  '贵州':[2.00,2.80,3.40],
+  '云南':[2.00,2.80,3.40],
+  '陕西':[1.95,2.60,2.80],
+  '甘肃':[2.00,2.80,3.40],
+  '青海':[2.00,2.80,3.40],
+  '宁夏':[2.00,2.80,3.40]
+};
 
-// ====== 决策核心 ======
-function decide(prov,city,w,mode){
-const S=0.3,pv=postalP(prov,w),yv=ytoP2(prov,w),zv=ztoP(prov,city||'',w);
-const pvS=pv?+(pv+S).toFixed(2):null,yvS=yv?+(yv+S).toFixed(2):null;
-const cand=[];if(pvS)cand.push({n:'邮政',p:pvS});if(yvS)cand.push({n:'圆通',p:yvS});if(zv)cand.push({n:'中通',p:zv});
-if(!cand.length)return null;
-const minP=Math.min(...cand.map(x=>x.p));
-const ztoBest=zv&&zv==minP;
-if(ztoBest) return {wh:'广西云仓',cour:'中通',price:zv,reason:'中通最优',wc:'#38a169',bg:'#f0fff4'};
-// 襄阳仓
-if(mode===2){
-    // 板块二：湖北周边邮政时效优先
-    if(HB_AROUND.has(prov)) return {wh:'襄阳仓',cour:'邮政',price:pvS,reason:'湖北周边·邮政时效优先',wc:'#4C72B0',bg:'#f0f4ff'};
-    // 非周边：圆通vs邮政便宜者
-    if(!yvS) return {wh:'襄阳仓',cour:'邮政',price:pvS,reason:'圆通不支持',wc:'#4C72B0',bg:'#f0f4ff'};
-    if(!pvS) return {wh:'襄阳仓',cour:'圆通',price:yvS,reason:'邮政不支持',wc:'#DD8452',bg:'#fff8f0'};
-    if(yvS<=pvS) return {wh:'襄阳仓',cour:'圆通',price:yvS,reason:'价格更低',wc:'#DD8452',bg:'#fff8f0'};
-    return {wh:'襄阳仓',cour:'邮政',price:pvS,reason:'价格更低',wc:'#4C72B0',bg:'#f0f4ff'};
+const ztoRates = {
+  '江苏省':[1.35,1.60,2.65,3.10,9.80,11.80],'浙江省':[1.35,1.60,2.65,3.10,9.80,11.80],
+  '安徽省':[1.35,1.60,2.65,3.10,9.80,11.80],'江西省':[1.35,1.60,2.65,3.10,9.80,11.80],
+  '福建省':[1.35,1.60,2.65,3.10,9.80,11.80],'海南省':[1.35,1.60,2.65,3.10,9.80,11.80],
+  '广东省':[1.35,1.60,2.65,3.10,9.80,11.80],'广西省':[1.35,1.60,2.65,3.10,9.80,11.80],
+  '湖北省':[1.35,1.60,2.65,3.10,9.80,11.80],'湖南省':[1.35,1.60,2.65,3.10,9.80,11.80],
+  '河南省':[1.35,1.60,2.65,3.10,9.80,11.80],'上海':[1.35,1.60,2.65,3.10,9.80,11.80],
+  '北京':[1.35,1.60,2.65,3.10,9.80,11.80],'四川省':[1.35,1.60,2.65,3.55,9.80,11.80],
+  '重庆':[1.35,1.60,2.65,3.55,9.80,11.80],'贵州省':[1.35,1.60,2.65,3.55,9.80,11.80],
+  '云南省':[1.35,1.60,2.65,3.55,9.80,11.80],'山东省':[1.35,1.60,2.65,3.55,9.80,11.80],
+  '河北省':[1.35,1.60,2.65,3.55,9.80,11.80],'天津':[1.35,1.60,2.65,3.55,9.80,11.80],
+  '山西省':[1.35,1.60,2.65,3.55,9.80,11.80],'陕西省':[1.35,1.60,2.65,3.55,9.80,11.80],
+  '辽宁省':[1.35,1.60,6.70,15.35,14.30,17.30],'吉林省':[1.35,1.60,6.70,15.35,17.30,21.30],
+  '黑龙江省':[1.35,1.60,6.70,15.35,19.30,23.80],'宁夏':[1.35,1.60,7.70,15.35,21.80,26.80],
+  '甘肃省':[1.35,1.60,7.70,15.35,21.80,26.80],'青海省':[1.35,1.60,7.70,15.35,21.80,26.80],
+  '内蒙古':[1.35,1.60,7.70,15.35,21.80,26.80],'西藏':null,'新疆':null
+};
+const ztoProvinceSurcharge = {'上海':1,'海南':1,'北京':'bj'};
+const ztoCitySurcharge = {
+  '广州':0.5,'深圳':0.5,'阿坝州':'sp','甘孜州':'sp','凉山州':'sp',
+  '北戴河区':0.5,'海港区':0.3,'山海关区':0.3,'昌黎县':0.3
+};
+const specialCities = {
+  '广东': [
+    {city:'广州', note:'中通+0.50；邮政2天内'},
+    {city:'深圳', note:'中通+0.50；邮政3天内'}
+  ],
+  '四川': [
+    {city:'阿坝州', note:'中通特殊计价'},
+    {city:'甘孜州', note:'中通特殊计价'},
+    {city:'凉山州', note:'中通特殊计价'}
+  ],
+  '河北': [
+    {city:'北戴河区', note:'中通+0.50'},
+    {city:'海港区', note:'中通+0.30'},
+    {city:'山海关区', note:'中通+0.30'},
+    {city:'昌黎县', note:'中通+0.30'}
+  ]
+};
+
+const state = {
+  mode: 1,
+  weight: 300,
+  lookupProvince: '湖北',
+  lookupCity: '',
+  tableFilter: '',
+  sortKey: 'order',
+  sortDirection: 1
+};
+
+function getRelevantCities(province){
+  const cities = specialCities[province] || [];
+  return state.mode === 1 ? cities : cities.filter(item => Boolean(getSla(province, item.city)));
+}
+
+function roundMoney(value){
+  return value === null || value === undefined ? null : Number(value.toFixed(2));
+}
+
+function postalContractPrice(province, weight){
+  for(const [, [provinces, prices]] of Object.entries(postalZones)){
+    if(!provinces.includes(province)) continue;
+    if(weight <= 300) return roundMoney(prices[0]);
+    if(weight <= 500) return roundMoney(prices[1]);
+    if(weight <= 1000) return roundMoney(prices[2]);
+    if(weight <= 2000) return roundMoney(prices[3]);
+    if(weight <= 3000) return roundMoney(prices[4]);
+    if(weight <= 5000) return roundMoney(prices[5] + (weight / 1000 - 1) * prices[6]);
+  }
+  return null;
+}
+
+function ytoContractPrice(province, weight){
+  const rates = ytoRates[province];
+  if(!rates) return null;
+  let price;
+  if(weight <= 1000) price = rates[0];
+  else if(weight <= 2000) price = rates[1];
+  else if(weight <= 3000) price = rates[2];
+  else return null;
+  return roundMoney(price);
+}
+
+function ztoPrice(province, city, weight){
+  const cityRule = ztoCitySurcharge[city] || 0;
+  if(province === '西藏' || province === '新疆' || cityRule === 'sp'){
+    const billedKg = Math.max(1, Math.ceil(weight / 1000));
+    return roundMoney(20.10 + (billedKg - 1) * 18.10);
+  }
+  const rates = ztoRates[province + '省'] || ztoRates[province];
+  if(!rates) return null;
+  let price;
+  if(weight <= 500) price = rates[0];
+  else if(weight <= 1000) price = rates[1];
+  else if(weight <= 2000) price = rates[2];
+  else if(weight <= 3000) price = rates[3];
+  else if(weight <= 4000) price = rates[4];
+  else if(weight <= 5000) price = rates[5];
+  else price = rates[0] + (weight / 1000 - 1) * rates[5];
+  const provinceRule = ztoProvinceSurcharge[province];
+  if(typeof provinceRule === 'number') price += provinceRule;
+  if(provinceRule === 'bj') price += weight <= 3000 ? 1 : (weight / 1000) * 0.5;
+  if(typeof cityRule === 'number') price += cityRule;
+  return roundMoney(price);
+}
+
+function getPrices(province, city, weight){
+  const postalContract = postalContractPrice(province, weight);
+  const ytoContract = ytoContractPrice(province, weight);
+  return {
+    '邮政': postalContract === null ? null : roundMoney(postalContract + XIANGYANG_ADJUSTMENT),
+    '圆通': ytoContract === null ? null : roundMoney(ytoContract + XIANGYANG_ADJUSTMENT),
+    '中通': ztoPrice(province, city, weight)
+  };
+}
+
+function getSla(province, city){
+  return POSTAL_SLA[province + (city ? '-' + city : '')] || POSTAL_SLA[province] || '';
+}
+
+function getPriceLeader(prices, mode){
+  const names = mode === 1 ? ['中通','圆通','邮政'] : ['圆通','邮政'];
+  const available = names.filter(name => prices[name] !== null);
+  if(!available.length) return null;
+  return available.reduce((best, name) => prices[name] < prices[best] ? name : best, available[0]);
+}
+
+function makeDecision(province, city, weight, mode){
+  const prices = getPrices(province, city, weight);
+  const priceLeader = getPriceLeader(prices, mode);
+  if(!priceLeader) return null;
+  let courier = priceLeader;
+  let reason = '价格最优';
+  let policy = 'price';
+  const sla = getSla(province, city);
+
+  if(mode === 1){
+    if(sla && prices['邮政'] !== null && prices['邮政'] === prices[priceLeader]){
+      courier = '邮政'; reason = '价格并列，按已知邮政时效优先'; policy = 'speed';
+    }
+  }else{
+    if(HB_AROUND.has(province) && prices['邮政'] !== null){
+      courier = '邮政'; reason = '湖北及周边省市，邮政时效优先'; policy = 'speed';
+    }else if(sla && prices['邮政'] !== null){
+      courier = '邮政'; reason = '邮政承诺' + sla + '，时效优先'; policy = 'speed';
+    }
+  }
+
+  const warehouse = courier === '中通' ? '广西云仓' : '襄阳仓';
+  const extraCost = prices[priceLeader] === null ? 0 : roundMoney(prices[courier] - prices[priceLeader]);
+  return {province, city, prices, priceLeader, courier, warehouse, reason, policy, sla, extraCost, price:prices[courier]};
+}
+
+function getAllRows(){
+  const rows = [];
+  let order = 0;
+  zoneOrder.forEach(group => {
+    group.provinces.forEach(province => {
+      rows.push({...makeDecision(province, '', state.weight, state.mode), zone:group.zone, order:order++, isCity:false});
+      getRelevantCities(province).forEach(item => {
+        rows.push({...makeDecision(province, item.city, state.weight, state.mode), zone:group.zone, order:order++, isCity:true, cityNote:item.note});
+      });
+    });
+  });
+  return rows.filter(Boolean);
+}
+
+function money(value){
+  return value === null || value === undefined ? '—' : '¥' + Number(value).toFixed(2);
+}
+
+function courierClass(name){
+  return name === '邮政' ? 'postal' : name === '圆通' ? 'yto' : 'zto';
+}
+
+function policyLabel(item){
+  if(item.policy === 'speed') return '<span class="policy speed">时效优先</span>';
+  if(item.policy === 'business') return '<span class="policy business">业务规则</span>';
+  return '<span class="policy price">价格优先</span>';
+}
+
+function weightLabel(weight){
+  return weight >= 1000 ? (weight / 1000).toFixed(weight % 1000 === 0 ? 0 : 2) + 'kg' : weight + 'g';
+}
+
+function renderNotice(){
+  const notice = document.getElementById('modeNotice');
+  if(state.mode === 1){
+    notice.innerHTML = '<strong>板块一规则</strong><span>不强制指定快递：三家先比较价格；价格相同时，已提供邮政时效的北京、上海、广州、深圳优先邮政。其他地区因未提供完整时效表，按最低价推荐。</span>';
+  }else{
+    notice.innerHTML = '<strong>板块二规则</strong><span>中通已完全排除。湖北、湖南、江西、安徽、河南、陕西、重庆优先邮政；北京、上海、深圳按邮政3天内，广州按邮政2天内；其他地区按圆通与邮政低价优先。</span>';
+  }
+}
+
+function renderKpis(provinceRows){
+  const counts = {'邮政':0,'圆通':0,'中通':0};
+  provinceRows.forEach(row => counts[row.courier]++);
+  const speedCount = provinceRows.filter(row => row.policy === 'speed').length;
+  const availableCount = provinceRows.length;
+  return `
+    <section class="section">
+      <div class="section-head"><div><h2>当前决策总览</h2><p>${weightLabel(state.weight)} · 统计省级地区，不含特殊城市子项</p></div></div>
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-label">覆盖地区</div><div class="kpi-value">${availableCount}</div><div class="kpi-sub">省级地区</div></div>
+        <div class="kpi"><div class="kpi-label">推荐邮政</div><div class="kpi-value postal-text">${counts['邮政']}</div><div class="kpi-sub">襄阳仓</div></div>
+        <div class="kpi"><div class="kpi-label">推荐圆通</div><div class="kpi-value yto-text">${counts['圆通']}</div><div class="kpi-sub">襄阳仓</div></div>
+        <div class="kpi"><div class="kpi-label">推荐中通</div><div class="kpi-value zto-text">${state.mode === 1 ? counts['中通'] : '—'}</div><div class="kpi-sub">${state.mode === 1 ? '广西云仓' : '本板块不参与'}</div></div>
+        <div class="kpi"><div class="kpi-label">时效优先</div><div class="kpi-value amber-text">${speedCount}</div><div class="kpi-sub">${state.mode === 2 ? '省级地区' : '待补全时效表'}</div></div>
+      </div>
+    </section>`;
+}
+
+function renderDecisionCards(provinceRows, allRows){
+  const couriers = state.mode === 1 ? ['中通','圆通','邮政'] : ['圆通','邮政'];
+  const provinceCourier = new Map(provinceRows.map(row => [row.province, row.courier]));
+  const cityExceptions = allRows.filter(row => row.isCity && row.courier !== provinceCourier.get(row.province));
+  const exceptionsByProvince = new Map();
+  cityExceptions.forEach(row => {
+    const items = exceptionsByProvince.get(row.province) || [];
+    items.push(row.city);
+    exceptionsByProvince.set(row.province, items);
+  });
+  const cards = couriers.map(courier => {
+    const items = provinceRows.filter(row => row.courier === courier);
+    const warehouse = courier === '中通' ? '广西云仓' : '襄阳仓';
+    const pills = items.map(item => {
+      const exclusions = exceptionsByProvince.get(item.province) || [];
+      const label = exclusions.length ? `${item.province}（${exclusions.join('+')}除外）` : item.province;
+      return `<span class="province-pill">${label}</span>`;
+    });
+    cityExceptions
+      .filter(row => row.courier === courier)
+      .forEach(row => pills.push(`<span class="province-pill exception">${row.city}-${row.province}</span>`));
+    return `
+      <article class="decision-card ${courierClass(courier)}">
+        <div class="decision-top">
+          <div><div class="courier">${courier}</div><div class="warehouse">${warehouse}</div></div>
+          <div class="count">${items.length}</div>
+        </div>
+        <div class="province-list">${pills.length ? pills.join('') : '<span class="empty">当前重量无推荐地区</span>'}</div>
+      </article>`;
+  }).join('');
+  const exceptionNote = cityExceptions.length ? '；不同于全省推荐的特殊城市已自动单列' : '';
+  return `
+    <section class="section">
+      <div class="section-head"><div><h2>全国快递分配</h2><p>按当前板块与重量生成；特殊城市规则以明细表为准${exceptionNote}</p></div></div>
+      <div class="decision-grid ${couriers.length === 2 ? 'two' : ''}">${cards}</div>
+    </section>`;
+}
+
+function provinceOptions(){
+  return allProvinces.map(p => `<option value="${p}" ${p === state.lookupProvince ? 'selected' : ''}>${p}</option>`).join('');
+}
+
+function cityOptions(province){
+  const options = getRelevantCities(province);
+  return '<option value="">全省默认</option>' + options.map(item => `<option value="${item.city}" ${item.city === state.lookupCity ? 'selected' : ''}>${item.city}</option>`).join('');
+}
+
+function renderSpotResult(){
+  const box = document.getElementById('spotResult');
+  if(!box) return;
+  const decision = makeDecision(state.lookupProvince, state.lookupCity, state.weight, state.mode);
+  if(!decision){
+    box.innerHTML = '<div class="empty">当前条件无可用快递。</div>';
+    return;
+  }
+  const names = state.mode === 1 ? ['邮政','圆通','中通'] : ['邮政','圆通'];
+  const compare = names.map(name => {
+    const isBest = decision.priceLeader === name;
+    const className = courierClass(name);
+    let note = isBest ? '价格最优' : '';
+    if(name === '邮政' && decision.sla) note = decision.sla;
+    if(name === '中通' && (decision.city === '广州' || decision.city === '深圳')) note = '含城市+0.50';
+    return `
+      <div class="price-box ${isBest ? 'best' : ''}" style="--accent:var(--${className})">
+        <div class="price-name">${name}</div>
+        <div class="price-number ${className}-text">${money(decision.prices[name])}</div>
+        <div class="price-note">${note || ' '}</div>
+      </div>`;
+  }).join('');
+  const extra = decision.extraCost > 0 ? `<span class="delta-cost">比最低价增加 ${money(decision.extraCost)}</span>` : '';
+  box.innerHTML = `
+    <div>
+      <div class="result-eyebrow">${decision.province}${decision.city ? ' · ' + decision.city : ''}｜${weightLabel(state.weight)}</div>
+      <div class="result-route">${decision.warehouse} → <span class="${courierClass(decision.courier)}-text">${decision.courier}</span></div>
+      <div class="result-price">${money(decision.price)}</div>
+      <div class="reason">${policyLabel(decision)}　${decision.reason}${extra}</div>
+    </div>
+    <div class="price-compare ${names.length === 2 ? 'two' : ''}">${compare}</div>`;
+}
+
+function renderSpotlight(){
+  const cityDisabled = !getRelevantCities(state.lookupProvince).length;
+  return `
+    <section class="section">
+      <div class="section-head"><div><h2>单地区快速决策</h2><p>选省份、特殊城市，立即查看仓库、快递与费用</p></div></div>
+      <div class="spotlight">
+        <div class="panel lookup">
+          <h3>查询条件</h3>
+          <div class="field"><label for="provinceSelect">省份</label><select class="select" id="provinceSelect">${provinceOptions()}</select></div>
+          <div class="field"><label for="citySelect">特殊城市 / 地区</label><select class="select" id="citySelect" ${cityDisabled ? 'disabled' : ''}>${cityOptions(state.lookupProvince)}</select></div>
+        </div>
+        <div class="panel spot-result" id="spotResult"></div>
+      </div>
+    </section>`;
+}
+
+function renderRules(){
+  const rules = state.mode === 1 ? [
+    ['三网参与','广西云仓中通、襄阳仓圆通、邮政'],
+    ['默认条件','不强制指定快递，三家可用时优先选择最低价'],
+    ['价格并列','北京、上海、广州、深圳按已知邮政时效优先'],
+    ['本地仓成本','圆通、邮政均在表价基础上加0.30元'],
+    ['中通备注加价','上海/海南+1元；北京3kg内+1元；广州/深圳+0.50元'],
+    ['圆通适用范围','图片未列新疆、西藏，两个地区按圆通不可用处理'],
+    ['时效口径','其他地区未提供完整三网时效表，按价格推荐']
+  ] : [
+    ['仅两网参与','襄阳仓圆通、邮政；中通不参与'],
+    ['本地仓成本','圆通、邮政均在表价基础上加0.30元'],
+    ['圆通适用范围','图片未列新疆、西藏，两个地区按圆通不可用处理'],
+    ['周边邮政优先','湖北、湖南、江西、安徽、河南、陕西、重庆'],
+    ['明确时效','北京/上海/深圳3天内；广州2天内'],
+    ['其他地区','圆通与邮政按当前价格低者推荐']
+  ];
+  return `
+    <section class="section panel rule-panel">
+      <h3>当前决策规则</h3>
+      <div class="rules">${rules.map(item => `<div class="rule"><b>${item[0]}</b><span>${item[1]}</span></div>`).join('')}</div>
+    </section>`;
+}
+
+function sortRows(rows){
+  const key = state.sortKey;
+  const direction = state.sortDirection;
+  return [...rows].sort((a,b) => {
+    let av, bv;
+    if(key === 'region'){av = a.province + a.city;bv = b.province + b.city}
+    else if(key === 'postal'){av = a.prices['邮政'] ?? Infinity;bv = b.prices['邮政'] ?? Infinity}
+    else if(key === 'yto'){av = a.prices['圆通'] ?? Infinity;bv = b.prices['圆通'] ?? Infinity}
+    else if(key === 'zto'){av = a.prices['中通'] ?? Infinity;bv = b.prices['中通'] ?? Infinity}
+    else if(key === 'recommend'){av = a.courier;bv = b.courier}
+    else if(key === 'price'){av = a.price ?? Infinity;bv = b.price ?? Infinity}
+    else {av = a.order;bv = b.order}
+    if(typeof av === 'number' && typeof bv === 'number') return (av - bv) * direction;
+    return String(av).localeCompare(String(bv),'zh-CN') * direction;
+  });
+}
+
+function renderTableBody(){
+  const tbody = document.getElementById('decisionTableBody');
+  if(!tbody) return;
+  let rows = getAllRows();
+  const keyword = state.tableFilter.trim().toLowerCase();
+  if(keyword){
+    rows = rows.filter(row => (row.province + row.city + row.zone + row.courier + row.warehouse + row.reason).toLowerCase().includes(keyword));
+  }
+  rows = sortRows(rows);
+  tbody.innerHTML = rows.map(row => {
+    const extra = row.extraCost > 0 ? `<span class="delta-cost">时效/规则成本 +${money(row.extraCost)}</span>` : '';
+    const timeText = row.sla ? '邮政' + row.sla : (HB_AROUND.has(row.province) && state.mode === 2 ? '周边邮政优先' : '—');
+    return `
+      <tr class="${row.isCity ? 'sub-row' : ''}">
+        <td>${row.isCity ? '↳ ' + row.city : row.province}<div class="muted" style="font-size:10px;margin-top:3px">${row.isCity ? row.province + ' · ' + (row.cityNote || '') : row.zone}</div></td>
+        <td><strong>${row.priceLeader}</strong></td>
+        <td class="money postal-text">${money(row.prices['邮政'])}</td>
+        <td class="money yto-text">${money(row.prices['圆通'])}</td>
+        ${state.mode === 1 ? `<td class="money zto-text">${money(row.prices['中通'])}</td>` : ''}
+        <td>${timeText}</td>
+        <td>${policyLabel(row)}</td>
+        <td><span class="recommend ${courierClass(row.courier)}-text"><span class="dot"></span>${row.courier}</span>${extra}</td>
+        <td>${row.warehouse}</td>
+        <td class="money"><strong>${money(row.price)}</strong></td>
+      </tr>`;
+  }).join('') || '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--muted)">没有匹配地区</td></tr>';
+}
+
+function sortMark(key){
+  return state.sortKey === key ? (state.sortDirection === 1 ? ' ↑' : ' ↓') : '';
+}
+
+function renderTable(){
+  const ztoHeader = state.mode === 1 ? `<th data-sort="zto">中通${sortMark('zto')}</th>` : '';
+  return `
+    <section class="section panel table-panel">
+      <div class="table-tools">
+        <div class="table-title">全国比价与决策明细<small>点击表头排序；金额单位：元</small></div>
+        <input class="search-input" id="tableSearch" value="${state.tableFilter}" placeholder="搜索省份、城市、快递或仓库" aria-label="搜索明细">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th data-sort="region">地区${sortMark('region')}</th>
+            <th>价格最优</th>
+            <th data-sort="postal" style="text-align:right">邮政${sortMark('postal')}</th>
+            <th data-sort="yto" style="text-align:right">圆通${sortMark('yto')}</th>
+            ${ztoHeader}
+            <th>已知时效</th>
+            <th>决策口径</th>
+            <th data-sort="recommend">最终推荐${sortMark('recommend')}</th>
+            <th>发货仓</th>
+            <th data-sort="price" style="text-align:right">执行价${sortMark('price')}</th>
+          </tr></thead>
+          <tbody id="decisionTableBody"></tbody>
+        </table>
+      </div>
+    </section>`;
+}
+
+function attachDynamicEvents(){
+  const provinceSelect = document.getElementById('provinceSelect');
+  const citySelect = document.getElementById('citySelect');
+  provinceSelect.addEventListener('change', event => {
+    state.lookupProvince = event.target.value;
+    state.lookupCity = '';
+    citySelect.innerHTML = cityOptions(state.lookupProvince);
+    citySelect.disabled = !getRelevantCities(state.lookupProvince).length;
+    renderSpotResult();
+  });
+  citySelect.addEventListener('change', event => {
+    state.lookupCity = event.target.value;
+    renderSpotResult();
+  });
+  document.getElementById('tableSearch').addEventListener('input', event => {
+    state.tableFilter = event.target.value;
+    renderTableBody();
+  });
+  document.querySelectorAll('th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.sort;
+      if(state.sortKey === key) state.sortDirection *= -1;
+      else {state.sortKey = key;state.sortDirection = 1}
+      renderDashboard();
+    });
+  });
+}
+
+function renderDashboard(){
+  const allRows = getAllRows();
+  const provinceRows = allRows.filter(row => !row.isCity);
+  document.getElementById('currentWeightLabel').textContent = weightLabel(state.weight);
+  renderNotice();
+  document.getElementById('dashboard').innerHTML =
+    renderKpis(provinceRows) +
+    renderDecisionCards(provinceRows, allRows) +
+    renderSpotlight() +
+    renderRules() +
+    renderTable();
+  attachDynamicEvents();
+  renderSpotResult();
+  renderTableBody();
+}
+
+document.getElementById('modeSwitch').addEventListener('click', event => {
+  const button = event.target.closest('[data-mode]');
+  if(!button) return;
+  state.mode = Number(button.dataset.mode);
+  if(!getRelevantCities(state.lookupProvince).some(item => item.city === state.lookupCity)){
+    state.lookupCity = '';
+  }
+  document.querySelectorAll('.mode-btn').forEach(item => item.classList.toggle('active', item === button));
+  state.sortKey = 'order';
+  state.sortDirection = 1;
+  renderDashboard();
+});
+
+document.getElementById('weightControls').addEventListener('click', event => {
+  const button = event.target.closest('[data-weight]');
+  if(!button) return;
+  state.weight = Number(button.dataset.weight);
+  document.querySelectorAll('.weight-chip').forEach(item => item.classList.toggle('active', item === button));
+  document.getElementById('customWeight').value = '';
+  renderDashboard();
+});
+
+function applyCustomWeight(){
+  const input = document.getElementById('customWeight');
+  const value = Number(input.value);
+  if(!Number.isFinite(value) || value < 1 || value > 5000){
+    input.setCustomValidity('请输入 1–5000 克');
+    input.reportValidity();
+    return;
+  }
+  input.setCustomValidity('');
+  state.weight = Math.round(value);
+  document.querySelectorAll('.weight-chip').forEach(item => item.classList.remove('active'));
+  renderDashboard();
+}
+document.getElementById('applyWeight').addEventListener('click', applyCustomWeight);
+document.getElementById('customWeight').addEventListener('keydown', event => {
+  if(event.key === 'Enter') applyCustomWeight();
+});
+
+function unlock(){
+  const input = document.getElementById('passwordInput');
+  if(input.value === ACCESS_PASSWORD){
+    sessionStorage.setItem('expressDashboardUnlocked','1');
+    document.getElementById('loginOverlay').classList.add('hidden');
+    document.getElementById('loginError').textContent = '';
+  }else{
+    document.getElementById('loginError').textContent = '密码错误，请重新输入';
+    input.select();
+  }
+}
+document.getElementById('loginButton').addEventListener('click', unlock);
+document.getElementById('passwordInput').addEventListener('keydown', event => {
+  if(event.key === 'Enter') unlock();
+});
+if(sessionStorage.getItem('expressDashboardUnlocked') === '1'){
+  document.getElementById('loginOverlay').classList.add('hidden');
 }else{
-    // 板块一：圆通vs邮政便宜者 + 业务规则
-    if(prov==='海南') return {wh:'襄阳仓',cour:'圆通',price:yvS,reason:'业务规则',wc:'#DD8452',bg:'#fff8f0'};
-    // 板块一：广州/深圳强制圆通
-    if(city==='广州'||city==='深圳'){if(!yvS) return {wh:'襄阳仓',cour:'邮政',price:pvS,reason:'圆通不支持',wc:'#4C72B0',bg:'#f0f4ff'};return {wh:'襄阳仓',cour:'圆通',price:yvS,reason:'城市业务规则',wc:'#DD8452',bg:'#fff8f0'};}
-    if(!yvS) return {wh:'襄阳仓',cour:'邮政',price:pvS,reason:'圆通不支持',wc:'#4C72B0',bg:'#f0f4ff'};
-    if(!pvS) return {wh:'襄阳仓',cour:'圆通',price:yvS,reason:'邮政不支持',wc:'#DD8452',bg:'#fff8f0'};
-    if(yvS<=pvS) return {wh:'襄阳仓',cour:'圆通',price:yvS,reason:'更便宜',wc:'#DD8452',bg:'#fff8f0'};
-    return {wh:'襄阳仓',cour:'邮政',price:pvS,reason:'更便宜',wc:'#4C72B0',bg:'#f0f4ff'};
-}
+  window.addEventListener('load', () => document.getElementById('passwordInput').focus());
 }
 
-// ====== 渲染 ======
-function showMatrix(){
-const w=currentWeight,mode=currentMode;
-const gx=[],yto=[],post=[];
-for(const p of allProvs){const d=decide(p,'',w,mode);if(!d)continue;if(d.wh==='广西云仓')gx.push(p);else if(d.cour==='圆通')yto.push(p);else post.push(p);}
-const excProvinces={'广东':['广州','深圳'],'四川':['阿坝州','甘孜州','凉山州'],'河北':['北戴河区']};
-const allExc=[];for(const[p,cs]of Object.entries(excProvinces))for(const c of cs)allExc.push(p+'-'+c);
-
-let html=`<div style="font-size:12px;color:#718096;text-align:center;margin-bottom:12px">${mode===1?'三网比价：中通最优→广西云仓，否则襄阳仓选优':'圆通vs邮政直比：中通最优→广西云仓，否则襄阳仓内选优 | 湖北周边邮政时效优先'}</div>`;
-html+='<div class="matrix">';
-if(gx.length){html+=`<div class="row gx"><div class="row-header"><span class="badge badge-gx">广西云仓</span><span class="courier-tag">📦 中通</span></div><div class="row-body">`;let items=[];for(const p of gx){if(excProvinces[p])items.push(`<span class="exc">${p}(排除${excProvinces[p].join('、')})</span>`);else items.push(p);}html+=items.join('、')+'</div>';const ng=allProvs.filter(p=>!gx.includes(p));html+=`<div class="not-send">少数不发：${[...ng,...allExc].join('、')}</div></div>`;}
-if(yto.length){html+=`<div class="row yto"><div class="row-header"><span class="badge badge-yto">襄阳仓</span><span class="courier-tag">📦 圆通</span></div><div class="row-body">${yto.join('、')}</div>`;const ny=allProvs.filter(p=>!yto.includes(p));if(ny.length<10)html+=`<div class="not-send">少数不发：${ny.join('、')}</div>`;html+=`</div>`;}
-if(post.length){html+=`<div class="row post"><div class="row-header"><span class="badge badge-post">襄阳仓</span><span class="courier-tag">📦 邮政</span></div><div class="row-body">${post.join('、')}</div>`;const np=allProvs.filter(p=>!post.includes(p));if(np.length<10)html+=`<div class="not-send">少数不发：${np.join('、')}</div>`;html+=`</div>`;}
-html+='</div>';
-
-// 明细表
-const S=0.3,zones=[['一区',['湖北']],['二区1',['湖南','江西','安徽','河南']],['二区2',['广东','陕西','山东','浙江','河北','山西','江苏','福建','重庆','上海']],['三区1',['贵州','天津','广西','四川','甘肃','宁夏']],['三区2',['云南','北京','内蒙古','海南']],['三区3',['辽宁']],['四区',['吉林','黑龙江']],['五区',['新疆','西藏','青海']]];
-html+=`<div style="background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 2px 6px rgba(0,0,0,.06);margin-bottom:16px"><div style="font-weight:700;font-size:14px;margin-bottom:10px;display:flex;justify-content:space-between"><span>📊 各省比价明细 · ${mode===1?'三网比价':'圆通vs邮政'}</span><span style="font-size:11px;font-weight:400;color:#a0aec0">含襄阳仓+0.3${mode===2?' · 湖北周边邮政时效优先':''}</span></div>`;
-html+=`<table style="width:100%;border-collapse:collapse;font-size:12.5px"><thead><tr style="background:#f7fafc"><th style="padding:7px 6px;text-align:left;border-bottom:2px solid #e2e8f0;width:27%">省份</th><th style="padding:7px 4px;text-align:center;border-bottom:2px solid #e2e8f0;width:12%;color:#4C72B0">邮政</th><th style="padding:7px 4px;text-align:center;border-bottom:2px solid #e2e8f0;width:12%;color:#DD8452">圆通</th><th style="padding:7px 4px;text-align:center;border-bottom:2px solid #e2e8f0;width:12%;color:#55A868">中通</th><th style="padding:7px 4px;text-align:center;border-bottom:2px solid #e2e8f0;width:15%">推荐</th><th style="padding:7px 6px;text-align:center;border-bottom:2px solid #e2e8f0;width:22%">仓库 → 到仓价</th></tr></thead><tbody>`;
-
-for(const [zn,zp] of zones){
-html+=`<tr><td colspan="6" style="padding:5px 8px;background:#f8fafc;font-size:11px;color:#718096;font-weight:600;border-bottom:1px solid #e2e8f0;letter-spacing:1px">${zn}</td></tr>`;
-for(const prov of zp){
-const d=decide(prov,'',w,mode);if(!d){html+=`<tr><td style="padding:5px 6px;font-weight:600">${prov}</td><td colspan="5" style="text-align:center;color:#cbd5e0">无可用</td></tr>`;continue;}
-const pv=postalP(prov,w),yv=ytoP2(prov,w),zv=ztoP(prov,'',w);
-const pvS=pv?+(pv+S).toFixed(2):null,yvS=yv?+(yv+S).toFixed(2):null;
-const wl=d.wh==='广西云仓'?d.wh:`${d.wh} <span style="font-size:10px;color:#a0aec0">+0.3</span>`;
-const tag=mode===2&&HB_AROUND.has(prov)?' <span style="font-size:10px;color:#4C72B0">●</span>':'';
-html+=`<tr style="${d.bg}"><td style="padding:5px 6px;border-bottom:1px solid #edf2f7;font-weight:600">${prov}${tag}</td>`;
-html+=`<td style="padding:5px 4px;text-align:center;border-bottom:1px solid #edf2f7;${d.cour==='邮政'?'font-weight:700;':''}color:${d.cour==='邮政'?'#4C72B0':'#718096'}">${pvS?'¥'+pvS:'-'}</td>`;
-html+=`<td style="padding:5px 4px;text-align:center;border-bottom:1px solid #edf2f7;${d.cour==='圆通'?'font-weight:700;':''}color:${d.cour==='圆通'?'#DD8452':'#718096'}">${yvS?'¥'+yvS:'-'}</td>`;
-html+=`<td style="padding:5px 4px;text-align:center;border-bottom:1px solid #edf2f7;${d.cour==='中通'?'font-weight:700;':''}color:${d.cour==='中通'?'#38a169':'#cbd5e0'}">${zv?'¥'+zv.toFixed(2):'-'}</td>`;
-html+=`<td style="padding:5px 4px;text-align:center;border-bottom:1px solid #edf2f7;font-weight:700;color:${d.wc}">${d.cour}</td>`;
-html+=`<td style="padding:5px 6px;text-align:center;border-bottom:1px solid #edf2f7;font-size:12px">${wl}<br><span style="font-weight:700;color:${d.wc}">¥${d.price}</span></td></tr>`;
-
-// 特殊城市
-function renderCity(prov,city,label){
-    const cd=decide(prov,city,w,mode);if(!cd)return;
-    const zvc=ztoP(prov,city,w),yvc=ytoP2(prov,w),pv2=postalP(prov,w);
-    const pv2S=pv2?+(pv2+S).toFixed(2):null,yv2S=yvc?+(yvc+S).toFixed(2):null;
-    const wl2=cd.wh==='广西云仓'?cd.wh:`襄阳仓 <span style="font-size:9px;color:#a0aec0">+0.3</span>`;
-    html+=`<tr style="background:${cd.bg}"><td style="padding:3px 6px 3px 20px;border-bottom:1px solid #e0e4f0;font-size:11px;color:#4C51bf"><span style="color:#e53e3e">•</span> ${city} <span style="color:#a0aec0;font-size:10px">${label}</span></td>`;
-    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;font-weight:${cd.cour==='邮政'?'700':'400'};color:${cd.cour==='邮政'?'#4C72B0':'#cbd5e0'}">${pv2S?'¥'+pv2S:'-'}</td>`;
-    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;font-weight:${cd.cour==='圆通'?'700':'400'};color:${cd.cour==='圆通'?'#DD8452':'#cbd5e0'}">${yv2S?'¥'+yv2S:'-'}</td>`;
-    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;text-decoration:${cd.cour==='中通'?'none':'line-through'};color:${cd.cour==='中通'?'#2d3748':'#cbd5e0'}">¥${zvc?zvc.toFixed(2):'-'}</td>`;
-    html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;font-weight:700;color:${cd.wc}">${cd.cour}</td>`;
-    html+=`<td style="padding:3px 6px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px">${wl2}<br><span style="font-weight:700;color:${cd.wc}">¥${cd.price}</span></td></tr>`;
-}
-if(prov==='广东'){renderCity('广东','广州','中通+0.5');renderCity('广东','深圳','中通+0.5');}
-if(prov==='四川'){renderCity('四川','阿坝州','中通特殊计价');renderCity('四川','甘孜州','中通特殊计价');renderCity('四川','凉山州','中通特殊计价');}
-if(prov==='河北'){renderCity('河北','北戴河区','中通+0.5');}
-}}
-html+=`</tbody></table></div>`;
-document.getElementById('result-area').innerHTML=html;
-}
-showMatrix();
+renderDashboard();
 </script>
 </body>
 </html>
