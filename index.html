@@ -130,6 +130,8 @@ if(mode===2){
 }else{
     // 板块一：圆通vs邮政便宜者 + 业务规则
     if(prov==='海南') return {wh:'襄阳仓',cour:'圆通',price:yvS,reason:'业务规则',wc:'#DD8452',bg:'#fff8f0'};
+    // 板块一：广州/深圳强制圆通
+    if(city==='广州'||city==='深圳'){if(!yvS) return {wh:'襄阳仓',cour:'邮政',price:pvS,reason:'圆通不支持',wc:'#4C72B0',bg:'#f0f4ff'};return {wh:'襄阳仓',cour:'圆通',price:yvS,reason:'城市业务规则',wc:'#DD8452',bg:'#fff8f0'};}
     if(!yvS) return {wh:'襄阳仓',cour:'邮政',price:pvS,reason:'圆通不支持',wc:'#4C72B0',bg:'#f0f4ff'};
     if(!pvS) return {wh:'襄阳仓',cour:'圆通',price:yvS,reason:'邮政不支持',wc:'#DD8452',bg:'#fff8f0'};
     if(yvS<=pvS) return {wh:'襄阳仓',cour:'圆通',price:yvS,reason:'更便宜',wc:'#DD8452',bg:'#fff8f0'};
@@ -173,12 +175,12 @@ html+=`<td style="padding:5px 4px;text-align:center;border-bottom:1px solid #edf
 html+=`<td style="padding:5px 6px;text-align:center;border-bottom:1px solid #edf2f7;font-size:12px">${wl}<br><span style="font-weight:700;color:${d.wc}">¥${d.price}</span></td></tr>`;
 
 // 特殊城市
-function renderCity(prov,city,label,extra){
+function renderCity(prov,city,label){
     const cd=decide(prov,city,w,mode);if(!cd)return;
     const zvc=ztoP(prov,city,w),yvc=ytoP2(prov,w),pv2=postalP(prov,w);
     const pv2S=pv2?+(pv2+S).toFixed(2):null,yv2S=yvc?+(yvc+S).toFixed(2):null;
     const wl2=cd.wh==='广西云仓'?cd.wh:`襄阳仓 <span style="font-size:9px;color:#a0aec0">+0.3</span>`;
-    html+=`<tr style="background:${cd.bg}"><td style="padding:3px 6px 3px 20px;border-bottom:1px solid #e0e4f0;font-size:11px;color:#4C51bf"><span style="color:#e53e3e">•</span> ${city} <span style="color:#a0aec0;font-size:10px">${extra}</span></td>`;
+    html+=`<tr style="background:${cd.bg}"><td style="padding:3px 6px 3px 20px;border-bottom:1px solid #e0e4f0;font-size:11px;color:#4C51bf"><span style="color:#e53e3e">•</span> ${city} <span style="color:#a0aec0;font-size:10px">${label}</span></td>`;
     html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;font-weight:${cd.cour==='邮政'?'700':'400'};color:${cd.cour==='邮政'?'#4C72B0':'#cbd5e0'}">${pv2S?'¥'+pv2S:'-'}</td>`;
     html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;font-weight:${cd.cour==='圆通'?'700':'400'};color:${cd.cour==='圆通'?'#DD8452':'#cbd5e0'}">${yv2S?'¥'+yv2S:'-'}</td>`;
     html+=`<td style="padding:3px 4px;text-align:center;border-bottom:1px solid #e0e4f0;font-size:11px;text-decoration:${cd.cour==='中通'?'none':'line-through'};color:${cd.cour==='中通'?'#2d3748':'#cbd5e0'}">¥${zvc?zvc.toFixed(2):'-'}</td>`;
