@@ -13,7 +13,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html{color-scheme:light}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);padding:18px;min-height:100vh}
-body.auth-locked{overflow:hidden}body:not(.unlocked) .dashboard{visibility:hidden}
+
 .dashboard{max-width:1760px;margin:0 auto}
 .header{background:linear-gradient(135deg,#ffffff 0%,#f8fbff 72%,#eef6ff 100%);border:1px solid #dce6f2;padding:22px 26px;border-radius:16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 10px 30px rgba(15,23,42,.07)}
 .header h1{font-size:24px;font-weight:750;letter-spacing:.5px;color:#14213a}.header .subtitle{font-size:13px;color:#64748b;margin-top:7px}.header .info{text-align:right;font-size:12px;color:#64748b;line-height:1.8;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
@@ -154,17 +154,7 @@ button:focus-visible,input:focus-visible,summary:focus-visible,label:focus-withi
 @keyframes live-pulse{0%{box-shadow:0 0 0 0 rgba(67,160,71,0.6)}70%{box-shadow:0 0 0 8px rgba(67,160,71,0)}100%{box-shadow:0 0 0 0 rgba(67,160,71,0)}}
 </style>
 </head>
-<body class="auth-locked">
-<div class="auth-gate" id="authGate">
-  <form class="auth-card" id="authForm">
-    <div class="auth-icon">🔐</div>
-    <h2>主体财务看板</h2>
-    <p>该页面包含主体收支与店铺绑定信息，输入访问密码后查看。</p>
-    <input type="password" id="passwordInput" autocomplete="current-password" placeholder="输入访问密码" aria-label="访问密码">
-    <button type="submit">进入看板</button>
-    <div class="auth-error" id="authError" aria-live="polite"></div>
-  </form>
-</div>
+<body>
 <div class="login-overlay" id="loginOverlay">
   <div class="login-card" id="loginCard">
     <div class="lock-icon">🔐</div>
@@ -331,36 +321,6 @@ function updateLiveClock() {
 }
 updateLiveClock();
 setInterval(updateLiveClock, 1000);
-
-function unlockDashboard() {
-    document.body.classList.remove('auth-locked');
-    document.body.classList.add('unlocked');
-    document.getElementById('authGate').style.display = 'none';
-}
-function readAuthToken() {
-    try { return sessionStorage.getItem('mq-finance-auth') || ''; } catch (e) { return ''; }
-}
-function saveAuthToken() {
-    try { sessionStorage.setItem('mq-finance-auth', PASSWORD_TOKEN); } catch (e) {}
-}
-if (readAuthToken() === PASSWORD_TOKEN) {
-    unlockDashboard();
-} else {
-    setTimeout(function(){ document.getElementById('passwordInput').focus(); }, 80);
-}
-document.getElementById('authForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const input = document.getElementById('passwordInput');
-    const error = document.getElementById('authError');
-    if (btoa(input.value.trim()) === PASSWORD_TOKEN) {
-        saveAuthToken();
-        error.textContent = '';
-        unlockDashboard();
-    } else {
-        error.textContent = '密码错误，无法进入看板。';
-        input.select();
-    }
-});
 
 function hasAnyData(d){return ['totalSales','promo','tech','ware','goods','other','totalExp','invoice'].some(function(k){return Math.abs(Number(d[k])||0)>0})}
 function getActiveData(){var q=filters.quarter;var m=filters.month;var data=m!=='all'?(QDATA[m]||[]):q!=='all'?(QDATA[q]||[]):(QDATA.full||[]);return data.filter(hasAnyData)}
