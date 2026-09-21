@@ -62,6 +62,9 @@ tfoot td{font-weight:700;color:#101828;border-top:1.5px solid #e4e7ec;background
 .pri.lo{background:#ecfdf3;color:#027a48}
 .stit{font-size:13.5px;font-weight:600;color:#101828;margin-bottom:3px}
 .stxt{font-size:12.5px;line-height:1.75;color:#475467}
+.lockbtn{margin-left:8px;padding:4px 12px;border:1px solid #e4e7ec;background:#fff;border-radius:999px;
+         font-size:12px;color:#475467;font-family:inherit;cursor:pointer;transition:.15s}
+.lockbtn:hover{background:#fef3f2;border-color:#fda29b;color:#b42318}
 .hint{font-size:11.5px;color:#98a2b3;margin:2px 0 6px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:13px}
 .prod{background:#fff;border:1px solid #e9edf3;border-radius:12px;padding:14px 15px;
@@ -83,10 +86,51 @@ tfoot td{font-weight:700;color:#101828;border-top:1.5px solid #e4e7ec;background
 footer{margin-top:28px;padding-top:15px;border-top:1px solid #e9edf3;color:#98a2b3;font-size:11.5px;line-height:1.8}
 @media(max-width:560px){body{padding:16px 12px 48px}.heroVal{font-size:36px}.card{padding:15px 14px}}
 
-</style></head><body><div class="wrap">
+</style></head><body>
+<style>.gate{position:fixed;inset:0;z-index:9999;background:#f4f6f9;display:flex;align-items:center;justify-content:center;padding:20px}.gateCard{background:#fff;border:1px solid #e9edf3;border-radius:16px;padding:34px 30px;max-width:340px;width:100%;text-align:center;box-shadow:0 12px 32px rgba(16,24,40,.10)}.gateCard h2{font-size:16px;margin:0 0 6px;color:#101828;font-weight:600}.gateCard .tip{font-size:12.5px;color:#667085;margin:0 0 18px}.gateCard input{width:100%;height:40px;border:1px solid #d0d5dd;border-radius:9px;padding:0 12px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box}.gateCard input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}.gateCard button{width:100%;height:40px;margin-top:12px;border:0;border-radius:9px;background:#2563eb;color:#fff;font-size:14px;font-family:inherit;cursor:pointer}.gateCard button:hover{background:#1d4ed8}.gateErr{display:none;color:#b42318;font-size:12.5px;margin-top:10px}</style><div class="gate" id="pddGate"><div class="gateCard"><div style="font-size:26px;line-height:1.4">🔐</div><h2>护发造型 · 评价星级日采集</h2><p class="tip">请输入访问密码</p><input type="password" id="pddPw" autocomplete="off" placeholder="输入密码" onkeydown="if(event.key==='Enter')window.pddCheck()"><button onclick="window.pddCheck()">验证进入</button><div class="gateErr" id="pddErr">❌ 密码错误，请重试</div></div></div><script>
+(function(){
+  var SHA = ["06175d60443c365b87446c9df72962a524328c2c0ebbec5cbcb6f17979712c41", "8aed642bf5118b9d3c859bd4be35ecac75b6e873cce34e7b6f554b06f75550d7"], B64 = ["MC4wLg==", "MC4w"], KEY = 'pddStarsOK';
+  var g = document.getElementById('pddGate');
+  function open(){ try{ localStorage.setItem(KEY,'1'); }catch(e){}
+                   if(g) g.style.display='none'; }
+  function hexOf(pw){
+    if (window.crypto && crypto.subtle && window.TextEncoder)
+      return crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw)).then(function(b){
+        return Array.prototype.map.call(new Uint8Array(b), function(x){
+          return ('0'+x.toString(16)).slice(-2); }).join('');
+      });
+    return null;                 // 极老环境没有 crypto.subtle
+  }
+  // ⚠️ 两个函数必须**先定义**：自动登录时若提前 return，退出按钮就成了死键
+  window.pddCheck = function(){
+    var inp = document.getElementById('pddPw'), err = document.getElementById('pddErr');
+    var pw = (inp && inp.value) || '';
+    var p = hexOf(pw);
+    if (!p){                     // 回退：base64（和主体财务看板同款）
+      var hit = false;
+      try { hit = B64.indexOf(btoa(unescape(encodeURIComponent(pw)))) >= 0; } catch(e){}
+      if (hit) { open(); } else if (err) { err.style.display = 'block'; }
+      return;
+    }
+    p.then(function(h){
+      if (SHA.indexOf(h) >= 0) { open(); }
+      else if (err) { err.style.display = 'block'; }
+    });
+  };
+  window.pddLogout = function(){
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    location.reload();
+  };
+  var logged = false;
+  try{ logged = localStorage.getItem(KEY) === '1'; }catch(e){}
+  if (logged) { open(); }
+  else { var i = document.getElementById('pddPw'); if (i) { i.focus(); } }
+})();
+</script>
+<div class="wrap">
 <h1>护发造型-.评价星级日采集 <span class="sub">近90天</span></h1>
 <div class="sub">蒙倩护发造型官方旗舰店　|　口径：<b>未包含默认评价</b>　|　最后采集 2026-09-21 10:53</div>
-<div><span class="tag">⭐ 每日自动采集</span><span class="tag">累计 1 天</span><span class="tag">全店 + 4 个商品</span></div>
+<div><span class="tag">⭐ 每日自动采集</span><span class="tag">累计 1 天</span><span class="tag">全店 + 4 个商品</span><button class="lockbtn" onclick="window.pddLogout()">🔒 退出登录</button></div>
 <section><div class="hero">
 <div class="heroTop"><div><div class="heroLab">全店 · 近90天 自算均分（DSR）</div><div class="heroVal">4.5907</div></div><div class="heroMeta">环比昨日 <span class="mut">首次采集，无环比</span><br>采集于 2026-09-21 10:53</div></div>
 <div class="empty" style="padding:24px 0">DSR 趋势需要累计 ≥2 天数据 —— 现在只有 1 天，明天 14:00 采完就会出现折线图。</div>
@@ -252,5 +296,5 @@ dsrDraw();
 </tbody></table></div>
 </div></section>
 <section><div class="warnbox">⚠️ <b>口径提醒</b><br>① 条数是「<b>未包含默认评价</b>」——买家没写内容/系统默认的那部分不算，总数远小于店铺实际评价量，<b>不能当评价总量用</b>。<br>② DSR 是<b>自算口径</b>（Σ星级×条数 ÷ 条数），跟平台显示的评分不是同一个数（平台会剔「不真实」评价）——<b>只能看趋势，不能当平台分报出去</b>。<br>③ 「近90天」是<b>滚动窗口</b>，每天往前滑一天：变化 = 新增评价 − 滑出窗口的旧评价，不完全是当天新增。</div></section>
-<footer>数据源：拼多多商家后台「评价管理」，每天 14:00 自动采集（本机 Chrome）<br>采集范围：全店 + 4 个固定商品ID　|　每次 25 次筛选查询　|　生成：Hermes · 2026-09-21 11:05</footer>
+<footer>数据源：拼多多商家后台「评价管理」，每天 14:00 自动采集（本机 Chrome）<br>采集范围：全店 + 4 个固定商品ID　|　每次 25 次筛选查询　|　生成：Hermes · 2026-09-21 11:33</footer>
 </div></body></html>
