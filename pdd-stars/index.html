@@ -66,6 +66,13 @@ tfoot td{font-weight:700;color:#101828;border-top:1.5px solid #e4e7ec;background
          font-size:12px;color:#475467;font-family:inherit;cursor:pointer;transition:.15s}
 .lockbtn:hover{background:#fef3f2;border-color:#fda29b;color:#b42318}
 .tag.warn{background:#fef3f2;border-color:#fda29b;color:#b42318;font-weight:600}
+.chartTip{position:fixed;z-index:9998;pointer-events:none;display:none;
+          background:#101828;color:#fff;font-size:12px;line-height:1.65;padding:7px 11px;
+          border-radius:8px;box-shadow:0 6px 18px rgba(16,24,40,.24);max-width:280px;
+          font-variant-numeric:tabular-nums}
+.chartTip b{font-weight:700}
+.tipdot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
+.chart svg,.chart{cursor:crosshair}
 .hint{font-size:11.5px;color:#98a2b3;margin:2px 0 6px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:13px}
 .prod{background:#fff;border:1px solid #e9edf3;border-radius:12px;padding:14px 15px;
@@ -136,8 +143,8 @@ footer{margin-top:28px;padding-top:15px;border-top:1px solid #e9edf3;color:#98a2
 <div><span class="tag">⭐ 每日自动采集</span><span class="tag">累计 8 天</span><span class="tag">全店 + 4 个商品</span><button class="lockbtn" onclick="window.pddLogout()">🔒 退出登录</button></div>
 <section><div class="hero">
 <div class="heroTop"><div><div class="heroLab">全店 · 近90天 自算均分（DSR）</div><div class="heroVal">4.5907</div></div><div class="heroMeta">环比昨日 <span class="up">+0.0023</span><br>采集于 2026-09-21 10:53</div></div>
-<svg viewBox="0 0 720 200" class="chart"><line x1="50" y1="168.0" x2="698" y2="168.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="171.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.554</text><line x1="50" y1="131.0" x2="698" y2="131.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="134.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.571</text><line x1="50" y1="94.0" x2="698" y2="94.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="97.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.588</text><line x1="50" y1="57.0" x2="698" y2="57.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="60.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.606</text><line x1="50" y1="20.0" x2="698" y2="20.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="23.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.623</text><text x="50.0" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/14</text><text x="142.6" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/15</text><text x="235.1" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/16</text><text x="327.7" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/17</text><text x="420.3" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/18</text><text x="512.9" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/19</text><text x="605.4" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/20</text><text x="698.0" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/21</text><polyline points="50.0,96.1 142.6,104.2 235.1,96.4 327.7,83.8 420.3,95.7 512.9,92.9 605.4,93.9 698.0,89.1 698.0,168.0 50.0,168.0" fill="rgba(37,99,235,.08)" stroke="none"/><polyline points="50.0,96.1 142.6,104.2 235.1,96.4 327.7,83.8 420.3,95.7 512.9,92.9 605.4,93.9 698.0,89.1" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-linejoin="round"/><circle cx="50.0" cy="96.1" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="142.6" cy="104.2" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="235.1" cy="96.4" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="327.7" cy="83.8" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="420.3" cy="95.7" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="512.9" cy="92.9" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="605.4" cy="93.9" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="698.0" cy="89.1" r="5" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><text x="698.0" y="77.1" fill="#2563eb" font-size="12.5" font-weight="700" text-anchor="middle">4.5907</text></svg>
-<div class="note" style="margin-top:4px">「近90天」是滚动窗口，每天往前滑一天：变化 = 新增评价 − 滑出窗口的旧评价。</div>
+<svg viewBox="0 0 720 200" class="chart"><line x1="50" y1="168.0" x2="698" y2="168.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="171.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.554</text><line x1="50" y1="131.0" x2="698" y2="131.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="134.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.571</text><line x1="50" y1="94.0" x2="698" y2="94.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="97.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.588</text><line x1="50" y1="57.0" x2="698" y2="57.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="60.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.606</text><line x1="50" y1="20.0" x2="698" y2="20.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="23.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.623</text><text x="50.0" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/14</text><text x="142.6" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/15</text><text x="235.1" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/16</text><text x="327.7" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/17</text><text x="420.3" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/18</text><text x="512.9" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/19</text><text x="605.4" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/20</text><text x="698.0" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/21</text><polyline points="50.0,96.1 142.6,104.2 235.1,96.4 327.7,83.8 420.3,95.7 512.9,92.9 605.4,93.9 698.0,89.1 698.0,168.0 50.0,168.0" fill="rgba(37,99,235,.08)" stroke="none"/><polyline points="50.0,96.1 142.6,104.2 235.1,96.4 327.7,83.8 420.3,95.7 512.9,92.9 605.4,93.9 698.0,89.1" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-linejoin="round"/><circle cx="50.0" cy="96.1" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="50.0" cy="96.1" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/14<br>自算均分 <b>4.5873</b><br>332 条')" onmouseout="chartTipHide()"/><circle cx="142.6" cy="104.2" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="142.6" cy="104.2" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/15<br>自算均分 <b>4.5836</b><br>341 条')" onmouseout="chartTipHide()"/><circle cx="235.1" cy="96.4" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="235.1" cy="96.4" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/16<br>自算均分 <b>4.5872</b><br>344 条')" onmouseout="chartTipHide()"/><circle cx="327.7" cy="83.8" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="327.7" cy="83.8" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/17<br>自算均分 <b>4.5931</b><br>349 条')" onmouseout="chartTipHide()"/><circle cx="420.3" cy="95.7" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="420.3" cy="95.7" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/18<br>自算均分 <b>4.5876</b><br>354 条')" onmouseout="chartTipHide()"/><circle cx="512.9" cy="92.9" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="512.9" cy="92.9" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/19<br>自算均分 <b>4.5889</b><br>360 条')" onmouseout="chartTipHide()"/><circle cx="605.4" cy="93.9" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="605.4" cy="93.9" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/20<br>自算均分 <b>4.5884</b><br>362 条')" onmouseout="chartTipHide()"/><circle cx="698.0" cy="89.1" r="5" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><text x="698.0" y="77.1" fill="#2563eb" font-size="12.5" font-weight="700" text-anchor="middle">4.5907</text><circle cx="698.0" cy="89.1" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/21<br>自算均分 <b>4.5907</b><br>364 条')" onmouseout="chartTipHide()"/></svg>
+<div class="note" style="margin-top:4px">「近90天」是滚动窗口，每天往前滑一天：变化 = 新增评价 − 滑出窗口的旧评价。　<b>鼠标放到节点上可看当天数据</b>。</div>
 </div></section>
 <section><h2>💡 优化建议 <span class="cnt">按本期数据每天自动重算</span></h2>
 <div class="card">
@@ -162,6 +169,24 @@ footer{margin-top:28px;padding-top:15px;border-top:1px solid #e9edf3;color:#98a2
 <svg viewBox="0 0 760 240" class="chart"><line x1="52" y1="208.0" x2="740" y2="208.0" stroke="#eef1f6" stroke-width="1"/><text x="45" y="211.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.235</text><line x1="52" y1="160.5" x2="740" y2="160.5" stroke="#eef1f6" stroke-width="1"/><text x="45" y="164.1" fill="#98a2b3" font-size="10.5" text-anchor="end">4.414</text><line x1="52" y1="113.0" x2="740" y2="113.0" stroke="#eef1f6" stroke-width="1"/><text x="45" y="116.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.593</text><line x1="52" y1="65.5" x2="740" y2="65.5" stroke="#eef1f6" stroke-width="1"/><text x="45" y="69.1" fill="#98a2b3" font-size="10.5" text-anchor="end">4.771</text><line x1="52" y1="18.0" x2="740" y2="18.0" stroke="#eef1f6" stroke-width="1"/><text x="45" y="21.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.950</text><text x="52.0" y="232" fill="#98a2b3" font-size="10" text-anchor="middle">09/14</text><text x="150.3" y="232" fill="#98a2b3" font-size="10" text-anchor="middle">09/15</text><text x="248.6" y="232" fill="#98a2b3" font-size="10" text-anchor="middle">09/16</text><text x="346.9" y="232" fill="#98a2b3" font-size="10" text-anchor="middle">09/17</text><text x="445.1" y="232" fill="#98a2b3" font-size="10" text-anchor="middle">09/18</text><text x="543.4" y="232" fill="#98a2b3" font-size="10" text-anchor="middle">09/19</text><text x="641.7" y="232" fill="#98a2b3" font-size="10" text-anchor="middle">09/20</text><text x="740.0" y="232" fill="#98a2b3" font-size="10" text-anchor="middle">09/21</text><polyline points="52.0,114.4 150.3,115.4 248.6,114.4 346.9,112.8 445.1,114.3 543.4,114.0 641.7,114.1 740.0,113.5" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-linejoin="round" opacity=".95"/><circle cx="740.0" cy="113.5" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2"/><polyline points="52.0,173.9 150.3,164.2 248.6,149.7 346.9,130.6 445.1,124.3 543.4,128.3 641.7,131.6 740.0,126.1" fill="none" stroke="#7c3aed" stroke-width="1.9" stroke-linejoin="round" opacity=".95"/><circle cx="740.0" cy="126.1" r="3.4" fill="#fff" stroke="#7c3aed" stroke-width="2"/><polyline points="52.0,66.0 150.3,66.0 248.6,66.0 346.9,66.0 445.1,63.7 543.4,63.7 641.7,63.7 740.0,63.7" fill="none" stroke="#db2777" stroke-width="1.9" stroke-linejoin="round" opacity=".95"/><circle cx="740.0" cy="63.7" r="3.4" fill="#fff" stroke="#db2777" stroke-width="2"/><polyline points="52.0,93.3 150.3,101.3 248.6,101.3 346.9,101.3 445.1,101.3 543.4,97.1 641.7,93.3 740.0,93.3" fill="none" stroke="#ea580c" stroke-width="1.9" stroke-linejoin="round" opacity=".95"/><circle cx="740.0" cy="93.3" r="3.4" fill="#fff" stroke="#ea580c" stroke-width="2"/><polyline points="52.0,52.1 150.3,52.1 248.6,52.1 346.9,52.1 445.1,87.2 543.4,81.8 641.7,81.8 740.0,81.8" fill="none" stroke="#a16207" stroke-width="1.9" stroke-linejoin="round" opacity=".95"/><circle cx="740.0" cy="81.8" r="3.4" fill="#fff" stroke="#a16207" stroke-width="2"/></svg>
 </div>
 <script>const DSR={"labels": ["09/14", "09/15", "09/16", "09/17", "09/18", "09/19", "09/20", "09/21"], "series": [{"n": "全店", "c": "#2563eb", "v": [4.587349397590361, 4.583577712609971, 4.587209302325581, 4.593123209169055, 4.5875706214689265, 4.588888888888889, 4.588397790055248, 4.59065934065934]}, {"n": "996720881635", "c": "#7c3aed", "v": [4.363636363636363, 4.4, 4.454545454545454, 4.526315789473684, 4.55, 4.534883720930233, 4.5227272727272725, 4.543478260869565]}, {"n": "986699476724", "c": "#db2777", "v": [4.769230769230769, 4.769230769230769, 4.769230769230769, 4.769230769230769, 4.777777777777778, 4.777777777777778, 4.777777777777778, 4.777777777777778]}, {"n": "990050371446", "c": "#ea580c", "v": [4.666666666666667, 4.636363636363637, 4.636363636363637, 4.636363636363637, 4.636363636363637, 4.6521739130434785, 4.666666666666667, 4.666666666666667]}, {"n": "987379312736", "c": "#a16207", "v": [4.821428571428571, 4.821428571428571, 4.821428571428571, 4.821428571428571, 4.689655172413793, 4.709677419354839, 4.709677419354839, 4.709677419354839]}]};
+
+/* ---- 图表悬停提示：鼠标放到节点/日期上显示当天数据 ---- */
+window.chartTip = function(ev, html){
+  var t = document.getElementById('chartTip');
+  if (!t){ t = document.createElement('div'); t.id = 'chartTip'; t.className = 'chartTip';
+           document.body.appendChild(t); }
+  t.innerHTML = html;
+  t.style.display = 'block';
+  var w = t.offsetWidth, h = t.offsetHeight;
+  var x = ev.clientX + 14, y = ev.clientY - h - 14;
+  if (x + w > window.innerWidth - 10) { x = ev.clientX - w - 14; }
+  if (y < 10) { y = ev.clientY + 18; }
+  t.style.left = x + 'px'; t.style.top = y + 'px';
+};
+window.chartTipHide = function(){
+  var t = document.getElementById('chartTip');
+  if (t) { t.style.display = 'none'; }
+};
 
 var dsrVis = new Set(DSR.series.map(function(s){return s.n;}));
 function dsrDraw(){
@@ -201,6 +226,20 @@ function dsrDraw(){
       }
     }
   });
+  // 悬停：每个日期一条透明竖带 → 显示当天各可见序列的数据
+  for (var q = 0; q < N; q++) {
+    var tip = '<b>' + DSR.labels[q] + '</b>';
+    show.forEach(function(s){
+      if (s.v[q] != null) {
+        tip += '<br><span class=tipdot style=background:' + s.c + '></span>' + s.n +
+               ' <b>' + s.v[q].toFixed(4) + '</b>';
+      }
+    });
+    var bw = N > 1 ? (W - pl - pr) / (N - 1) : 60;
+    g += '<rect x="' + (X(q) - bw/2).toFixed(1) + '" y="' + pt + '" width="' + bw.toFixed(1) +
+         '" height="' + (H - pt - pb) + '" fill="transparent" style=cursor:crosshair ' +
+         'onmouseover="chartTip(event,' + "'" + tip + "'" + ')" onmouseout="chartTipHide()"/>';
+  }
   box.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" class="chart">'+g+'</svg>';
   document.querySelectorAll('#dsrLegend .chip').forEach(function(c){
     var n=c.getAttribute('data-n');
@@ -350,5 +389,5 @@ dsrDraw();
 </tbody></table></div>
 </div></section>
 <section><div class="warnbox">⚠️ <b>口径提醒</b><br>① 条数是「<b>未包含默认评价</b>」——买家没写内容/系统默认的那部分不算，总数远小于店铺实际评价量，<b>不能当评价总量用</b>。<br>② DSR 是<b>自算口径</b>（Σ星级×条数 ÷ 条数），跟平台显示的评分不是同一个数（平台会剔「不真实」评价）——<b>只能看趋势，不能当平台分报出去</b>。<br>③ 「近90天」是<b>滚动窗口</b>，每天往前滑一天：变化 = 新增评价 − 滑出窗口的旧评价，不完全是当天新增。</div></section>
-<footer>数据源：拼多多商家后台「评价管理」，每天 14:00 自动采集（本机 Chrome）<br>采集范围：全店 + 4 个固定商品ID　|　每次 25 次筛选查询　|　生成：Hermes · 2026-09-21 12:17</footer>
+<footer>数据源：拼多多商家后台「评价管理」，每天 14:00 自动采集（本机 Chrome）<br>采集范围：全店 + 4 个固定商品ID　|　每次 25 次筛选查询　|　生成：Hermes · 2026-09-21 12:23</footer>
 </div></body></html>
