@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>护发造型-.评价星级日采集</title><style>
+<title>护发造型-.维度指标日采集</title><style>
 
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#f4f6f9;color:#1d2939;font-family:"Microsoft YaHei","PingFang SC",system-ui,-apple-system,sans-serif;
@@ -91,11 +91,28 @@ tfoot td{font-weight:700;color:#101828;border-top:1.5px solid #e4e7ec;background
 .warnbox{background:#fffaeb;border:1px solid #fdeccd;border-radius:12px;padding:13px 16px;
          color:#7a520f;font-size:12.5px;line-height:1.75}
 .warnbox b{color:#66400a}
+.mtgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:12px}
+.mtcard{background:#fff;border:1px solid #e9edf3;border-radius:12px;padding:13px 14px;
+        box-shadow:0 1px 3px rgba(16,24,40,.04)}
+.mtcard.bad{border-color:#fecdca;background:#fffbfa}
+.mtname{font-size:12.5px;color:#475467;line-height:1.45;min-height:34px}
+.mtval{font-size:24px;font-weight:700;color:#101828;letter-spacing:-.6px;margin:2px 0 3px;
+       font-variant-numeric:tabular-nums}
+.mtcard.bad .mtval{color:#b42318}
+.mtstd{font-size:11px;color:#98a2b3;line-height:1.6}
+.mtpill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:10px;margin-right:6px;
+        font-weight:600}
+.mtpill.ok{background:#e8f7ee;color:#087443}
+.mtpill.bad{background:#fee4e2;color:#b42318}
+.mtspark{margin-top:7px}
+.mtdelta{font-size:11px;margin-left:6px;font-variant-numeric:tabular-nums}
+.mtdelta.up{color:#b42318}
+.mtdelta.dn{color:#087443}
 footer{margin-top:28px;padding-top:15px;border-top:1px solid #e9edf3;color:#98a2b3;font-size:11.5px;line-height:1.8}
 @media(max-width:560px){body{padding:16px 12px 48px}.heroVal{font-size:36px}.card{padding:15px 14px}}
 
 </style></head><body>
-<style>.gate{position:fixed;inset:0;z-index:9999;background:#f4f6f9;display:flex;align-items:center;justify-content:center;padding:20px}.gateCard{background:#fff;border:1px solid #e9edf3;border-radius:16px;padding:34px 30px;max-width:340px;width:100%;text-align:center;box-shadow:0 12px 32px rgba(16,24,40,.10)}.gateCard h2{font-size:16px;margin:0 0 6px;color:#101828;font-weight:600}.gateCard .tip{font-size:12.5px;color:#667085;margin:0 0 18px}.gateCard input{width:100%;height:40px;border:1px solid #d0d5dd;border-radius:9px;padding:0 12px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box}.gateCard input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}.gateCard button{width:100%;height:40px;margin-top:12px;border:0;border-radius:9px;background:#2563eb;color:#fff;font-size:14px;font-family:inherit;cursor:pointer}.gateCard button:hover{background:#1d4ed8}.gateErr{display:none;color:#b42318;font-size:12.5px;margin-top:10px}</style><div class="gate" id="pddGate"><div class="gateCard"><div style="font-size:26px;line-height:1.4">🔐</div><h2>护发造型 · 评价星级日采集</h2><p class="tip">请输入访问密码</p><input type="password" id="pddPw" autocomplete="off" placeholder="输入密码" onkeydown="if(event.key==='Enter')window.pddCheck()"><button onclick="window.pddCheck()">验证进入</button><div class="gateErr" id="pddErr">❌ 密码错误，请重试</div></div></div><script>
+<style>.gate{position:fixed;inset:0;z-index:9999;background:#f4f6f9;display:flex;align-items:center;justify-content:center;padding:20px}.gateCard{background:#fff;border:1px solid #e9edf3;border-radius:16px;padding:34px 30px;max-width:340px;width:100%;text-align:center;box-shadow:0 12px 32px rgba(16,24,40,.10)}.gateCard h2{font-size:16px;margin:0 0 6px;color:#101828;font-weight:600}.gateCard .tip{font-size:12.5px;color:#667085;margin:0 0 18px}.gateCard input{width:100%;height:40px;border:1px solid #d0d5dd;border-radius:9px;padding:0 12px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box}.gateCard input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}.gateCard button{width:100%;height:40px;margin-top:12px;border:0;border-radius:9px;background:#2563eb;color:#fff;font-size:14px;font-family:inherit;cursor:pointer}.gateCard button:hover{background:#1d4ed8}.gateErr{display:none;color:#b42318;font-size:12.5px;margin-top:10px}</style><div class="gate" id="pddGate"><div class="gateCard"><div style="font-size:26px;line-height:1.4">🔐</div><h2>护发造型 · 维度指标日采集</h2><p class="tip">请输入访问密码</p><input type="password" id="pddPw" autocomplete="off" placeholder="输入密码" onkeydown="if(event.key==='Enter')window.pddCheck()"><button onclick="window.pddCheck()">验证进入</button><div class="gateErr" id="pddErr">❌ 密码错误，请重试</div></div></div><script>
 (function(){
   var SHA = ["4fc82b26aecb47d2868c4efbe3581732a3e7cbcc6c2efb32062c08170a05eeb8"], B64 = ["MTE="];
   // KEY 跟着密码走：改密码后，之前"记住"的设备会重新要求输入（否则改密码等于没改）
@@ -138,13 +155,78 @@ footer{margin-top:28px;padding-top:15px;border-top:1px solid #e9edf3;color:#98a2
 })();
 </script>
 <div class="wrap">
-<h1>护发造型-.评价星级日采集 <span class="sub">近90天</span></h1>
+<h1>护发造型-.维度指标日采集 <span class="sub">评价星级 + 考核指标</span></h1>
 <div class="sub">蒙倩护发造型官方旗舰店　|　口径：<b>未包含默认评价</b>　|　最后采集 2026-09-25 14:26</div>
 <div><span class="tag">⭐ 每日自动采集</span><span class="tag">累计 12 天</span><span class="tag">全店 + 4 个商品</span><button class="lockbtn" onclick="window.pddLogout()">🔒 退出登录</button></div>
 <section><div class="hero">
 <div class="heroTop"><div><div class="heroLab">全店 · 近90天 自算均分（DSR）</div><div class="heroVal">4.6067</div></div><div class="heroMeta">环比昨日 <span class="up">+0.0051</span><br>采集于 2026-09-25 14:26</div></div>
 <svg viewBox="0 0 720 200" class="chart"><line x1="50" y1="168.0" x2="698" y2="168.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="171.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.554</text><line x1="50" y1="131.0" x2="698" y2="131.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="134.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.574</text><line x1="50" y1="94.0" x2="698" y2="94.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="97.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.595</text><line x1="50" y1="57.0" x2="698" y2="57.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="60.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.616</text><line x1="50" y1="20.0" x2="698" y2="20.0" stroke="#eef1f6" stroke-width="1"/><text x="43" y="23.6" fill="#98a2b3" font-size="10.5" text-anchor="end">4.637</text><text x="50.0" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/14</text><text x="108.9" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/15</text><text x="167.8" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/16</text><text x="226.7" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/17</text><text x="285.6" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/18</text><text x="344.5" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/19</text><text x="403.5" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/20</text><text x="462.4" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/21</text><text x="521.3" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/22</text><text x="580.2" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/23</text><text x="639.1" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/24</text><text x="698.0" y="192" fill="#98a2b3" font-size="10" text-anchor="middle">09/25</text><polyline points="50.0,107.9 108.9,114.6 167.8,108.1 226.7,97.6 285.6,107.5 344.5,105.1 403.5,106.0 462.4,98.0 521.3,97.8 580.2,90.0 639.1,82.5 698.0,73.4 698.0,168.0 50.0,168.0" fill="rgba(37,99,235,.08)" stroke="none"/><polyline points="50.0,107.9 108.9,114.6 167.8,108.1 226.7,97.6 285.6,107.5 344.5,105.1 403.5,106.0 462.4,98.0 521.3,97.8 580.2,90.0 639.1,82.5 698.0,73.4" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-linejoin="round"/><circle cx="50.0" cy="107.9" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="50.0" cy="107.9" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/14<br>自算均分 <b>4.5873</b><br>332 条')" onmouseout="chartTipHide()"/><circle cx="108.9" cy="114.6" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="108.9" cy="114.6" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/15<br>自算均分 <b>4.5836</b><br>341 条')" onmouseout="chartTipHide()"/><circle cx="167.8" cy="108.1" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="167.8" cy="108.1" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/16<br>自算均分 <b>4.5872</b><br>344 条')" onmouseout="chartTipHide()"/><circle cx="226.7" cy="97.6" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="226.7" cy="97.6" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/17<br>自算均分 <b>4.5931</b><br>349 条')" onmouseout="chartTipHide()"/><circle cx="285.6" cy="107.5" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="285.6" cy="107.5" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/18<br>自算均分 <b>4.5876</b><br>354 条')" onmouseout="chartTipHide()"/><circle cx="344.5" cy="105.1" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="344.5" cy="105.1" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/19<br>自算均分 <b>4.5889</b><br>360 条')" onmouseout="chartTipHide()"/><circle cx="403.5" cy="106.0" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="403.5" cy="106.0" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/20<br>自算均分 <b>4.5884</b><br>362 条')" onmouseout="chartTipHide()"/><circle cx="462.4" cy="98.0" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="462.4" cy="98.0" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/21<br>自算均分 <b>4.5929</b><br>366 条')" onmouseout="chartTipHide()"/><circle cx="521.3" cy="97.8" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="521.3" cy="97.8" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/22<br>自算均分 <b>4.5930</b><br>371 条')" onmouseout="chartTipHide()"/><circle cx="580.2" cy="90.0" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="580.2" cy="90.0" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/23<br>自算均分 <b>4.5974</b><br>380 条')" onmouseout="chartTipHide()"/><circle cx="639.1" cy="82.5" r="3.4" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><circle cx="639.1" cy="82.5" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/24<br>自算均分 <b>4.6016</b><br>384 条')" onmouseout="chartTipHide()"/><circle cx="698.0" cy="73.4" r="5" fill="#fff" stroke="#2563eb" stroke-width="2.4"/><text x="698.0" y="61.4" fill="#2563eb" font-size="12.5" font-weight="700" text-anchor="middle">4.6067</text><circle cx="698.0" cy="73.4" r="12" fill="transparent" style="cursor:crosshair" onmouseover="chartTip(event,'09/25<br>自算均分 <b>4.6067</b><br>389 条')" onmouseout="chartTipHide()"/></svg>
 <div class="note" style="margin-top:4px">「近90天」是滚动窗口，每天往前滑一天：变化 = 新增评价 − 滑出窗口的旧评价。　<b>鼠标放到节点上可看当天数据</b>。</div>
+</div></section>
+<section><h2>📋 考核指标 · 综合体验星级 <span class="cnt">统计时间 2026-09-23 ｜ 当前 4.5 星（下一档 4.6）｜ 已超越30%同行 ｜ 未达标 3 项</span></h2>
+<div class="card"><div class="mtgrid">
+<div class="mtcard">
+<div class="mtname">近30天平台求助率</div>
+<div class="mtval">2.91%<span class="mtdelta up">7天 +11.3%</span></div>
+<div class="mtstd"><span class="mtpill ok">已达标</span>标准 ≤ 3.12%</div>
+<div class="mtspark"><svg viewBox="0 0 200 36" class="spark"><polyline points="3.0,32.0 35.3,27.0 67.7,26.3 100.0,19.1 132.3,4.0 164.7,13.0 197.0,17.5" fill="none" stroke="#12b76a" stroke-width="1.9" stroke-linejoin="round"/></svg></div>
+</div>
+<div class="mtcard">
+<div class="mtname">近30天3分钟人工回复率</div>
+<div class="mtval">98.78%<span class="mtdelta dn">7天 +0.1%</span></div>
+<div class="mtstd"><span class="mtpill ok">已达标</span>标准 ≥ 69.23%</div>
+<div class="mtspark"><svg viewBox="0 0 200 36" class="spark"><polyline points="3.0,8.7 35.3,18.8 67.7,17.1 100.0,26.0 132.3,23.7 164.7,32.0 197.0,4.0" fill="none" stroke="#12b76a" stroke-width="1.9" stroke-linejoin="round"/></svg></div>
+</div>
+<div class="mtcard">
+<div class="mtname">近30天在途订单退款时长</div>
+<div class="mtval">1.91小时<span class="mtdelta dn">7天 -53.3%</span></div>
+<div class="mtstd"><span class="mtpill ok">已达标</span>标准 ≤ 4.33小时</div>
+<div class="mtspark"><svg viewBox="0 0 200 36" class="spark"><polyline points="3.0,19.5 35.3,32.0 67.7,30.4 100.0,28.2 132.3,4.0 164.7,12.9 197.0,30.5" fill="none" stroke="#12b76a" stroke-width="1.9" stroke-linejoin="round"/></svg></div>
+</div>
+<div class="mtcard bad">
+<div class="mtname">近30天签收后退款时长</div>
+<div class="mtval">13.14小时<span class="mtdelta dn">7天 -8.8%</span></div>
+<div class="mtstd"><span class="mtpill bad">未达标</span>标准 ≤ 6.35小时</div>
+<div class="mtspark"><svg viewBox="0 0 200 36" class="spark"><polyline points="3.0,4.0 35.3,4.0 67.7,4.0 100.0,4.0 132.3,32.0 164.7,32.0 197.0,32.0" fill="none" stroke="#f04438" stroke-width="1.9" stroke-linejoin="round"/></svg></div>
+</div>
+<div class="mtcard bad">
+<div class="mtname">近90天用户评价得分排名</div>
+<div class="mtval">17.75%<span class="mtdelta dn">7天 +198.8%</span></div>
+<div class="mtstd"><span class="mtpill bad">未达标</span>标准 ≥ 40.00%</div>
+<div class="mtspark"><svg viewBox="0 0 200 36" class="spark"><polyline points="3.0,32.0 35.3,29.3 67.7,25.5 100.0,25.2 132.3,23.0 164.7,22.9 197.0,4.0" fill="none" stroke="#f04438" stroke-width="1.9" stroke-linejoin="round"/></svg></div>
+</div>
+<div class="mtcard">
+<div class="mtname">近30天积极评论率</div>
+<div class="mtval">99.15%<span class="mtdelta up">7天 -0.2%</span></div>
+<div class="mtstd"><span class="mtpill ok">已达标</span>标准 ≥ 93.33%</div>
+<div class="mtspark"><svg viewBox="0 0 200 36" class="spark"><polyline points="3.0,4.8 35.3,4.0 67.7,4.8 100.0,4.8 132.3,17.1 164.7,22.4 197.0,32.0" fill="none" stroke="#12b76a" stroke-width="1.9" stroke-linejoin="round"/></svg></div>
+</div>
+<div class="mtcard bad">
+<div class="mtname">近30天严重劣质率</div>
+<div class="mtval">0.60%<span class="mtdelta up">7天 +142.4%</span></div>
+<div class="mtstd"><span class="mtpill bad">未达标</span>标准 ≤ 0.12%</div>
+<div class="mtspark"><svg viewBox="0 0 200 36" class="spark"><polyline points="3.0,32.0 35.3,28.4 67.7,15.9 100.0,12.3 132.3,8.2 164.7,4.9 197.0,4.0" fill="none" stroke="#f04438" stroke-width="1.9" stroke-linejoin="round"/></svg></div>
+</div>
+<div class="mtcard">
+<div class="mtname">近30天成团-签收时效</div>
+<div class="mtval">2.39天<span class="mtdelta dn">7天 -6.4%</span></div>
+<div class="mtstd"><span class="mtpill ok">已达标</span>标准 ≤ 2.53天</div>
+<div class="mtspark"><svg viewBox="0 0 200 36" class="spark"><polyline points="3.0,4.0 35.3,6.5 67.7,15.2 100.0,20.7 132.3,24.7 164.7,32.0 197.0,31.4" fill="none" stroke="#12b76a" stroke-width="1.9" stroke-linejoin="round"/></svg></div>
+</div>
+<div class="mtcard">
+<div class="mtname">近30天物流综合违规处理率</div>
+<div class="mtval">0.43%<span class="mtdelta up">7天 +84.4%</span></div>
+<div class="mtstd"><span class="mtpill ok">已达标</span>标准 ≤ 1.43%</div>
+<div class="mtspark"><svg viewBox="0 0 200 36" class="spark"><polyline points="3.0,32.0 35.3,25.9 67.7,19.2 100.0,14.6 132.3,9.4 164.7,5.0 197.0,4.0" fill="none" stroke="#12b76a" stroke-width="1.9" stroke-linejoin="round"/></svg></div>
+</div>
+<div class="mtcard">
+<div class="mtname">近30天店铺活跃度</div>
+<div class="mtval">65.44%<span class="mtdelta up">7天 -16.5%</span></div>
+<div class="mtstd"><span class="mtpill ok">已达标</span>标准 ≥ 40.00%</div>
+<div class="mtspark"><svg viewBox="0 0 200 36" class="spark"><polyline points="3.0,4.0 35.3,6.8 67.7,10.3 100.0,21.8 132.3,27.0 164.7,30.4 197.0,32.0" fill="none" stroke="#12b76a" stroke-width="1.9" stroke-linejoin="round"/></svg></div>
+</div>
+</div>
+<div class="note" style="margin-top:10px">口径：拼多多「服务数据 · 综合体验星级」页面考核指标；括号内为「下一星级（4.6 星）标准」。趋势 = 近 7 天（点右上角可看整月，数据每天自动采集）。</div>
 </div></section>
 <section><h2>💡 优化建议 <span class="cnt">按本期数据每天自动重算</span></h2>
 <div class="card">
@@ -417,5 +499,5 @@ dsrDraw();
 </tbody></table></div>
 </div></section>
 <section><div class="warnbox">⚠️ <b>口径提醒</b><br>① 条数是「<b>未包含默认评价</b>」——买家没写内容/系统默认的那部分不算，总数远小于店铺实际评价量，<b>不能当评价总量用</b>。<br>② DSR 是<b>自算口径</b>（Σ星级×条数 ÷ 条数），跟平台显示的评分不是同一个数（平台会剔「不真实」评价）——<b>只能看趋势，不能当平台分报出去</b>。<br>③ 「近90天」是<b>滚动窗口</b>，每天往前滑一天：变化 = 新增评价 − 滑出窗口的旧评价，不完全是当天新增。</div></section>
-<footer>数据源：拼多多商家后台「评价管理」，每天 14:00 自动采集（本机 Chrome）<br>采集范围：全店 + 4 个固定商品ID　|　每次 25 次筛选查询　|　生成：Hermes · 2026-09-25 14:26</footer>
+<footer>数据源：拼多多商家后台「评价管理」，每天 14:00 自动采集（本机 Chrome）<br>采集范围：全店 + 4 个固定商品ID　|　每次 25 次筛选查询　|　生成：Hermes · 2026-09-25 14:43</footer>
 </div></body></html>
