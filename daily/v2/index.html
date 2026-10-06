@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="data:,">
+  <title>数据日报</title>
+  <style>
+    :root{
+      color-scheme:light;
+      --bg:#f3f6f2;--surface:#ffffff;--surface-2:#edf2ec;--ink:#14211a;--muted:#657269;
+      --line:#dce5dc;--green:#087a55;--green-2:#0fa97a;--green-soft:#dff3e9;--red:#c8443d;
+      --red-soft:#fae8e6;--amber:#b76b13;--amber-soft:#fff0d7;--blue:#2776bd;--shadow:0 12px 34px rgba(26,56,40,.08);
+      --radius:18px;--radius-sm:11px;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{--bg:#0e1511;--surface:#162019;--surface-2:#1d2a21;--ink:#edf5ef;--muted:#a3b1a7;--line:#2b3b30;--green:#40c991;--green-2:#6adbaa;--green-soft:#163f30;--red:#ff7b72;--red-soft:#46231f;--amber:#f1b55f;--amber-soft:#49351b;--blue:#71b7ed;--shadow:0 16px 38px rgba(0,0,0,.28)}
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:16px;line-height:1.5}
+    button,input{font:inherit}
+    button{color:inherit}
+    .page{max-width:1440px;margin:auto;padding:28px 30px 64px}
+    .mast{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;margin-bottom:20px}
+    .eyebrow{margin:0 0 5px;color:var(--green);font-weight:800;font-size:14px;letter-spacing:.04em}
+    h1{font-family:"STSong","Songti SC",serif;font-size:clamp(34px,5vw,62px);line-height:1.08;margin:0;font-weight:800;letter-spacing:-.04em}
+    .range{margin:10px 0 0;color:var(--muted);font-size:15px}
+    .stamp{text-align:right;color:var(--muted);font-size:13px}.stamp strong{display:block;color:var(--ink);font-size:16px}
+    .tabs-wrap{position:sticky;top:0;z-index:10;padding:10px 0;background:color-mix(in srgb,var(--bg) 91%,transparent)}
+    .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;padding:5px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px}
+    .tab{border:0;background:transparent;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer;color:var(--muted)}
+    .tab[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 2px 10px rgba(25,48,34,.08)}
+    .kpis{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin:12px 0 18px}
+    .kpi{grid-column:span 2;background:var(--surface);border:1px solid var(--line);padding:18px;border-radius:var(--radius-sm);min-width:0;position:relative;overflow:hidden}
+    .kpi:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--accent,var(--green))}
+    .kpi-label{font-size:13px;color:var(--muted);font-weight:700}.kpi-value{font-size:clamp(23px,2.4vw,34px);font-weight:850;line-height:1.2;margin:8px 0 5px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+    .delta{font-size:13px;font-weight:800}.delta.up{color:var(--green)}.delta.down{color:var(--red)}.delta.bad{color:var(--red)}.delta.good{color:var(--green)}
+    .delta-note{color:var(--muted);font-weight:500;margin-left:5px}
+    .section{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--radius);margin-top:16px;overflow:hidden}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:20px 22px;border-bottom:1px solid var(--line)}
+    h2{font-size:21px;line-height:1.2;margin:0;letter-spacing:-.02em}.sub{color:var(--muted);font-size:13px;margin-top:5px}.section-meta{font-size:13px;color:var(--muted);text-align:right}
+    .core{display:grid;grid-template-columns:.9fr 1.2fr}.core>div{padding:24px}.core>div+div{border-left:1px solid var(--line)}
+    .gauge-row{display:flex;align-items:center;gap:26px}.gauge{--p:49.8;width:156px;aspect-ratio:1;border-radius:50%;background:conic-gradient(var(--red) calc(var(--p)*1%),var(--surface-2) 0);display:grid;place-items:center;position:relative;flex:0 0 auto}.gauge:before{content:"";width:116px;aspect-ratio:1;border-radius:50%;background:var(--surface);position:absolute}.gauge strong,.gauge span{position:relative;z-index:1;display:block;text-align:center}.gauge strong{font-size:31px;letter-spacing:-.04em}.gauge span{font-size:12px;color:var(--muted)}
+    .metric-copy strong{font-size:22px}.metric-copy p{margin:7px 0 0;color:var(--muted)}.over{color:var(--red);font-weight:800}
+    .composition{display:grid;grid-template-columns:150px 1fr;gap:24px;align-items:center}.donut{width:150px;aspect-ratio:1;border-radius:50%;background:conic-gradient(var(--red) 0 20%,var(--amber) 20% 49.8%,var(--blue) 49.8% 60.8%,var(--green) 60.8% 100%);position:relative}.donut:after{content:"";position:absolute;inset:30px;border-radius:50%;background:var(--surface)}.legend{display:grid;grid-template-columns:1fr 1fr;gap:12px}.legend-item{display:grid;grid-template-columns:10px 1fr auto;gap:8px;align-items:center;font-size:14px}.dot{width:9px;height:9px;border-radius:50%}
+    .trend{padding:18px 22px 24px}.trend-bars{height:230px;display:grid;grid-template-columns:repeat(7,1fr);gap:12px;align-items:end;border-bottom:1px solid var(--line);padding:20px 6px 0}.day{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px}.day .val{font-size:12px;font-weight:800}.bar{width:min(48px,70%);height:var(--h);min-height:6px;background:linear-gradient(180deg,var(--green-2),var(--green));border-radius:8px 8px 2px 2px}.day.unknown .bar{background:repeating-linear-gradient(135deg,var(--surface-2) 0 7px,var(--line) 7px 12px)}.day small{font-size:12px;color:var(--muted);margin-bottom:-22px}.trend-note{margin-top:35px;display:flex;gap:20px;color:var(--muted);font-size:13px;flex-wrap:wrap}.trend-note b{color:var(--ink)}
+    .ranking{padding:16px 22px 22px}.rank-row{display:grid;grid-template-columns:32px minmax(190px,1.3fr) minmax(130px,3fr) 80px 70px;gap:12px;align-items:center;padding:8px 0}.rank-row+.rank-row{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}.rank-no{color:var(--muted);font-variant-numeric:tabular-nums}.shop{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track{height:10px;background:var(--surface-2);border-radius:20px;overflow:hidden}.fill{height:100%;width:var(--w);background:var(--green);border-radius:inherit}.money,.score{text-align:right;font-variant-numeric:tabular-nums}.money{font-weight:800}.score{color:var(--muted)}
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line)}.search{flex:1;min-width:200px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg);color:var(--ink);outline:none}.search:focus{border-color:var(--green)}.filter{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 12px;cursor:pointer;font-weight:700}.filter.active{background:var(--ink);color:var(--surface)}
+    .table-wrap{overflow:visible}.table{width:100%;border-collapse:collapse;font-size:14px}.table th{position:sticky;top:61px;z-index:3;background:var(--surface-2);padding:11px 14px;text-align:right;color:var(--muted);font-size:12px}.table th:first-child{text-align:left}.table td{padding:12px 14px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}.table td:first-child{text-align:left;font-weight:700}.table tr.total{background:var(--surface-2);font-weight:850}.warn-cell{color:var(--red);font-weight:850}
+    .alerts{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:18px}.alert{background:var(--surface-2);border-radius:13px;padding:16px}.alert h3{margin:0 0 10px;font-size:16px}.alert-list{margin:0;padding:0;list-style:none}.alert-list li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}.alert-list li:first-child{border:0}.alert-list b{text-align:right}.danger{color:var(--red)}.ok{color:var(--green)}
+    .summary{padding:22px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.summary-block strong{display:block;font-size:14px;color:var(--green);margin-bottom:7px}.summary-block p{margin:0;color:var(--muted);font-size:14px}.actions{grid-column:span 2;background:var(--ink);color:var(--surface);border-radius:13px;padding:18px}.actions strong{color:inherit}.actions ol{margin:8px 0 0;padding-left:20px}.actions li+li{margin-top:6px}
+    .monthly{padding:14px 22px 22px}.monthly-row{display:grid;grid-template-columns:minmax(210px,1.4fr) minmax(180px,2fr) 82px 78px;gap:14px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}.monthly-row:first-child{border-top:0}.compare-bar{display:flex;height:9px;background:var(--surface-2);border-radius:9px;overflow:hidden}.compare-bar i{display:block;background:var(--green);width:var(--current)}.current{font-weight:850;text-align:right}
+    .hidden{display:none!important}
+    footer{padding:26px 4px 0;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}footer a{color:var(--green)}
+    @media(max-width:1050px){.kpi{grid-column:span 4}.core{grid-template-columns:1fr}.core>div+div{border-left:0;border-top:1px solid var(--line)}.summary{grid-template-columns:1fr 1fr}.rank-row{grid-template-columns:28px minmax(150px,1.2fr) minmax(100px,2fr) 72px 60px}}
+    @media(max-width:720px){
+      body{font-size:15px}.page{padding:16px 12px 48px}.mast{grid-template-columns:1fr;gap:10px}.stamp{text-align:left;display:flex;gap:8px;align-items:center}.stamp strong{font-size:14px}.range{font-size:13px}.tabs-wrap{margin:0 -4px}.tabs{gap:2px}.tab{padding:10px 3px;font-size:13px}.kpis{gap:8px}.kpi{grid-column:span 6;padding:14px}.kpi-value{font-size:24px}.section-head{padding:16px}.section-meta{display:none}.core>div{padding:18px}.gauge-row{gap:16px}.gauge{width:130px}.gauge:before{width:96px}.gauge strong{font-size:26px}.composition{grid-template-columns:120px 1fr;gap:16px}.donut{width:120px}.donut:after{inset:25px;font-size:13px}.legend{grid-template-columns:1fr;gap:7px}.trend{padding:14px 12px 22px}.trend-bars{gap:4px;height:190px}.day .val{font-size:10px}.day small{font-size:11px}.ranking{padding:10px 14px 16px}.rank-row{grid-template-columns:24px minmax(0,1fr) 68px 55px;gap:7px}.rank-row .track{display:none}.shop{font-size:13px}.money,.score{font-size:12px}.toolbar{padding:12px}.table thead{display:none}.table,.table tbody,.table tr,.table td{display:block;width:100%}.table tr{padding:14px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}.table tr:first-child{border-top:0}.table td{border:0;padding:0;text-align:right}.table td:before{content:attr(data-label);display:block;font-size:11px;color:var(--muted);font-weight:500}.table td:first-child{grid-column:1/-1;text-align:left;font-size:15px}.table td:first-child:before{display:none}.alerts{grid-template-columns:1fr;padding:12px}.summary{grid-template-columns:1fr;padding:18px}.actions{grid-column:auto}.monthly{padding:8px 14px 18px}.monthly-row{grid-template-columns:minmax(0,1fr) 72px 64px}.monthly-row .compare-bar{display:none}.monthly-row .shop{white-space:normal}.section{border-radius:14px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+    /* 2026-10-06：更专业的经营看板视觉体系 */
+    :root{
+      --bg:#eef2f4;--surface:#ffffff;--surface-2:#f3f6f7;--ink:#17242b;--muted:#64737a;
+      --line:#dbe3e6;--green:#087968;--green-2:#0aa387;--green-soft:#def1eb;--red:#d33d48;
+      --red-soft:#fbe9eb;--amber:#b66c11;--amber-soft:#fff1d9;--blue:#2878ae;--shadow:0 8px 24px rgba(22,43,51,.07);
+      --hero:#142a2b;--hero-ink:#f6fbfa;--hero-muted:#b8cbc7;--radius:15px;--radius-sm:12px;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{--bg:#0d1518;--surface:#152126;--surface-2:#1c2a30;--ink:#eef5f5;--muted:#a4b4ba;--line:#2b3b42;--green:#51d3b4;--green-2:#7ce1c7;--green-soft:#173e36;--red:#ff7f88;--red-soft:#482428;--amber:#f1b866;--amber-soft:#49361d;--blue:#78bcec;--shadow:0 10px 28px rgba(0,0,0,.24);--hero:#101c20;--hero-ink:#f3f8f8;--hero-muted:#aebfc3}
+    }
+    body{font-size:15px;line-height:1.55;background:var(--bg)}
+    .page{max-width:1480px;padding:24px 28px 56px}
+    .mast{align-items:center;margin:0 0 14px;padding:22px 24px;border-radius:16px;background:var(--hero);color:var(--hero-ink);box-shadow:0 12px 34px rgba(12,39,37,.14)}
+    .eyebrow{margin-bottom:4px;color:#7be0c3;font-size:13px;letter-spacing:0}
+    h1{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:clamp(30px,3.2vw,42px);font-weight:800;letter-spacing:-.035em}
+    .range{margin-top:6px;color:var(--hero-muted);font-size:14px}
+    .stamp{min-width:180px;padding:12px 15px;border:1px solid rgba(255,255,255,.14);border-radius:11px;color:var(--hero-muted);text-align:left}
+    .stamp strong{margin-top:2px;color:var(--hero-ink);font-size:17px;font-variant-numeric:tabular-nums}.precision{display:block;margin-top:5px;color:#8faaa4;font-size:11px}
+    .tabs-wrap{top:0;padding:7px 0;background:var(--bg)}
+    .tabs{max-width:680px;margin:0 auto;padding:4px;border-radius:11px;background:var(--surface);box-shadow:0 3px 14px rgba(20,40,48,.06)}
+    .tab{border-radius:8px;padding:9px 12px;font-size:14px}.tab[aria-selected="true"]{background:var(--hero);color:var(--hero-ink);box-shadow:none}
+    .kpis{gap:10px;margin:8px 0 14px}
+    .kpi{padding:16px 17px;border:1px solid var(--line);border-radius:12px;box-shadow:none}.kpi:after{height:0}.kpi-label{font-size:12px}.kpi-value{margin:7px 0 4px;font-size:clamp(24px,2.1vw,31px)}
+    .top-grid{display:grid;grid-template-columns:minmax(360px,.76fr) minmax(0,1.35fr);gap:14px;align-items:stretch}.top-grid.single{grid-template-columns:1fr}.top-grid>.section{margin-top:0}.top-grid #trendSection{min-height:100%}
+    .section{margin-top:14px;border-radius:15px;box-shadow:var(--shadow)}
+    .section-head{align-items:center;padding:17px 20px}.section-head h2{font-size:19px}.sub{margin-top:3px}
+    .top-grid .core{grid-template-columns:1fr}.top-grid .core>div{padding:20px}.top-grid .core>div+div{border-top:1px solid var(--line);border-left:0}
+    .gauge-row{justify-content:center}.gauge{width:142px}.gauge:before{width:104px}.gauge strong{font-size:29px}
+    .composition{grid-template-columns:112px 1fr}.donut{width:112px}.donut:after{inset:23px}.legend{grid-template-columns:1fr;gap:8px}.legend-item{font-size:13px}.source-gap{padding-top:7px;border-top:1px solid var(--line);color:var(--amber);font-size:11px;line-height:1.4}
+    .trend{padding:14px 20px 22px}.trend-bars{height:258px;gap:14px}.bar{width:min(50px,68%);border-radius:5px 5px 1px 1px;background:var(--green)}
+    .ranking{padding:10px 20px 16px}.rank-row{grid-template-columns:32px minmax(210px,1.35fr) minmax(130px,3fr) 92px 78px;padding:10px 0}.track{height:7px}.score{font-weight:700}
+    .toolbar{padding:12px 16px;background:var(--surface-2)}.search{background:var(--surface);border-radius:8px}.filter{border-radius:8px}
+    .table{font-size:13px}.table th{top:55px;padding:10px 13px;background:var(--surface-2)}.table td{padding:11px 13px}
+    .alerts{gap:12px;padding:14px}.alert{padding:15px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}.alert h3{font-size:14px}.alert-list li{font-size:12px}
+    .summary{padding:18px 20px;gap:14px}.summary-block{padding:2px 0}.summary-block strong{margin-bottom:4px}.actions{border-radius:10px;background:var(--hero);color:var(--hero-ink)}
+    .monthly{padding:10px 20px 18px}.monthly-row{padding:10px 0}
+    footer{padding-top:22px}
+    @media(max-width:1100px){.top-grid{grid-template-columns:1fr}.kpi{grid-column:span 4}.top-grid .core{grid-template-columns:1fr 1.3fr}.top-grid .core>div+div{border-top:0;border-left:1px solid var(--line)}}
+    @media(max-width:720px){
+      .page{padding:12px 10px 42px}.mast{gap:12px;padding:18px;border-radius:13px}.mast h1{font-size:29px}.stamp{width:100%;padding:9px 12px}.stamp strong{font-size:15px}.precision{display:inline;margin:0 0 0 8px}.tabs-wrap{margin:0}.tabs{max-width:none}.tab{font-size:12px;padding:9px 2px}
+      .kpis{gap:7px}.kpi{grid-column:span 6;padding:13px}.kpi-value{font-size:23px}.delta-note{display:none}
+      .top-grid{display:block}.top-grid>.section{margin-top:10px}.top-grid .core{grid-template-columns:1fr}.top-grid .core>div+div{border-left:0;border-top:1px solid var(--line)}
+      .section{margin-top:10px;border-radius:12px}.section-head{padding:14px}.section-head h2{font-size:18px}.core>div{padding:16px}.gauge{width:124px}.gauge:before{width:91px}.gauge strong{font-size:25px}.composition{grid-template-columns:102px 1fr;gap:13px}.donut{width:102px}.donut:after{inset:21px}
+      .trend{padding:12px 9px 20px}.trend-bars{height:188px;gap:4px;padding-left:2px;padding-right:2px}.day .val{font-size:9px}.trend-note{gap:8px 14px}
+      .ranking{padding:8px 12px 13px}.rank-row{grid-template-columns:23px minmax(0,1fr) 70px 66px;gap:7px;padding:8px 0}.rank-row .track{display:none}.rank-row .shop{white-space:normal;line-height:1.35}.money,.score{font-size:11px}
+      .toolbar{padding:10px}.table tr{padding:13px 14px}.alerts{padding:10px}.summary{padding:15px}.monthly{padding:7px 13px 16px}
+    }
+
+    /* Executive edition — restrained graphite, ivory and brass */
+    :root{
+      --bg:#efefeb;--surface:#fff;--surface-2:#f7f7f3;--ink:#182126;--muted:#6d7477;
+      --line:#dbdcd6;--green:#0c7564;--green-2:#15927c;--green-soft:#e2f1ed;--red:#c73c42;
+      --red-soft:#f9e8e9;--amber:#a87627;--amber-soft:#f7ecd9;--blue:#326f92;
+      --hero:#121b20;--hero-ink:#fbfcfa;--hero-muted:#aab6b4;--gold:#b78d43;
+      --shadow:0 18px 48px rgba(21,31,35,.07);--radius:7px;--radius-sm:5px;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{--bg:#0d1215;--surface:#151c20;--surface-2:#1b2428;--ink:#f2f3ef;--muted:#a4adaf;--line:#323b3e;--green:#58cbb2;--green-2:#70d6bf;--green-soft:#183d35;--red:#ff7f86;--red-soft:#472529;--amber:#d7aa5b;--amber-soft:#44351e;--blue:#7eb5d4;--hero:#090e11;--hero-ink:#fbfcfa;--hero-muted:#9ba9aa;--gold:#caa35e;--shadow:0 20px 54px rgba(0,0,0,.3)}
+    }
+    body{background:var(--bg);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:15px;letter-spacing:.005em}
+    .page{max-width:1540px;padding:38px 42px 72px}
+    .mast{min-height:178px;margin-bottom:20px;padding:34px 40px 31px;border:1px solid color-mix(in srgb,var(--gold) 28%,transparent);border-bottom:4px solid var(--gold);border-radius:5px;background:var(--hero);box-shadow:0 22px 56px rgba(8,18,20,.16);position:relative;overflow:hidden}
+    .mast:after{content:"";position:absolute;right:28%;top:0;width:1px;height:100%;background:rgba(255,255,255,.055);transform:skewX(-18deg)}
+    .eyebrow{margin-bottom:7px;color:#d8b875;font-size:12px;font-weight:700;letter-spacing:.16em}
+    h1{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-size:clamp(42px,4.2vw,60px);font-weight:700;letter-spacing:-.04em}
+    .range{margin-top:11px;color:var(--hero-muted);font-size:14px;letter-spacing:.02em}
+    .stamp{min-width:214px;padding:14px 0;border:0;border-top:1px solid rgba(216,184,117,.55);border-bottom:1px solid rgba(216,184,117,.3);border-radius:0;color:var(--hero-muted)}
+    .stamp strong{font-family:ui-monospace,"SFMono-Regular",Consolas,monospace;font-size:20px;font-weight:650;letter-spacing:.02em}.precision{color:#899a98}
+    .tabs-wrap{padding:10px 0 12px;background:color-mix(in srgb,var(--bg) 94%,transparent)}
+    .tabs{max-width:760px;padding:5px;border:1px solid var(--line);border-radius:4px;background:var(--surface);box-shadow:0 8px 26px rgba(27,36,40,.06)}
+    .tab{border-radius:2px;padding:11px 16px;font-size:13px;letter-spacing:.04em}.tab[aria-selected="true"]{background:var(--hero);color:var(--hero-ink);box-shadow:inset 0 -2px 0 var(--gold)}
+    .kpis{gap:14px;margin:10px 0 22px}
+    .kpi{grid-column:span 4;min-height:132px;padding:22px 23px 20px;border:1px solid var(--line);border-radius:4px;background:var(--surface);box-shadow:0 9px 28px rgba(24,33,38,.045)}
+    .kpi:after{height:2px;background:var(--accent,var(--gold));opacity:.82}.kpi-label{font-size:12px;font-weight:650;letter-spacing:.08em}.kpi-value{margin:12px 0 8px;font-size:clamp(29px,2.7vw,40px);font-weight:760;letter-spacing:-.045em}
+    .section{margin-top:18px;border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow)}
+    .section-head{min-height:76px;padding:21px 25px;border-bottom:1px solid var(--line)}.section-head h2{font-family:"Songti SC","STSong",serif;font-size:22px;font-weight:700;letter-spacing:-.025em}.sub{margin-top:5px;font-size:12px}.section-meta{font-size:12px;letter-spacing:.03em}
+    .top-grid{grid-template-columns:minmax(390px,.76fr) minmax(0,1.48fr);gap:18px}.top-grid>.section{margin-top:0}
+    .top-grid .core>div{padding:27px}.gauge-row{gap:30px}.gauge{width:164px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.025)}.gauge:before{width:122px}.gauge strong{font-size:33px}.metric-copy strong{font-size:21px}.metric-copy p{font-size:13px}
+    .composition{grid-template-columns:132px 1fr;gap:28px}.donut{width:132px}.donut:after{inset:28px}.legend{gap:10px}.legend-item{font-size:13px}.source-gap{color:var(--muted)}
+    .trend{padding:20px 26px 29px}.trend-bars{height:300px;gap:18px;padding-top:26px}.bar{width:min(54px,70%);border-radius:2px 2px 0 0;background:var(--green)}.day .val{font-family:ui-monospace,"SFMono-Regular",Consolas,monospace;font-size:11px}.trend-note{margin-top:40px}
+    .ranking{padding:14px 26px 23px}.rank-row{grid-template-columns:34px minmax(230px,1.35fr) minmax(150px,3fr) 98px 82px;gap:15px;padding:12px 0}.rank-no{font-family:ui-monospace,"SFMono-Regular",Consolas,monospace;font-size:12px}.track{height:5px;border-radius:0}.fill{border-radius:0;background:var(--green)}
+    .toolbar{padding:15px 20px;background:var(--surface-2)}.search,.filter{border-radius:3px}.search{padding:12px 14px}.filter{padding:11px 15px}.filter.active{background:var(--hero);color:var(--hero-ink)}
+    .table{font-size:13px}.table th{top:63px;padding:13px 16px;font-size:11px;letter-spacing:.05em}.table td{padding:14px 16px}.table tr.total{background:var(--surface-2)}
+    .alerts{gap:16px;padding:20px}.alert{padding:19px;border-radius:4px;background:var(--surface-2)}.alert h3{margin-bottom:12px;font-family:"Songti SC","STSong",serif;font-size:17px}.alert-list li{padding:10px 0}
+    .summary{padding:24px 26px;gap:24px}.summary-block strong{color:var(--amber);letter-spacing:.06em}.actions{border-radius:4px;border-left:3px solid var(--gold);background:var(--hero);padding:21px 23px}
+    .monthly{padding:14px 26px 24px}.monthly-row{padding:13px 0}.compare-bar{height:6px;border-radius:0}.compare-bar i{background:var(--green)}
+    footer{padding:30px 2px 0;border-top:1px solid var(--line);margin-top:22px}footer a{color:var(--amber)}
+    @media(min-width:1360px){.kpis{grid-template-columns:repeat(12,1fr)}.kpi{grid-column:span 2;min-height:138px}}
+    @media(max-width:1100px){.page{padding:28px 24px 62px}.top-grid{grid-template-columns:1fr}.top-grid .core{grid-template-columns:1fr 1.25fr}.kpi{grid-column:span 4}}
+    @media(max-width:720px){
+      .page{padding:12px 10px 44px}.mast{min-height:0;padding:22px 20px 20px;border-radius:4px}.mast:after{display:none}.mast h1{font-size:34px}.eyebrow{font-size:11px}.stamp{padding:10px 0}.stamp strong{font-size:16px}.precision{display:block;margin:4px 0 0}
+      .tabs-wrap{padding:8px 0}.tabs{border-radius:3px}.tab{font-size:12px;padding:10px 2px;letter-spacing:0}
+      .kpis{gap:8px;margin:6px 0 12px}.kpi{grid-column:span 6;min-height:108px;padding:15px 14px;border-radius:3px}.kpi-value{margin:8px 0 5px;font-size:25px}
+      .top-grid{display:block}.top-grid>.section{margin-top:10px}.top-grid .core{grid-template-columns:1fr}.top-grid .core>div+div{border-left:0;border-top:1px solid var(--line)}
+      .section{margin-top:10px;border-radius:4px}.section-head{min-height:0;padding:16px}.section-head h2{font-size:19px}.core>div{padding:18px}.gauge{width:126px}.gauge:before{width:93px}.gauge strong{font-size:26px}.composition{grid-template-columns:104px 1fr;gap:14px}.donut{width:104px}.donut:after{inset:22px}
+      .trend{padding:13px 10px 22px}.trend-bars{height:202px;gap:4px}.day .val{font-size:9px}.ranking{padding:9px 13px 15px}.rank-row{grid-template-columns:24px minmax(0,1fr) 72px 62px;gap:7px;padding:9px 0}.rank-row .track{display:none}.rank-row .shop{white-space:normal;line-height:1.35}.money,.score{font-size:11px}
+      .toolbar{padding:11px}.table tr{padding:14px}.alerts{padding:11px;gap:10px}.alert{padding:16px}.summary{padding:17px;gap:16px}.monthly{padding:8px 14px 18px}footer{margin-top:16px;padding-top:22px}
+    }
+
+    /* 折叠控制与信息可读性 */
+    .section-head-actions{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-left:auto}
+    .section-head[role="button"]{cursor:pointer;transition:background-color .16s ease}
+    .section-head[role="button"]:hover{background:var(--surface-2)}
+    .section-head[role="button"]:focus-visible{outline:2px solid var(--blue);outline-offset:-3px}
+    .section-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:76px;padding:8px 11px;border:1px solid var(--line);border-radius:3px;background:var(--surface);color:var(--ink);font-size:12px;font-weight:700;cursor:pointer}
+    .section-toggle:hover{border-color:var(--gold);color:var(--amber)}
+    .section-toggle:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+    .section-toggle .chevron{width:8px;height:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .18s ease}
+    .section.collapsed>.section-head{border-bottom-color:transparent}
+    .section.collapsed>.section-head .chevron{transform:rotate(-45deg) translate(-1px,1px)}
+    .section.collapsed>:not(.section-head){display:none!important}
+    .donut-center{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 20px;text-align:center;font-size:15px;font-weight:850;line-height:1.08;white-space:nowrap;font-variant-numeric:tabular-nums}
+    .donut-center small{display:block;margin-top:4px;color:var(--muted);font-size:10px;font-weight:600;line-height:1.1;white-space:nowrap}
+    .actions{grid-column:1/-1}
+    .actions ol{columns:2;column-gap:44px}
+    .actions li{break-inside:avoid}
+    .scope-note{display:block;margin-top:4px;color:var(--muted);font-size:11px;font-weight:500;line-height:1.35}
+    @media(max-width:720px){
+      .section-head{gap:10px}.section-head-actions{gap:8px}.section-toggle{min-width:66px;padding:7px 9px}.actions ol{columns:1}.donut-center{padding:0 16px;font-size:13px}.donut-center small{font-size:9px}
+    }
+    @media(prefers-reduced-motion:reduce){.section-toggle .chevron{transition:none}}
+
+    /* 2026-10-06：浅色蓝调主题 */
+    :root{
+      --bg:#f3f7fb;--surface:#ffffff;--surface-2:#f0f5fa;--ink:#152536;--muted:#68798a;
+      --line:#d7e2ed;--green:#1769d2;--green-2:#3a8be8;--green-soft:#e5f0fd;--red:#cf3f4e;
+      --red-soft:#fbeaec;--amber:#357fbd;--amber-soft:#e8f3fc;--blue:#1769d2;
+      --hero:#f8fbff;--hero-ink:#152536;--hero-muted:#60758a;--gold:#1769d2;
+      --shadow:0 18px 48px rgba(43,82,120,.09);
+    }
+    @media(prefers-color-scheme:dark){
+      :root{
+        color-scheme:light;
+        --bg:#f3f7fb;--surface:#ffffff;--surface-2:#f0f5fa;--ink:#152536;--muted:#68798a;
+        --line:#d7e2ed;--green:#1769d2;--green-2:#3a8be8;--green-soft:#e5f0fd;--red:#cf3f4e;
+        --red-soft:#fbeaec;--amber:#357fbd;--amber-soft:#e8f3fc;--blue:#1769d2;
+        --hero:#f8fbff;--hero-ink:#152536;--hero-muted:#60758a;--gold:#1769d2;
+        --shadow:0 18px 48px rgba(43,82,120,.09);
+      }
+    }
+    .mast{
+      border:1px solid #c7dcf1;border-bottom:4px solid var(--blue);
+      background:linear-gradient(112deg,#ffffff 0%,#f4f9ff 58%,#e7f2fd 100%);
+      color:var(--hero-ink);box-shadow:0 22px 56px rgba(47,91,134,.11);
+    }
+    .mast:after{background:rgba(23,105,210,.10)}
+    .eyebrow{color:var(--blue)}
+    .range,.stamp{color:var(--hero-muted)}
+    .stamp{border-top-color:rgba(23,105,210,.42);border-bottom-color:rgba(23,105,210,.22)}
+    .stamp strong{color:var(--hero-ink)}
+    .precision{color:#7d91a4}
+    .tab[aria-selected="true"]{background:var(--blue);color:#fff;box-shadow:inset 0 -2px 0 #8bc2fb}
+    .filter.active{background:var(--blue);color:#fff}
+    .section-toggle:hover{border-color:var(--blue);color:var(--blue)}
+    .section-toggle:focus-visible{outline-color:var(--blue)}
+    .summary-block strong{color:var(--blue)}
+    .actions{border-left-color:var(--blue);background:var(--green-soft);color:var(--ink)}
+    footer a{color:var(--blue)}
+    @media(prefers-color-scheme:dark){
+      .mast{border-color:#c7dcf1;border-bottom-color:var(--blue);background:linear-gradient(112deg,#ffffff 0%,#f4f9ff 58%,#e7f2fd 100%);box-shadow:0 22px 56px rgba(47,91,134,.11)}
+      .mast:after{background:rgba(23,105,210,.10)}
+      .precision{color:#7d91a4}
+      .tab[aria-selected="true"],.filter.active{color:#fff}
+      .actions{background:var(--green-soft);color:var(--ink)}
+    }
+    /* ══════════ 密码门 ══════════ */
+    #gate{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px}
+    .gatebox{width:100%;max-width:340px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:34px 26px;box-shadow:var(--shadow);text-align:center}
+    .gatebox .gl{width:50px;height:50px;margin:0 auto 16px;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:23px}
+    .gatebox h1{font-size:20px;margin:0 0 7px;font-family:inherit;font-weight:800;color:var(--ink);letter-spacing:-.3px}
+    .gatebox p{color:var(--muted);font-size:14px;margin:0 0 20px}
+    #pw{width:100%;padding:13px 15px;font-size:17px;border:1px solid var(--line);border-radius:8px;outline:none;transition:.16s;font-family:inherit;text-align:center;letter-spacing:5px;background:var(--surface-2);color:var(--ink)}
+    #pw:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(23,105,210,.14);background:#fff}
+    #pwb{width:100%;margin-top:12px;padding:13px;font-size:16px;font-weight:800;color:#fff;background:var(--blue);border:none;border-radius:8px;cursor:pointer;font-family:inherit;transition:.16s}
+    #pwb:hover{opacity:.9}#pwb:active{transform:scale(.985)}
+    #pwerr{color:var(--red);font-size:13px;margin-top:11px;font-weight:700;min-height:20px}
+  </style>
+</head>
+<body>
+<div id="gate">
+  <div class="gatebox">
+    <div class="gl">🔒</div>
+    <h1>10月4日经营日报</h1>
+    <p>请输入访问密码</p>
+    <input type="password" id="pw" inputmode="numeric" autocomplete="off" placeholder="····">
+    <button id="pwb">进 入</button>
+    <div id="pwerr"></div>
+  </div>
+</div>
+<main class="page" id="app" style="display:none">
+  <header class="mast">
+    <div>
+      <p class="eyebrow">经营快照 · 23 家店</p>
+      <h1>10月4日经营日报</h1>
+      <p class="range" id="rangeText">统计 2026-09-28 至 2026-10-04 · 对比前7天</p>
+    </div>
+    <div class="stamp"><span>数据基准日</span><strong>2026/10/04</strong><span class="precision">源页可见位数直出 · 不二次取整</span></div>
+  </header>
+
+  <nav class="tabs-wrap" aria-label="时间范围"><div class="tabs" id="tabs">
+    <button class="tab" data-period="day" aria-selected="false">当日</button>
+    <button class="tab" data-period="d3" aria-selected="false">近3天</button>
+    <button class="tab" data-period="d7" aria-selected="true">近7天</button>
+    <button class="tab" data-period="month" aria-selected="false">当月</button>
+    <button class="tab" data-period="d30" aria-selected="false">近30天</button>
+  </div></nav>
+
+  <section class="kpis" id="kpis" aria-label="核心指标"></section>
+
+  <div id="standardView">
+    <div class="top-grid" id="topGrid">
+    <section class="section">
+      <div class="section-head"><div><h2>数值水位</h2><div class="sub">退款金额占比 + 推广花费占比 · 标准线 46%</div></div><div class="section-meta" id="coreMeta"></div></div>
+      <div class="core">
+        <div class="gauge-row">
+          <div class="gauge" id="gauge"><div><strong id="gaugeValue"></strong><span>当前数值</span></div></div>
+          <div class="metric-copy"><strong id="gaugeStatus"></strong><p id="gaugeNote"></p></div>
+        </div>
+        <div class="composition" aria-label="数值构成，退款金额占比加推广花费占比">
+          <div class="donut" id="donut"></div>
+          <div class="legend" id="legend"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="trendSection">
+      <div class="section-head"><div><h2>业绩走势</h2><div class="sub" id="trendSub">每日业绩 · 7天走势</div></div><div class="section-meta" id="trendMeta"></div></div>
+      <div class="trend" id="trend"></div>
+    </section>
+    </div>
+
+    <section class="section">
+      <div class="section-head"><div><h2>店铺业绩排行</h2><div class="sub">前 10 名 · 完整排名见店铺明细</div></div><div class="section-meta" id="rankMeta"></div></div>
+      <div class="ranking" id="ranking"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>店铺明细</h2><div class="sub" id="tableSub">23 家 · 点击上方时间段切换口径</div></div></div>
+      <div class="toolbar"><input class="search" id="search" placeholder="搜索店铺" aria-label="搜索店铺"><button class="filter" id="abnormalBtn" type="button">仅看数值超线</button></div>
+      <div class="table-wrap"><table class="table"><thead><tr><th>店铺</th><th>业绩</th><th>环比</th><th>数值</th><th>推广占比</th><th>退款占比</th><th>客单价</th></tr></thead><tbody id="tableBody"></tbody></table></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>经营预警</h2><div class="sub">基准日 2026-10-04 · 只列需要动作的重点项</div></div><div class="section-meta"><span class="danger">5 家下滑</span> · 5 项异常</div></div>
+      <div class="alerts">
+        <article class="alert"><h3>当日业绩下滑最重</h3><ul class="alert-list">
+          <li><span>美发旗舰店（炜）</span><b class="danger">-63.4%</b></li><li><span>染发官方旗舰店（珍）</span><b class="danger">-29.4%</b></li><li><span>美妆旗舰店</span><b class="danger">-28.3%</b></li><li><span>护发旗舰店（涛）</span><b class="danger">-27.4%</b></li><li><span>个人护理官方旗舰店</span><b class="danger">-24.7%</b></li>
+        </ul><span class="scope-note">指标：10/04 当日业绩；对比：10/01—10/03 各店日均业绩</span></article>
+        <article class="alert"><h3>业绩与数值异常波动</h3><ul class="alert-list">
+          <li><span>个护官方旗舰店（熙） · 业绩</span><b class="danger">-20.2%</b></li><li><span>美发旗舰店（炜） · 数值</span><b class="danger">49.21% → 77.14%</b></li><li><span>护发旗舰店（涛） · 业绩</span><b class="danger">-27.9%</b></li><li><span>美容美发官方旗舰店（博） · 业绩</span><b class="danger">-23.0%</b></li><li><span>植萃草本染发坊 · 数值</span><b class="danger">1195.50% → 56.22%</b></li>
+        </ul><span class="scope-note">每条已标明异常指标；本组统一为 10/04 对比 10/03</span></article>
+        <article class="alert"><h3>登记完整性</h3><ul class="alert-list"><li><span>基准日登记</span><b class="ok">23/23 家</b></li><li><span>近30天漏登</span><b class="ok">无</b></li><li><span>近30天重复登记</span><b class="ok">无</b></li></ul></article>
+        <article class="alert"><h3>判断口径</h3><ul class="alert-list"><li><span>下滑最重</span><b>10/04 业绩 vs 前3天日均</b></li><li><span>异常波动</span><b>10/04 vs 10/03</b></li><li><span>业绩异常门槛</span><b>变动绝对值 ≥20% 且金额差 ≥800 元</b></li><li><span>数值异常门槛</span><b>变动绝对值 ≥8 个百分点</b></li><li><span>数值定义</span><b>退款金额占比 + 推广花费占比</b></li><li><span>数值标准线</span><b>46%</b></li></ul></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><div><h2>今日结论</h2><div class="sub" id="summarySub">近7天口径</div></div></div>
+      <div class="summary" id="summary"></div>
+    </section>
+  </div>
+
+  <div id="monthlyView" class="hidden">
+    <section class="section">
+      <div class="section-head"><div><h2>30天店铺趋势</h2><div class="sub">2026-09-05 至 2026-10-04 · 对比上一个30天</div></div><div class="section-meta">上升 11 家 · 下滑 12 家</div></div>
+      <div class="monthly" id="monthlyRows"></div>
+    </section>
+    <section class="section">
+      <div class="section-head"><div><h2>30天结论</h2><div class="sub">长周期判断</div></div></div>
+      <div class="summary" id="monthlySummary"></div>
+    </section>
+  </div>
+
+  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-06 14:46</span><a href="https://pseudomazo-ship-it.github.io/shiyi-dashboard/daily/" target="_blank" rel="noopener">查看原始看板</a></footer>
+</main>
+<script>
+(function(){
+  const names=["蒙倩官方旗舰店", "蒙倩美发官方旗舰店（丽）", "蒙倩旗舰店", "蒙倩化妆品官方旗舰店", "蒙倩美妆旗舰店", "蒙倩美发护发官方旗舰店（盼）", "蒙倩美容美发官方旗舰店（博）", "蒙倩美容护肤官方旗舰店", "蒙倩个护官方旗舰店（熙）", "蒙倩护发旗舰店（涛）", "蒙倩彩妆官方旗舰店", "蒙倩个人护理官方旗舰店", "蒙倩美妆洗护官方旗舰店", "蒙倩染发旗舰店（涛）", "蒙倩精油官方旗舰店", "蒙倩洗护官方旗舰店", "蒙倩造型官方旗舰店", "蒙倩药妆官方旗舰店", "蒙倩美发护发旗舰店（盼）", "蒙倩护发官方旗舰店（涛）", "蒙倩美发旗舰店（炜）", "植萃草本染发坊", "蒙倩染发官方旗舰店（珍）"];
+  function rows(raw){return raw.split("|").map((s,i)=>{const a=s.split(",");return {name:names[i],money:+a[0],moneyRaw:a[0],delta:+a[1],deltaRaw:a[1],score:+a[2],scoreRaw:a[2],ad:+a[3],adRaw:a[3],refund:+a[4],refundRaw:a[4],aov:+a[5],aovRaw:a[5]}})}
+  function sourceNumber(v){return String(v)}
+  function exactDifference(a,b){const places=Math.max((String(a).split('.')[1]||'').length,(String(b).split('.')[1]||'').length),scale=10**places;return (Math.round(a*scale)-Math.round(b*scale))/scale}
+  function exactSum(a,b){const places=Math.max((String(a).split('.')[1]||'').length,(String(b).split('.')[1]||'').length),scale=10**places;return (Math.round(a*scale)+Math.round(b*scale))/scale}
+  const data={
+    day:{range:"统计 2026-10-04 · 对比 2026-10-03",kpis:[["业绩", "24.96万", -6.8], ["退款金额", "5.00万", -23.3], ["推广花费", "7.71万", -4.5], ["数值", "50.93%", -3.5, "pt", true], ["成团单量", "9013单", -6.4], ["退款单量", "2299单", -3.3]],score:50.93,total:"24.96万",totals:[30.89, 20.04, 27.69],compare:"较前一日",trend:null,summary:["当日业绩 24.96万，较前一日下降 6.8%。", "退款金额 5.00万、推广花费 7.71万，数值 50.93%，高于标准线 4.93pt。", "成团 9013 单，退款 2299 单；22 家店数值高于 46% 标准线。"],actions:["优先复盘蒙倩美发旗舰店（炜）、蒙倩护发旗舰店（涛）、蒙倩美容美发官方旗舰店（博）的当日业绩下滑，定位是流量、转化率还是客单价造成的落差。", "拆解植萃草本染发坊、蒙倩染发旗舰店（涛）、蒙倩美发官方旗舰店（丽）的增长来源，区分自然流量与推广带来的增量，提炼可复制动作。", "逐店拆开退款占比与推广占比，优先处理数值高于 46% 的 22 家店铺。", "核对退款金额 5.00万与推广花费 7.71万的环比变化，确认是集中退款还是预算调整。", "把当日口径与相邻时段并列对照，避免把单期波动当成趋势。", "下个周期继续用相同口径复核业绩 24.96万、数值 50.93% 是否改善。"],rows:rows("4.40,-3.3,47.96,28.97,18.98,29.99|2.99,4.6,50.37,30.39,19.97,27.46|2.30,-10.8,50.52,28.49,22.03,27.34|2.34,1.1,49.87,28.63,21.24,24.96|1.05,-7.7,51.72,28.34,23.39,26.11|2.04,-5.4,49.60,27.86,21.73,27.81|1.39,-23.0,50.56,31.59,18.97,27.91|0.91,-6.5,50.33,26.38,23.95,28.07|1.47,-20.2,52.04,31.06,20.98,27.54|0.66,-27.9,50.51,30.92,19.59,29.54|0.73,-5.7,46.67,27.66,19.00,27.58|0.32,-18.6,64.18,38.45,25.72,25.22|1.69,2.1,63.54,49.65,13.89,28.33|0.71,8.3,43.14,26.11,17.03,30.80|0.44,1.1,51.24,30.48,20.76,26.62|0.40,-8.6,52.73,30.44,22.29,26.76|0.30,-7.5,48.60,31.05,17.54,27.76|0.27,-14.2,47.86,27.08,20.78,29.61|0.16,-17.7,51.96,46.77,5.19,29.25|0.11,-17.1,60.61,48.90,11.72,28.93|0.05,-58.7,77.14,30.41,46.73,9.92|0.14,23.4,56.22,35.06,21.16,26.23|0.07,-15.9,53.37,35.13,18.24,25.96")},
+    d3:{range:"统计 2026-10-02 至 2026-10-04 · 对比前3天",kpis:[["业绩", "80.76万", -10.4], ["退款金额", "17.09万", -0.5], ["推广花费", "24.38万", -9.1], ["数值", "51.35%", 2.5, "pt", true], ["成团单量", "29047单", -11.6], ["退款单量", "7159单", -7.8]],score:51.35,total:"80.76万",totals:[30.19, 21.16, 27.8],compare:"较前3天",trend:null,summary:["近3天业绩 80.76万，较前3天下降 10.4%。", "退款金额 17.09万、推广花费 24.38万，数值 51.35%，高于标准线 5.35pt。", "成团 29047 单，退款 7159 单；22 家店数值高于 46% 标准线。"],actions:["优先复盘蒙倩个人护理官方旗舰店、蒙倩美妆旗舰店、蒙倩造型官方旗舰店的近3天业绩下滑，定位是流量、转化率还是客单价造成的落差。", "拆解蒙倩药妆官方旗舰店、蒙倩护发官方旗舰店（涛）、蒙倩美妆洗护官方旗舰店的增长来源，区分自然流量与推广带来的增量，提炼可复制动作。", "逐店拆开退款占比与推广占比，优先处理数值高于 46% 的 22 家店铺。", "核对退款金额 17.09万与推广花费 24.38万的环比变化，确认是集中退款还是预算调整。", "把近3天口径与相邻时段并列对照，避免把单期波动当成趋势。", "下个周期继续用相同口径复核业绩 80.76万、数值 51.35% 是否改善。"],rows:rows("13.84,-10.7,48.07,28.74,19.33,30.01|8.78,-6.3,50.12,29.78,20.34,27.53|7.88,-12.3,47.47,28.70,18.76,27.67|7.63,-11.5,48.70,27.68,21.02,25.80|3.79,-25.9,51.09,27.84,23.25,26.71|6.43,-7.6,46.73,27.73,19.00,27.77|5.05,-10.2,48.30,28.32,19.98,27.80|2.87,-23.5,50.28,26.63,23.65,28.55|5.39,2.7,49.57,31.44,18.13,27.88|2.50,-9.4,49.97,28.73,21.24,29.64|2.17,-8.1,46.11,27.63,18.48,28.05|1.12,-26.2,59.54,37.77,21.77,25.30|4.85,10.7,62.18,48.68,13.50,28.42|2.00,-21.4,40.69,23.94,16.75,31.70|1.31,-17.2,51.39,29.42,21.97,26.23|1.42,-18.9,52.90,30.65,22.25,29.68|0.94,-24.3,49.29,30.21,19.07,27.64|0.88,29.1,50.03,26.02,24.01,27.88|0.55,-21.3,58.37,47.54,10.83,30.17|0.36,12.1,60.39,42.59,17.80,30.80|0.33,-17.9,53.91,30.59,23.32,8.92|0.38,-1.3,402.09,39.58,362.51,26.53|0.29,-15.7,55.36,38.32,17.05,27.11")},
+    d7:{range:"统计 2026-09-28 至 2026-10-04 · 对比前7天",kpis:[["业绩", "203.42万", -11.6], ["退款金额", "40.60万", -4.7], ["推广花费", "60.69万", -8.9], ["数值", "49.79%", 2.3, "pt", true], ["成团单量", "73589单", -11.2], ["退款单量", "17708单", -5.5]],score:49.79,total:"203.42万",totals:[29.83, 19.96, 27.64],compare:"较前7天",trend:{"labels": ["09/28", "09/29", "09/30", "10/01", "10/02", "10/03", "10/04"], "values": [32.5, 30.41, 29.57, 30.18, 29.02, 26.79, 24.96], "valueLabels": ["32.50", "30.41", "29.57", "30.18", "29.02", "26.79", "24.96"], "avg": 29.06, "high": "32.50万 · 09/28", "low": "24.96万 · 10/04", "note": "按日数据均来自飞书登记表"},summary:["近7天业绩 203.42万，日均 29.06万，较前7天下降 11.6%。", "退款金额 40.60万、推广花费 60.69万，数值 49.79%，高于标准线 3.79pt。", "成团 73589 单，退款 17708 单；21 家店数值高于 46% 标准线。"],actions:["优先复盘蒙倩个人护理官方旗舰店、蒙倩护发官方旗舰店（涛）、蒙倩美发护发旗舰店（盼）的近7天业绩下滑，定位是流量、转化率还是客单价造成的落差。", "拆解蒙倩美妆洗护官方旗舰店、蒙倩个护官方旗舰店（熙）、蒙倩美发护发官方旗舰店（盼）的增长来源，区分自然流量与推广带来的增量，提炼可复制动作。", "逐店拆开退款占比与推广占比，优先处理数值高于 46% 的 21 家店铺。", "核对退款金额 40.60万与推广花费 60.69万的环比变化，确认是集中退款还是预算调整。", "把近7天口径与相邻时段并列对照，避免把单期波动当成趋势。", "下个周期继续用相同口径复核业绩 203.42万、数值 49.79% 是否改善。"],rows:rows("35.07,-9.2,47.57,28.40,19.17,30.10|22.41,-26.7,49.57,28.32,21.25,26.90|20.47,-21.8,50.06,30.46,19.60,26.51|19.22,-10.5,47.10,27.58,19.52,26.12|10.78,-26.3,49.25,27.54,21.71,26.90|15.57,11.7,46.70,27.30,19.40,27.83|12.64,10.4,47.02,27.87,19.15,27.87|7.89,-11.4,49.28,26.96,22.32,28.94|12.25,29.3,48.43,30.41,18.02,27.84|6.33,-28.1,47.21,29.55,17.66,29.62|5.27,-10.5,45.87,27.57,18.30,27.75|3.27,-56.2,57.37,37.68,19.69,25.96|10.56,91.0,61.68,48.21,13.47,28.43|5.16,-9.7,41.05,24.45,16.60,31.62|3.46,-24.0,50.38,29.19,21.19,26.14|3.78,-9.1,50.34,29.71,20.62,29.35|2.54,-26.5,49.64,29.56,20.09,27.73|1.86,-16.7,49.38,27.12,22.27,25.93|1.44,-38.0,58.73,45.85,12.89,30.26|0.81,-44.1,65.12,43.56,21.56,30.28|0.90,-37.8,50.88,31.97,18.91,9.02|0.90,6.3,202.77,38.75,164.02,27.35|0.82,-22.3,55.39,36.92,18.47,27.50")},
+    month:{range:"统计 2026-10-01 至 2026-10-04 · 对比上月同期",kpis:[["业绩", "110.95万", -5.8], ["退款金额", "22.89万", 1.4], ["推广花费", "33.20万", -1.8], ["数值", "50.56%", 2.7, "pt", true], ["成团单量", "39967单", -5.3], ["退款单量", "9791单", -19.0]],score:50.56,total:"110.95万",totals:[29.92, 20.63, 27.76],compare:"较上月同期",trend:{"labels": ["10/01", "10/02", "10/03", "10/04"], "values": [30.18, 29.02, 26.79, 24.96], "valueLabels": ["30.18", "29.02", "26.79", "24.96"], "avg": 27.74, "high": "30.18万 · 10/01", "low": "24.96万 · 10/04", "note": "按日数据均来自飞书登记表"},summary:["本月业绩 110.95万，日均 27.74万，较上月同期下降 5.8%。", "退款金额 22.89万、推广花费 33.20万，数值 50.56%，高于标准线 4.56pt。", "成团 39967 单，退款 9791 单；22 家店数值高于 46% 标准线。"],actions:["优先复盘蒙倩美妆旗舰店、蒙倩护发官方旗舰店（涛）、蒙倩染发旗舰店（涛）的本月业绩下滑，定位是流量、转化率还是客单价造成的落差。", "拆解蒙倩美妆洗护官方旗舰店、蒙倩个护官方旗舰店（熙）、蒙倩洗护官方旗舰店的增长来源，区分自然流量与推广带来的增量，提炼可复制动作。", "逐店拆开退款占比与推广占比，优先处理数值高于 46% 的 22 家店铺。", "核对退款金额 22.89万与推广花费 33.20万的环比变化，确认是集中退款还是预算调整。", "把本月口径与相邻时段并列对照，避免把单期波动当成趋势。", "下个周期继续用相同口径复核业绩 110.95万、数值 50.56% 是否改善。"],rows:rows("18.99,28.2,48.09,28.47,19.63,30.06|11.80,-30.8,50.01,29.07,20.94,27.40|11.22,-29.6,47.27,28.67,18.59,27.77|10.56,-22.6,47.90,27.71,20.19,25.86|5.47,-54.1,49.86,27.67,22.19,26.69|8.92,30.4,46.84,27.37,19.47,27.64|6.77,48.3,47.56,27.76,19.80,27.88|4.07,1.7,49.94,26.27,23.67,28.67|7.27,96.9,49.38,31.37,18.01,27.81|3.41,-15.6,48.62,29.10,19.52,29.55|2.91,-24.8,46.05,27.52,18.52,27.91|1.58,24.0,60.28,37.86,22.42,25.47|6.24,260.2,62.03,48.64,13.39,28.40|2.94,-42.3,40.28,24.68,15.60,31.52|1.84,-30.1,50.51,29.43,21.08,26.11|1.92,71.5,52.23,30.66,21.57,29.09|1.38,-13.1,49.65,29.94,19.70,27.59|1.09,18.8,50.48,27.09,23.39,26.97|0.76,-17.6,58.50,47.49,11.01,29.99|0.46,-46.7,63.50,43.49,20.01,30.66|0.46,-29.4,51.98,30.47,21.51,8.55|0.49,28.8,322.93,40.64,282.29,26.92|0.38,42.9,55.67,36.98,18.69,27.65")},
+    d30:{range:"统计 2026-09-05 至 2026-10-04 · 对比上一个30天",kpis:[["业绩", "909.84万", -3.0], ["退款金额", "169.00万", -0.1], ["推广花费", "263.89万", -3.0], ["数值", "47.58%", 0.6, "pt", true], ["成团单量", "327727单", -1.0], ["退款单量", "74452单", -4.3]],score:47.58,total:"909.84万",totals:[29.0, 18.57, 27.76]}
+  };
+  const monthly=[["蒙倩官方旗舰店", 144.3, 50.9], ["蒙倩美发官方旗舰店（丽）", 122.5, -19.0], ["蒙倩旗舰店", 97.7, -17.7], ["蒙倩化妆品官方旗舰店", 91.2, -13.4], ["蒙倩美妆旗舰店", 63.4, -3.8], ["蒙倩美发护发官方旗舰店（盼）", 60.0, -16.3], ["蒙倩美容美发官方旗舰店（博）", 44.1, 32.5], ["蒙倩美容护肤官方旗舰店", 35.4, -5.6], ["蒙倩个护官方旗舰店（熙）", 35.2, 16.3], ["蒙倩护发旗舰店（涛）", 35.2, -0.8], ["蒙倩彩妆官方旗舰店", 25.1, -1.1], ["蒙倩个人护理官方旗舰店", 24.7, 603.4], ["蒙倩美妆洗护官方旗舰店", 24.2, 97.2], ["蒙倩染发旗舰店（涛）", 22.7, -68.3], ["蒙倩精油官方旗舰店", 19.4, -19.8], ["蒙倩洗护官方旗舰店", 15.4, 33.2], ["蒙倩造型官方旗舰店", 14.8, 16.1], ["蒙倩药妆官方旗舰店", 8.3, 15.2], ["蒙倩美发护发旗舰店（盼）", 8.2, 25.1], ["蒙倩护发官方旗舰店（涛）", 6.1, 6.9], ["蒙倩美发旗舰店（炜）", 5.9, -4.5], ["植萃草本染发坊", 3.1, 5.6], ["蒙倩染发官方旗舰店（珍）", 2.9, -16.4]];
+  let period="d7", abnormal=false, query="";
+  const $=s=>document.querySelector(s);
+  function deltaHtml(v,unit,badMetric){if(v===null)return '<span class="delta-note">暂无对比</span>';const cls=badMetric?(v>0?'bad':'good'):(v>0?'up':'down');return `<span class="delta ${cls}">${v>0?'▲':'▼'} ${sourceNumber(Math.abs(v))}${unit||'%'}</span><span class="delta-note">环比</span>`}
+  function renderKpis(d){$("#kpis").innerHTML=d.kpis.map((k,i)=>`<article class="kpi" style="--accent:${i===3?'var(--red)':i===0?'var(--green)':'var(--amber)'}"><div class="kpi-label">${k[0]}</div><div class="kpi-value">${k[1]}</div>${deltaHtml(k[2],k[3],k[4])}</article>`).join("")}
+  function renderCore(d){$("#coreMeta").textContent=`当前 ${sourceNumber(d.score)}%`;$("#gauge").style.setProperty('--p',Math.min(d.score,100));$("#gaugeValue").textContent=sourceNumber(d.score)+'%';const diff=exactDifference(d.score,46);$("#gaugeStatus").textContent=diff>0?'高于标准线':'低于标准线';$("#gaugeStatus").className=diff>0?'over':'';$("#gaugeNote").textContent=`与 46% 标准线相差 ${sourceNumber(Math.abs(diff))}pt`;const refund=d.totals[1],ad=d.totals[0],partsTotal=exactSum(refund,ad),remainder=exactDifference(100,partsTotal),sourceGap=exactDifference(d.score,partsTotal);$("#donut").style.background=`conic-gradient(var(--red) 0 ${refund}%,var(--amber) ${refund}% ${partsTotal}%,var(--green) ${partsTotal}% 100%)`;$("#donut").style.setProperty('--total',d.total);$("#donut").setAttribute('data-total',d.total);const items=[["var(--red)","退款占业绩",refund],["var(--amber)","推广占业绩",ad],["var(--green)","未计入数值",remainder]];$("#legend").innerHTML=items.map(x=>`<div class="legend-item"><i class="dot" style="background:${x[0]}"></i><span>${x[1]}</span><b>${sourceNumber(x[2])}%</b></div>`).join('')+(sourceGap!==0?`<div class="source-gap">源数据校验：两项合计 ${sourceNumber(partsTotal)}%，与数值相差 ${sourceNumber(Math.abs(sourceGap))}pt</div>`:'');$("#donut").innerHTML=`<span class="donut-center"><span>${sourceNumber(partsTotal)}%</span><small>两项合计</small></span>`}
+  function renderTrend(d){const sec=$("#trendSection");if(!d.trend){sec.classList.add('hidden');$("#topGrid").classList.add('single');return}sec.classList.remove('hidden');$("#topGrid").classList.remove('single');$("#trendMeta").textContent=`日均 ${sourceNumber(d.trend.avg)}万`;const vals=d.trend.values,known=vals.filter(v=>v!==null),max=Math.max(...known)*1.08;$("#trend").innerHTML=`<div class="trend-bars">${vals.map((v,i)=>`<div class="day ${v===null?'unknown':''}"><span class="val">${v===null?'未标注':(d.trend.valueLabels?d.trend.valueLabels[i]:sourceNumber(v))+'万'}</span><i class="bar" style="--h:${v===null?45:v/max*100}%"></i><small>${d.trend.labels[i]}</small></div>`).join('')}</div><div class="trend-note"><span>最高 <b>${d.trend.high}</b></span><span>最低 <b>${d.trend.low}</b></span><span>${d.trend.note||'按日数据均来自原看板图表'}</span></div>`}
+  function sortedRows(d){return d.rows.slice().sort((a,b)=>b.money-a.money)}
+  function renderRanking(d){const list=sortedRows(d).slice(0,10),max=list[0].money;$("#rankMeta").textContent=d.compare;$("#ranking").innerHTML=list.map((r,i)=>`<div class="rank-row"><span class="rank-no">${String(i+1).padStart(2,'0')}</span><span class="shop" title="${r.name}">${r.name}</span><span class="track"><i class="fill" style="--w:${r.money/max*100}%"></i></span><span class="money">${r.moneyRaw}万</span><span class="score ${r.score>46?'warn-cell':''}">${r.scoreRaw}%</span></div>`).join('')}
+  function renderTable(d){let list=sortedRows(d).filter(r=>r.name.includes(query));if(abnormal)list=list.filter(r=>r.score>46);$("#tableBody").innerHTML=list.map(r=>`<tr><td>${r.name}</td><td data-label="业绩">${r.moneyRaw}万</td><td data-label="环比" class="${r.delta>=0?'delta up':'delta down'}">${r.delta>=0?'▲':'▼'} ${sourceNumber(Math.abs(r.delta))}%</td><td data-label="数值" class="${r.score>46?'warn-cell':''}">${r.scoreRaw}%</td><td data-label="推广占比">${r.adRaw}%</td><td data-label="退款占比">${r.refundRaw}%</td><td data-label="客单价">${r.aovRaw}</td></tr>`).join('')+(!query&&!abnormal?`<tr class="total"><td>合计</td><td data-label="业绩">${d.total}</td><td data-label="环比">${d.kpis[0][2]>0?'▲':'▼'} ${sourceNumber(Math.abs(d.kpis[0][2]))}%</td><td data-label="数值">${sourceNumber(d.score)}%</td><td data-label="推广占比">${sourceNumber(d.totals[0])}%</td><td data-label="退款占比">${sourceNumber(d.totals[1])}%</td><td data-label="客单价">${sourceNumber(d.totals[2])}</td></tr>`:'')}
+  function renderSummary(d){$("#summarySub").textContent=period==='day'?'当日口径':period==='month'?'本月口径':period==='d3'?'近3天口径':'近7天口径';$("#summary").innerHTML=d.summary.map((x,i)=>`<div class="summary-block"><strong>${['业绩','成本','订单'][i]}</strong><p>${x}</p></div>`).join('')+`<div class="actions"><strong>下一步</strong><ol>${d.actions.map(x=>`<li>${x}</li>`).join('')}</ol></div>`}
+  function renderMonthly(){const max=monthly[0][1];$("#monthlyRows").innerHTML=monthly.map((r,i)=>`<div class="monthly-row"><span class="shop">${String(i+1).padStart(2,'0')}　${r[0]}</span><span class="compare-bar"><i style="--current:${r[1]/max*100}%"></i></span><span class="current">${sourceNumber(r[1])}万</span><span class="delta ${r[2]>=0?'up':'down'}">${r[2]>=0?'▲':'▼'} ${sourceNumber(Math.abs(r[2]))}%</span></div>`).join('');$("#monthlySummary").innerHTML=`<div class="summary-block"><strong>整体</strong><p>23 家店合计 909.84万，较上一个30天下降 3.0%。</p></div><div class="summary-block"><strong>结构</strong><p>前3名合计 364.5万；上升 11 家、下滑 12 家、持平 0 家。</p></div><div class="summary-block"><strong>最大波动</strong><p>增长最快 蒙倩个人护理官方旗舰店（603.4%）；下滑最重 蒙倩染发旗舰店（涛）（-68.3%）。</p></div><div class="actions"><strong>下一步</strong><ol><li>12 家下滑店铺逐店检查活动、推广与转化节奏。</li><li>优先复盘 蒙倩染发旗舰店（涛）（-68.3%）的下滑原因。</li><li>核对 蒙倩个人护理官方旗舰店（603.4%）的增长是否来自低基数或新增链接。</li><li>拆解高增长店铺的商品与投放结构，提炼可复制动作。</li><li>复盘上升的 11 家店铺，把有效动作整理成统一执行清单。</li><li>下个30天继续使用相同区间对比，验证动作是否带来持续改善。</li></ol></div>`}
+  function render(){const d=data[period];$("#rangeText").textContent=d.range;renderKpis(d);document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.period===period)));const is30=period==='d30';$("#standardView").classList.toggle('hidden',is30);$("#monthlyView").classList.toggle('hidden',!is30);if(is30){renderMonthly();return}renderCore(d);renderTrend(d);renderRanking(d);renderTable(d);renderSummary(d)}
+  function initCollapsibles(){document.querySelectorAll('.section').forEach((section,index)=>{const head=Array.from(section.children).find(el=>el.classList.contains('section-head'));if(!head||head.querySelector('.section-toggle'))return;const left=head.firstElementChild,actions=document.createElement('div');actions.className='section-head-actions';Array.from(head.children).filter(el=>el!==left).forEach(el=>actions.appendChild(el));const button=document.createElement('button');button.type='button';button.className='section-toggle';button.tabIndex=-1;button.setAttribute('aria-hidden','true');button.innerHTML='<span class="toggle-label">展开</span><i class="chevron" aria-hidden="true"></i>';actions.appendChild(button);head.appendChild(actions);section.classList.add('collapsed');section.dataset.sectionIndex=String(index);const label=left.querySelector('h2')?.textContent||'板块';head.setAttribute('role','button');head.setAttribute('tabindex','0');head.setAttribute('aria-expanded','false');head.setAttribute('aria-label',`展开${label}`);const toggle=()=>{const collapsed=section.classList.toggle('collapsed');head.setAttribute('aria-expanded',String(!collapsed));head.setAttribute('aria-label',`${collapsed?'展开':'收起'}${label}`);button.querySelector('.toggle-label').textContent=collapsed?'展开':'收起'};head.addEventListener('click',toggle);head.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}})})}
+  $("#tabs").addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;period=b.dataset.period;query='';abnormal=false;$("#search").value='';$("#abnormalBtn").classList.remove('active');render()});
+  $("#search").addEventListener('input',e=>{query=e.target.value.trim();if(period!=='d30')renderTable(data[period])});
+  $("#abnormalBtn").addEventListener('click',()=>{abnormal=!abnormal;$("#abnormalBtn").classList.toggle('active',abnormal);renderTable(data[period])});
+  render();
+  initCollapsibles();
+})();
+
+/* ══ 访问密码门（密码存加盐哈希，不留明文；登录状态存 sessionStorage）══ */
+(function(){
+  var KEY = 'shiyi-daily-ok', HASH = 'e818342';
+  var gate = document.getElementById('gate'), app = document.getElementById('app');
+  var pw = document.getElementById('pw'), btn = document.getElementById('pwb'), err = document.getElementById('pwerr');
+  if(!gate || !app) return;
+  function fnv(s){
+    var x = 0x811c9dc5;
+    for(var i=0;i<s.length;i++){ x ^= s.charCodeAt(i); x = Math.imul(x, 0x01000193) >>> 0; }
+    return x.toString(16);
+  }
+  function unlock(){ gate.style.display = 'none'; app.style.display = ''; }
+  try{ if(sessionStorage.getItem(KEY) === '1'){ unlock(); return; } }catch(e){}
+  function tryGo(){
+    if(fnv(pw.value + 'shiyi-daily-2026') === HASH){
+      try{ sessionStorage.setItem(KEY, '1'); }catch(e){}
+      unlock();
+    }else{
+      err.textContent = '密码不对，请重试';
+      pw.value = ''; pw.focus();
+    }
+  }
+  btn.addEventListener('click', tryGo);
+  pw.addEventListener('keydown', function(e){ if(e.key === 'Enter') tryGo(); });
+  pw.focus();
+})();
+</script>
+</body>
+</html>
