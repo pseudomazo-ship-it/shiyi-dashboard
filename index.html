@@ -203,6 +203,16 @@ button:focus-visible,input:focus-visible,summary:focus-visible,label:focus-withi
         <button class="filter-btn" data-filter="需发票" data-group="status">🟠 需开发票</button>
         <button class="filter-btn" data-filter="超标主体" data-group="status">🔴 超标主体</button>
         <div class="filter-divider"></div>
+        <span class="filter-label">💰 销售状态：</span>
+        <button class="filter-btn active" data-filter="all" data-group="salesState">全部</button>
+        <button class="filter-btn" data-filter="has" data-group="salesState">✅ 有销售额</button>
+        <button class="filter-btn" data-filter="none" data-group="salesState">⭕ 无销售额</button>
+        <div class="filter-divider"></div>
+        <span class="filter-label">💳 流水状态：</span>
+        <button class="filter-btn" data-filter="all" data-group="flowState">全部</button>
+        <button class="filter-btn active" data-filter="has" data-group="flowState">✅ 有流水额</button>
+        <button class="filter-btn" data-filter="none" data-group="flowState">⭕ 无流水额</button>
+        <div class="filter-divider"></div>
         <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="搜索主体公司/店铺名..." aria-label="搜索主体公司或店铺名"></div>
       </div>
       <div class="filter-row">
@@ -356,7 +366,6 @@ function mergePeriods(keys){
     var map={}, order=[];
     keys.forEach(function(k){
         (QDATA[k]||[]).forEach(function(d){
-            if(!hasAnyData(d)) return;
             var c=d.company;
             if(!map[c]){map[c]={company:c,pddShops:'',activeStatus:d.activeStatus||'',region:d.region||'',period:'',
                 totalSales:0,promo:0,tech:0,ware:0,goods:0,other:0,totalExp:0,invoice:0,
@@ -384,7 +393,7 @@ function mergePeriods(keys){
         t.status=computeStatus(t);
         delete t._ps; delete t._ss; delete t._shops;
         return t;
-    }).filter(hasAnyData);
+    });
 }
 var Y2Q={'2025':['2025-Q3','2025-Q4'],'2026':['2026-Q1','2026-Q2','2026-Q3','2026-Q4']};
 function getMultiSelect(){
@@ -400,13 +409,15 @@ function getMultiSelect(){
     }
     return [];
 }
+function hasSales(d){ return Math.abs(Number(d.totalSales)||0) > 0; }
+function hasFlow(d){ return (Math.abs(Number(d.totalSales)||0)>0) || (Math.abs(Number(d.totalExp)||0)>0); }
 function getActiveData(){
     var keys=getMultiSelect();
-    if(!keys.length) return (QDATA.full||[]).filter(hasAnyData);
-    if(keys.length===1) return (QDATA[keys[0]]||[]).filter(hasAnyData);
+    if(!keys.length) return (QDATA.full||[]).slice();
+    if(keys.length===1) return (QDATA[keys[0]]||[]).slice();
     return mergePeriods(keys);
 }
-const filters={status:"all",activeStatus:"all",search:"",sales:"all",year:[],quarter:[],month:[],promo:"all",ware:"all",goods:"all",totalExp:"all",region:"all"}
+const filters={status:"all",activeStatus:"all",search:"",sales:"all",year:[],quarter:[],month:[],promo:"all",ware:"all",goods:"all",totalExp:"all",region:"all",salesState:"all",flowState:"has"}
 function getFilteredData(){
     return getActiveData().filter(function(d){
         if(filters.status !== "all" && d.status !== filters.status) return false;
@@ -418,6 +429,10 @@ function getFilteredData(){
         if(filters.goods !== "all" && getRatioLevel(d.goodsRatio) !== filters.goods) return false;
         if(filters.totalExp !== "all" && getRatioLevel(d.totalExpRatio) !== filters.totalExp) return false;
         if(filters.region && filters.region !== "all" && (d.region||"") !== filters.region) return false;
+        if(filters.salesState === "has" && !hasSales(d)) return false;
+        if(filters.salesState === "none" && hasSales(d)) return false;
+        if(filters.flowState === "has" && !hasFlow(d)) return false;
+        if(filters.flowState === "none" && hasFlow(d)) return false;
         return true;
     });
 }
@@ -669,10 +684,14 @@ function setupFilters() {
             if (key === 'year' || key === 'quarter' || key === 'month') filters[key] = [];
             else filters[key] = 'all';
         });
+        filters.flowState = 'has';   // 流水状态默认「有流水额」，与首屏一致
         filters.search = '';
         document.getElementById('searchInput').value = '';
         document.querySelectorAll('.filter-btn').forEach(function(b){
             b.classList.toggle('active', b.dataset.filter === 'all');
+        });
+        document.querySelectorAll('.filter-btn[data-group="flowState"]').forEach(function(b){
+            b.classList.toggle('active', b.dataset.filter === 'has');
         });
         updatePeriodVis();
         renderTable();
