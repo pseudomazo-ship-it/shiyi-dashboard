@@ -49,6 +49,47 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 </head>
 <body>
+<style>
+/* ══ 访问密码门（2026-10-07 加；密码存 sha256 哈希，不留明文）══ */
+#gate{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+#gate .gatebox{width:min(360px,100%);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;text-align:center;box-shadow:0 24px 60px #0006}
+#gate .gl{font-size:34px;line-height:1;margin-bottom:8px}
+#gate h1{font-size:20px;margin:0 0 6px;color:var(--txt)}
+#gate p{color:var(--sub);font-size:13px;margin:0 0 16px}
+#gate input{width:100%;height:44px;border-radius:8px;border:1px solid var(--line);background:#0f1117;color:var(--txt);text-align:center;font-size:16px;letter-spacing:2px;box-sizing:border-box}
+#gate button{width:100%;height:44px;margin-top:12px;border:0;border-radius:8px;background:var(--blue);color:#fff;font-size:15px;cursor:pointer}
+#gate #pwerr{color:#ef4444;font-size:13px;min-height:20px;margin-top:8px}
+</style>
+<div id="gate">
+  <div class="gatebox">
+    <div class="gl">🔒</div>
+    <h1>快递价格表</h1>
+    <p>请输入访问密码</p>
+    <input type="password" id="pw" inputmode="numeric" autocomplete="off" placeholder="····">
+    <button id="pwb">进 入</button>
+    <div id="pwerr"></div>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='shiyi-price-ok', HASH='3df6b6d10927ad854ec04078f5daddd50a340a6eb2053101cb34a35c4d0fb1e7';
+  var gate=document.getElementById('gate'), pw=document.getElementById('pw'),
+      btn=document.getElementById('pwb'), err=document.getElementById('pwerr');
+  if(!gate) return;
+  try{ if(sessionStorage.getItem(KEY)==='1'){ gate.style.display='none'; } }catch(e){}
+  function tryGo(){
+    var v=pw.value; if(!v) return;
+    crypto.subtle.digest('SHA-256', new TextEncoder().encode(v)).then(function(buf){
+      var hex=Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2)}).join('');
+      if(hex===HASH){ try{sessionStorage.setItem(KEY,'1')}catch(e){} gate.style.display='none'; }
+      else { err.textContent='密码不对，请重试'; pw.value=''; pw.focus(); }
+    }).catch(function(){ err.textContent='验证失败，请刷新页面重试'; });
+  }
+  btn.addEventListener('click', tryGo);
+  pw.addEventListener('keydown', function(e){ if(e.key==='Enter') tryGo(); });
+  pw.focus();
+})();
+</script>
 
 <h1>📦 快递价格表</h1>
 <div class="sub">源文件：快递决策表2026.7.25.xlsx ｜ 240 条「重量段 × 省份」决策明细 ｜ 更新 2026/09/21（中通 2.01-3kg 档 2026/09/19 起 +0.20元；2026/09/21 起海南停发中通）</div>
