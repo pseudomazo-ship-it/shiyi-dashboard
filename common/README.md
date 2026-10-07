@@ -1,6 +1,24 @@
-# 看板导航系统 · 使用说明
+# 个人工作台 · 使用说明
 
-一个域名下挂多个看板，共用统一导航和样式。
+一个域名下放多个看板。**首页负责导航，各看板彼此完全独立。**
+
+---
+
+## ⚠️ 核心规则（先读这条）
+
+```
+各看板对接不同的人，谁都不能看到别的看板的存在。
+
+  首页  /            有导航，列出所有看板入口
+                     —— 只给需要总览的人（你自己）
+
+  看板  /xxx/        【完全独立】：不引 common 里的任何东西
+                     无导航、无品牌、无其他看板入口
+                     看板自带完整样式和自己的密码门
+```
+
+**违反这条就泄露了**：只要看板里带了导航，拿到这个看板链接的人
+就能顺着看到你还有哪些看板（甚至点进去）。
 
 ---
 
@@ -12,51 +30,33 @@
 /你的看板名/index.html
 ```
 
-> 目录名用小写英文，例如 `daily` / `finance` / `logistics`
-> 文件必须是 `index.html`，这样访问 `域名/你的看板名/` 就能打开
+目录名用小写英文（`daily` / `finance` / `logistics` 这种），
+文件名必须是 `index.html`，这样访问 `域名/你的看板名/` 就能打开。
 
-### ② 让页面接入统一导航（2 行）
+### ② 页面保持独立 —— 什么都不用引
 
-在 HTML 的 `<head>` 里加：
+**不要引** `/common/style.css`，**不要引** `/common/nav.js`。
 
-```html
-<link rel="stylesheet" href="/common/style.css">
-```
+看板页面自带完整样式。**引了反而出问题**：
+- 引 `nav.js` → 泄露其他看板
+- 引 `style.css` → 可能和看板自己的样式打架
 
-在 `<body>` 的最顶部加：
+### ③ 在首页加一个入口
 
-```html
-<div id="app-nav"></div>
-<script src="/common/nav.js"></script>
-```
-
-> ⚠️ 路径必须以 `/` 开头（绝对路径）。写成 `common/style.css` 的话，在子目录页面会 404。
-
-**已有页面不想手改的话，用注入工具**：
-
-```bash
-python common/inject_ui.py 你的看板名/index.html
-```
-
-自动插入上面两处，可重复执行（幂等，不会重复插入）。
-
-### ③ 在导航里加一项
-
-编辑 `common/nav.js`，在 `NAV_ITEMS` 数组里加一行：
-
-```javascript
-{ label: '看板名', href: '/你的看板名/', match: ['/你的看板名/'] },
-```
-
-再到 `index.html` 的 `.dashboard-grid` 里加一张卡片：
+编辑 `index.html`，在对应分类的 `.dashboard-grid` 里加一张卡片：
 
 ```html
-<a class="dashboard-link" href="/你的看板名/">
+<a class="dashboard-link" href="/你的看板名/" data-name="关键词1 关键词2 用于搜索">
     <div class="icon">📈</div>
     <h3>看板名</h3>
     <p>一句话说明</p>
+    <span class="open-link">打开看板 →</span>
 </a>
 ```
+
+然后把该分类标题里的 `.cat-count` 数字 +1。
+
+**如还想加进顶部菜单**：编辑 `common/nav.js` 的 `NAV_ITEMS` 数组加一行。
 
 ---
 
@@ -64,19 +64,20 @@ python common/inject_ui.py 你的看板名/index.html
 
 ```
 /
-├── index.html              首页导航
+├── index.html              首页（个人工作台）—— 唯一有导航的页面
 ├── common/
-│   ├── style.css           统一样式库（变量/导航/卡片/表格/按钮/响应式）
-│   ├── nav.js              导航组件（路径高亮 + 汉堡菜单）
-│   └── inject_ui.py        导航注入工具
-├── daily/index.html        数据日报
-├── finance/index.html      主体财务看板
-└── logistics/index.html    快递决策速查表
+│   ├── style.css           首页样式库
+│   ├── nav.js              首页导航组件（含搜索框）
+│   ├── inject_ui.py        工具：注入/移除导航、升资源版本号
+│   └── README.md           本文件
+├── daily/index.html        数据日报      （独立）
+├── finance/index.html      主体财务看板  （独立）
+└── logistics/index.html    快递决策速查表（独立）
 ```
 
 ---
 
-## 三、设计规范
+## 三、首页样式规范
 
 | 项目 | 值 |
 |---|---|
@@ -87,43 +88,46 @@ python common/inject_ui.py 你的看板名/index.html
 | 字体 | system-ui + 微软雅黑 |
 | 导航高度 | 64px（移动端折叠为汉堡菜单） |
 
-**样式库里可用的 class**：
+**首页可用的 class**：
 
 ```
-布局    container / page-header / card / card-title
-数字卡  stats-grid / stat-card（+ .success / .warning / .danger）
-表格    table-wrap + 原生 table
-标签    tag / tag-success / tag-warning / tag-danger / tag-info / tag-gray
-按钮    btn / btn-primary / btn-outline / btn-danger
-首页    dashboard-grid / dashboard-link
+布局    container / page-header / hero / section-title / cat / cat-title / cat-count
+入口    quick-grid / quick-card（常用入口）
+卡片    dashboard-grid / dashboard-link（+ .disabled 表示待接入）/ open-link
+搜索    nav-search（导航内搜索框，data-search="1" 开启）
 工具    mt-1~3 / mb-1~3 / flex / flex-between / flex-center / text-muted / text-sm / text-lg
 ```
 
 ---
 
-## 四、注意事项
+## 四、维护工具（`common/inject_ui.py`）
 
-**1. 自动生成的看板，要让生成器带上导航**
+```bash
+# 检查某页面是否独立（加看板后自检用）
+python common/inject_ui.py --check daily/index.html
 
-`daily/index.html` 和 `finance/index.html` 是脚本自动生成的，脚本整份重写 HTML 会冲掉导航。
-生成器产出后要调用一次注入：
+# 万一给独立看板误加了导航，一键移除
+python common/inject_ui.py --strip daily/index.html finance/index.html logistics/index.html
 
-```python
-import subprocess
-subprocess.run(['python', 'common/inject_ui.py', 'daily/index.html'])
+# 改了 style.css / nav.js 后，升版本号让浏览器立刻拉新版（防缓存）
+python common/inject_ui.py --bump 2 index.html
 ```
 
-**2. 多个来源自动 push 时，各推各的目录**
+> 资源引用带 `?v=1`。**改了 CSS/JS 一定要升版本号**，否则浏览器缓存旧版，
+> 你会看到"改了没生效"。
 
-不要整仓库覆盖式 push，否则会冲掉别的看板。只 add/commit 自己那个目录下的文件。
+---
 
-**3. 导航项超过 6~7 个时建议分组**
+## 五、自动更新的看板怎么处理
 
-`nav.js` 的 `NAV_ITEMS` 现在是一维数组，元素多了导航会挤。
-到时候可以按用途分组（例如「运营数据 / 个人」），改结构即可。
+`daily/index.html`（数据日报）和 `finance/index.html`（主体财务看板）是脚本自动生成的，
+整份重写 HTML。
 
-**4. 安全分层**
+**两者都不会破坏独立性**：
 
-当前域名是 DNS 直连（不走 Cloudflare 代理），**没有访问控制**，页面上谁拿到网址谁就能看。
-- 公司数据（日报 / 财务 / 快递规则）不要和对外公开的个人内容放在同一个导航入口层
-- 需要真防护就得改回 Cloudflare 代理 + Access（代价是延迟从 ~0.4s 变 ~0.18s）
+- **数据日报**：生成器 `scripts/daily_dashboard_v2.py` 跑完会调 `--strip` 兜底移除导航
+- **主体财务看板**：周更脚本 `weekly_sync.py` 是「读 → 替换 QDATA → 写回」模式，
+  只换数据不动结构，**路径已指向 `finance/index.html`**
+
+**新增自动更新看板时**：确认生成脚本不会往页面里塞导航，
+并在生成后跑一次 `--strip` 兜底。
