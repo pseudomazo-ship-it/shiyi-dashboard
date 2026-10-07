@@ -30,8 +30,12 @@ body {
     background: var(--bg);
     color: var(--text);
     line-height: 1.6;
-    padding-top: var(--nav-height);  /* 给固定导航留出空间 */
     -webkit-font-smoothing: antialiased;
+}
+/* 只有带导航的页面才留出顶部空间（nav.js 会给 body 加 .has-nav）
+   独立看板不引导航，也就不会多出空白 */
+body.has-nav {
+    padding-top: var(--nav-height);
 }
 
 /* ---------- 顶部导航 ---------- */

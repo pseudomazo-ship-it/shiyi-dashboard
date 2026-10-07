@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-"""看板 HTML：统一导航注入 + 资源版本号管理
+"""看板 HTML：统一导航注入 / 移除 + 资源版本号管理
 
 用法:
     python inject_ui.py <html...>                 # 注入导航（已存在则同步版本号）
+    python inject_ui.py --strip <html...>         # 移除导航和 common 引用（看板独立化）
     python inject_ui.py --check <html...>         # 只检查不修改
-    python inject_ui.py --bump <版本> <html...>   # 只升版本号（不改结构）
+    python inject_ui.py --bump <版本> <html...>   # 只升版本号
 
-说明:
-    - 引用 /common/style.css 和 /common/nav.js 时自动带 ?v=<VER>
-    - 改了 CSS/JS 之后跑一次 --bump 2，线上浏览器就会立刻拉新版（绕过缓存）
+背景:
+    - 首页（个人工作台）需要导航
+    - 各看板页面必须【完全独立】：不含任何导航/品牌/其他看板入口
+      （各看板对接不同的人，不能互相看见）
 """
 import sys, os, re, io
 
@@ -18,11 +20,15 @@ MARK_CSS = '/common/style.css'
 MARK_JS  = '/common/nav.js'
 MARK_NAV = 'id="app-nav"'
 
-# 匹配 /common/style.css 或 /common/nav.js（含已有 ?v=...）
 RE_VER = re.compile(r'(/common/(?:style\.css|nav\.js))(\?v=[0-9A-Za-z._\-]*)?')
 
 RE_HEAD = re.compile(r'</head>', re.I)
 RE_BODY = re.compile(r'<body[^>]*>', re.I)
+
+# 移除用
+RE_NAV_DIV    = re.compile(r'\s*<div\s+id="app-nav"\s*>\s*</div>[ \t]*\n?', re.I)
+RE_NAV_SCRIPT = re.compile(r'\s*<script[^>]*src="/common/nav\.js[^"]*"[^>]*>\s*</script>[ \t]*\n?', re.I)
+RE_CSS_LINK   = re.compile(r'\s*<link[^>]*href="/common/style\.css[^"]*"[^>]*>[ \t]*\n?', re.I)
 
 
 def css_tag(ver=VER):
@@ -35,21 +41,17 @@ def nav_block(ver=VER):
 
 
 def bump_versions(html, ver):
-    """把已有的 ?v= 全部改成新版本；没带版本号的补上"""
     n = [0]
 
     def rep(m):
         n[0] += 1
         return '%s?v=%s' % (m.group(1), ver)
 
-    html = RE_VER.sub(rep, html)
-    return html, n[0]
+    return RE_VER.sub(rep, html), n[0]
 
 
 def inject(html, ver=VER):
     notes = []
-
-    # ① CSS
     if MARK_CSS in html:
         notes.append('CSS 引用已存在')
     else:
@@ -60,7 +62,6 @@ def inject(html, ver=VER):
         else:
             notes.append('⚠️ 没找到 </head>，CSS 未注入')
 
-    # ② 导航
     if MARK_NAV in html:
         notes.append('导航已存在')
     else:
@@ -72,10 +73,27 @@ def inject(html, ver=VER):
         else:
             notes.append('⚠️ 没找到 <body>，导航未注入')
 
-    # ③ 统一版本号
     html, cnt = bump_versions(html, ver)
-    notes.append('版本号 → v%s（处理 %d 处）' % (ver, cnt))
+    notes.append('版本号 → v%s（%d 处）' % (ver, cnt))
+    return html, notes
 
+
+def strip(html):
+    """移除导航 + common 引用，让看板彻底独立"""
+    notes = []
+    total = 0
+    for rx, name in ((RE_NAV_DIV, '导航容器'),
+                     (RE_NAV_SCRIPT, 'nav.js 引用'),
+                     (RE_CSS_LINK, 'style.css 引用')):
+        html, k = rx.subn('\n', html)
+        total += k
+        if k:
+            notes.append('%s 已移除 (%d)' % (name, k))
+    # 清理连续空行
+    html = re.sub(r'\n{3,}', '\n\n', html)
+    if not notes:
+        notes.append('本来就没有导航/引用，无需处理')
+    notes.append('合计移除 %d 项' % total)
     return html, notes
 
 
@@ -85,6 +103,8 @@ def main():
     ver = VER
     if args and args[0] == '--check':
         mode = 'check'; args = args[1:]
+    elif args and args[0] == '--strip':
+        mode = 'strip'; args = args[1:]
     elif args and args[0] == '--bump':
         mode = 'bump'; args = args[1:]
         if not args:
@@ -92,7 +112,7 @@ def main():
         ver = args[0]; args = args[1:]
 
     if not args:
-        print('用法: inject_ui.py [--check|--bump <ver>] <html...>'); return
+        print('用法: inject_ui.py [--check|--strip|--bump <ver>] <html...>'); return
 
     for path in args:
         if not os.path.isfile(path):
@@ -101,22 +121,30 @@ def main():
         with io.open(path, 'r', encoding='utf-8', errors='replace') as f:
             html = f.read()
         before = html
+
         title = ''
         mt = re.search(r'<title>([^<]*)</title>', html, re.I)
         if mt:
             title = mt.group(1).strip()[:46]
 
-        if mode == 'bump':
+        if mode == 'strip':
+            new, notes = strip(html)
+        elif mode == 'bump':
             new, cnt = bump_versions(html, ver)
-            notes = ['版本号 → v%s（处理 %d 处）' % (ver, cnt)]
+            notes = ['版本号 → v%s（%d 处）' % (ver, cnt)]
+        elif mode == 'check':
+            is_indep = (MARK_NAV not in html) and (MARK_CSS not in html) and (MARK_JS not in html)
+            notes = ['独立页面 ✅' if is_indep else '含导航/公共引用 ⚠️']
+            new = html
         else:
             new, notes = inject(html, ver)
 
-        label = {'inject': '注入', 'check': '检查', 'bump': '升版本'}[mode]
+        label = {'inject': '注入', 'check': '检查', 'bump': '升版本', 'strip': '移除'}[mode]
         print('── %s: %s' % (label, path.replace('\\', '/').split('/')[-2:][0] + '/' + os.path.basename(path)))
         print('   title: %s' % title)
         for n in notes:
             print('   · %s' % n)
+
         if mode == 'check':
             print('   (未修改)')
         elif new != before:

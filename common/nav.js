@@ -180,6 +180,9 @@
 
         host.outerHTML = '<nav class="app-nav">' + brandHtml + searchHtml + menuHtml + '</nav>';
 
+        /* 给 body 打标：样式库据此留出导航高度 */
+        document.body.classList.add('has-nav');
+
         /* 汉堡菜单交互 */
         var toggle = document.querySelector('.nav-toggle');
         var links = document.getElementById('appNavLinks');
