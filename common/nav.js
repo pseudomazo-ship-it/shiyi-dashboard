@@ -70,7 +70,7 @@
 
     var BRAND = { text: '十一.11个人工作台', logo: '', href: '/' };
     var SB_BRAND = { name: '十一.11', sub: '个人工作台', logo: '11', href: '/' };
-    var SB_FOOT = '内部使用 · 请勿外传<br>shiyi11.com.cn';
+    var SB_FOOT = '';   // 2026-10-07 起不显示（用户要求去掉）
 
     var TITLE_HINTS = [
         { key: '数据日报', href: '/daily/' },
@@ -287,7 +287,6 @@
                     '</span>' +
                 '</a>' +
                 '<nav class="sb-nav">' + homeHtml + groupsHtml + '</nav>' +
-                '<div class="sb-foot">' + SB_FOOT + '</div>' +
             '</aside>' +
             '<div class="sb-mask" id="sbMask"></div>';
 
