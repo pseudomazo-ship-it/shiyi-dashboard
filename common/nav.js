@@ -18,13 +18,55 @@
 (function () {
     'use strict';
 
-    /* ---------- 菜单配置 ---------- */
-    var NAV_ITEMS = [
-        { label: '首页',         href: '/',           match: ['/'],           icon: '🏠' },
-        { label: '数据日报',     href: '/daily/',     match: ['/daily/'],     icon: '📊' },
-        { label: '主体财务看板', href: '/finance/',   match: ['/finance/'],   icon: '💰' },
-        { label: '快递决策速查', href: '/logistics/', match: ['/logistics/'], icon: '🚚' }
+    /* ---------- 菜单配置：母分类 > 子分类 ----------
+       href 为空 = 还没接入（侧边栏里显示为灰色不可点） */
+    var NAV_GROUPS = [
+        {
+            title: '运营数据',
+            items: [
+                { label: '数据日报',     href: '/daily/',     icon: '📊', match: ['/daily/'] },
+                { label: '主体财务看板', href: '/finance/',   icon: '💰', match: ['/finance/'] },
+                { label: '快递决策速查', href: '/logistics/', icon: '🚚', match: ['/logistics/'] }
+            ]
+        },
+        {
+            title: '办公工具',
+            items: [
+                { label: '待办清单',       href: '', icon: '📝' },
+                { label: '退款处理工作台', href: '', icon: '🛠️' },
+                { label: '商品上架控制台', href: '', icon: '📦' }
+            ]
+        },
+        {
+            title: '技能资源',
+            items: [
+                { label: 'Agent Skills 管理台', href: '', icon: '🧩' },
+                { label: '客服话术库',          href: '', icon: '💬' }
+            ]
+        },
+        {
+            title: '知识资料',
+            items: [
+                { label: '平台规则库',       href: '', icon: '📚' },
+                { label: '快递物流规则汇总', href: '', icon: '📋' }
+            ]
+        }
     ];
+
+    /* 扁平化（顶部横导航 / 标题兜底仍用这个） */
+    var NAV_ITEMS = (function () {
+        var out = [];
+        for (var g = 0; g < NAV_GROUPS.length; g++) {
+            var its = NAV_GROUPS[g].items;
+            for (var i = 0; i < its.length; i++) {
+                if (its[i].href) { out.push(its[i]); }
+            }
+        }
+        return out;
+    })();
+
+    /* 首页入口单独提出来（侧边栏品牌已链首页，这里只给顶部模式兜底） */
+    var HOME_ITEM = { label: '首页', href: '/', match: ['/'], icon: '🏠' };
 
     var BRAND = { text: '十一.11个人工作台', logo: '', href: '/' };
     var SB_BRAND = { name: '十一.11', sub: '个人工作台', logo: '11', href: '/' };
@@ -178,13 +220,62 @@
         });
     }
 
-    /* ---------- 构建左侧竖导航 ---------- */
-    function buildSidebar(host, active) {
-        var items = NAV_ITEMS.map(function (it, i) {
-            var cls = (i === active) ? ' class="active"' : '';
-            return '<a href="' + esc(it.href) + '"' + cls + '>' +
-                   (it.icon ? '<span class="i">' + it.icon + '</span>' : '') +
-                   esc(it.label) + '</a>';
+    /* ---------- 母分类展开 / 收起（默认全部收起） ---------- */
+    function bindGroups() {
+        var btns = document.querySelectorAll('.sb-group-btn');
+        for (var i = 0; i < btns.length; i++) {
+            (function (btn) {
+                var arrow = btn.querySelector('.sb-arrow');
+                btn.addEventListener('click', function () {
+                    var g = btn.parentNode;
+                    var open = g.classList.toggle('open');
+                    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    /* 直接用符号切换，比 CSS 旋转可靠 */
+                    if (arrow) { arrow.textContent = open ? '▾' : '▸'; }
+                });
+            })(btns[i]);
+        }
+    }
+
+    /* ---------- 当前路径是否匹配某个 href ---------- */
+    function isActivePath(href) {
+        if (!href) { return false; }
+        var cur = normPath(window.location.pathname);
+        if (href === '/') { return cur === '/'; }
+        return cur === href || cur.indexOf(href) === 0;
+    }
+
+    /* ---------- 构建左侧竖导航（母分类 > 子分类） ---------- */
+    function buildSidebar(host) {
+        var homeHtml = '<a href="' + esc(HOME_ITEM.href) + '"' +
+                       (isActivePath(HOME_ITEM.href) ? ' class="active"' : '') + '>' +
+                       '<span class="i">🏠</span>首页</a>';
+
+        var groupsHtml = NAV_GROUPS.map(function (g, gi) {
+            var rows = g.items.map(function (it) {
+                if (!it.href) {
+                    return '<a href="#" class="disabled" title="待接入">' +
+                           '<span class="i">' + it.icon + '</span>' +
+                           '<span class="nm">' + esc(it.label) + '</span>' +
+                           '<span class="tag-soon">待接入</span></a>';
+                }
+                return '<a href="' + esc(it.href) + '"' +
+                       (isActivePath(it.href) ? ' class="active"' : '') + '>' +
+                       '<span class="i">' + it.icon + '</span>' +
+                       '<span class="nm">' + esc(it.label) + '</span>' + '</a>';
+            }).join('');
+
+            var live = 0;
+            for (var k = 0; k < g.items.length; k++) { if (g.items[k].href) { live++; } }
+
+            return '<div class="sb-group" data-gi="' + gi + '">' +
+                       '<button class="sb-group-btn" type="button" aria-expanded="false">' +
+                           '<span class="sb-group-name">' + esc(g.title) + '</span>' +
+                           '<span class="sb-group-cnt">' + live + '</span>' +
+                           '<span class="sb-arrow">▸</span>' +
+                       '</button>' +
+                       '<div class="sb-group-items">' + rows + '</div>' +
+                   '</div>';
         }).join('');
 
         host.outerHTML =
@@ -195,13 +286,14 @@
                         '<small>' + esc(SB_BRAND.sub) + '</small>' +
                     '</span>' +
                 '</a>' +
-                '<nav class="sb-nav">' + items + '</nav>' +
+                '<nav class="sb-nav">' + homeHtml + groupsHtml + '</nav>' +
                 '<div class="sb-foot">' + SB_FOOT + '</div>' +
             '</aside>' +
             '<div class="sb-mask" id="sbMask"></div>';
 
         document.body.classList.add('has-sidebar');
         bindSidebarToggle();
+        bindGroups();
     }
 
     /* ---------- 构建顶部横导航 ---------- */
@@ -219,7 +311,7 @@
 
         var searchHtml = SEARCH
             ? '<div class="nav-search"><span class="ico">🔍</span>' +
-              '<input id="appNavSearch" type="search" placeholder="搜索看板…" autocomplete="off"></div>'
+              '<input id="appNavSearch" type="search" placeholder="" autocomplete="off" aria-label="搜索"></div>'
             : '';
 
         var menuHtml = MENU
@@ -252,11 +344,10 @@
     function build() {
         var host = document.getElementById('app-nav');
         if (!host) { return; }
-        var active = activeIndex();
         if (SIDEBAR) {
-            buildSidebar(host, active);
+            buildSidebar(host);
         } else {
-            buildTopbar(host, active);
+            buildTopbar(host, activeIndex());
         }
         if (SEARCH) { bindSearch(); }
         if (CLOCK)  { bindClock(); }

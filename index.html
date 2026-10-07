@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>十一.11个人工作台</title>
-<link rel="stylesheet" href="/common/style.css?v=2">
+<link rel="stylesheet" href="/common/style.css?v=6">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -17,7 +17,7 @@
 
 <!-- 左侧竖导航（由 common/nav.js 渲染） -->
 <div id="app-nav"></div>
-<script src="/common/nav.js?v=2" data-sidebar="1" data-clock="1" data-search="1"></script>
+<script src="/common/nav.js?v=6" data-sidebar="1" data-clock="1" data-search="1"></script>
 
 <!-- 主区 -->
 <div class="main">
@@ -27,16 +27,16 @@
         <button class="sb-toggle" id="sbToggle" type="button" aria-label="打开菜单">☰</button>
         <div class="nav-search">
             <span class="ico">🔍</span>
-            <input id="appNavSearch" type="search" placeholder="搜索看板…" autocomplete="off">
+            <input id="appNavSearch" type="search" placeholder="" autocomplete="off" aria-label="搜索">
         </div>
     </div>
 
     <div class="container">
 
-        <!-- ========== 欢迎区 ========== -->
-        <div class="hero">
-            <h1>欢迎回来，十一。</h1>
-            <div class="hero-sub">所有看板入口都汇总在这里，点卡片直接打开</div>
+        <!-- ========== 左下角悬浮状态卡 ========== -->
+        <div class="hero" id="statusCard">
+            <h1>欢迎回来。</h1>
+            <div class="hero-sub">所有入口都汇总在这里，点卡片直接打开</div>
             <div class="hero-live">
                 <span id="liveTime">加载中…</span>
                 <span class="pulse-dot" title="运行正常"></span>

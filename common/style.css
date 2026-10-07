@@ -533,12 +533,68 @@ body.has-sidebar {
 }
 
 .sb-nav { padding: 14px 10px; flex: 1; }
-.sb-group {
-    font-size: 10.5px;
-    color: rgba(255,255,255,0.42);
-    letter-spacing: .8px;
-    padding: 14px 10px 6px;
+
+/* ---------- 母分类（可展开/收起，默认收起） ---------- */
+.sb-group { margin-bottom: 1px; }
+.sb-group-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 11px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.58);
+    font-size: 12px;
     font-weight: 600;
+    letter-spacing: .4px;
+    cursor: pointer;
+    border-radius: 9px;
+    text-align: left;
+    transition: background .15s ease, color .15s ease;
+    font-family: inherit;
+}
+.sb-group-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.92); }
+.sb-group-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.sb-group-cnt {
+    flex: 0 0 auto;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.10);
+    color: rgba(255,255,255,0.50);
+    font-weight: 500;
+    letter-spacing: 0;
+}
+.sb-arrow {
+    flex: 0 0 auto;
+    display: inline-block;      /* inline 元素 transform 不生效，必须 inline-block */
+    font-size: 13px;
+    line-height: 1;
+    color: rgba(255,255,255,0.42);
+    transition: transform .2s ease;
+    transform-origin: 50% 50%;
+}
+.sb-group.open .sb-arrow { transform: rotate(90deg); }
+
+/* 子分类容器：默认隐藏 */
+.sb-group-items { display: none; }
+.sb-group.open .sb-group-items { display: block; }
+
+/* 子项样式 */
+.sb-group-items a { padding-left: 12px; }
+.sb-nav a .nm {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .sb-nav a {
     display: flex;
@@ -556,8 +612,19 @@ body.has-sidebar {
 .sb-nav a.active { background: var(--accent); color: #fff; font-weight: 600; }
 .sb-nav a .i { width: 17px; text-align: center; font-size: 14px; flex: 0 0 17px; }
 .sb-nav a.disabled {
-    color: rgba(255,255,255,0.30);
+    color: rgba(255,255,255,0.34);
     pointer-events: none;
+}
+.sb-nav a .tag-soon {
+    margin-left: auto;
+    flex: 0 0 auto;
+    font-size: 9.5px;
+    padding: 1px 6px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.10);
+    color: rgba(255,255,255,0.45);
+    font-weight: 400;
+    letter-spacing: 0;
 }
 
 .sb-foot {
@@ -637,29 +704,39 @@ body.has-sidebar {
 }
 .sb-mask.show { display: block; }
 
-/* ---------- 欢迎区（带实时时间 + 呼吸灯） ---------- */
+/* ---------- 左下角悬浮状态卡（实时时间 + 呼吸灯） ---------- */
 .hero {
+    position: fixed;
+    left: calc(var(--sidebar-w) + 22px);
+    bottom: 22px;
+    z-index: 800;
     display: block;
-    padding: 26px 28px;
-    margin-bottom: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(15,23,42,.07), 0 12px 32px rgba(15,23,42,.09);
+    padding: 16px 20px;
+    margin: 0;
+    max-width: 330px;
 }
 .hero h1 {
-    font-size: 23px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--primary);
-    letter-spacing: -.3px;
+    letter-spacing: -.2px;
 }
 .hero-sub {
-    font-size: 13.5px;
+    font-size: 12.5px;
     color: var(--text-light);
-    margin-top: 7px;
+    margin-top: 5px;
+    line-height: 1.6;
 }
 .hero-live {
     display: flex;
     align-items: center;
     gap: 9px;
-    margin-top: 11px;
-    font-size: 13.5px;
+    margin-top: 10px;
+    font-size: 12.5px;
     color: var(--text-light);
     font-variant-numeric: tabular-nums;
 }
@@ -694,8 +771,9 @@ body.has-sidebar {
     .sb-toggle { display: flex; align-items: center; justify-content: center; }
     .topbar { padding: 0 14px; gap: 10px; }
     .topbar .nav-search { max-width: none; }
-    .hero { padding: 20px 18px; }
-    .hero h1 { font-size: 20px; }
+    /* 左下角状态卡：手机上贴左边、缩窄 */
+    .hero { left: 14px; right: 14px; bottom: 14px; max-width: none; padding: 13px 16px; }
+    .hero h1 { font-size: 15px; }
 }
 
 /* ---------- 导航内搜索框 ---------- */
