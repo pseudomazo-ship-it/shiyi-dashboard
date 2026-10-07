@@ -40,7 +40,7 @@
         {
             title: '技能资源',
             items: [
-                { label: 'Agent Skills 管理台', href: '', icon: '🧩' },
+                { label: 'Agent Skills 管理台', href: '/skills/', icon: '🧩', match: ['/skills/'] },
                 { label: '客服话术库',          href: '', icon: '💬' }
             ]
         },
