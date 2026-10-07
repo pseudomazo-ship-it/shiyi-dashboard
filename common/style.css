@@ -704,10 +704,10 @@ body.has-sidebar {
 }
 .sb-mask.show { display: block; }
 
-/* ---------- 左下角悬浮状态卡（实时时间 + 呼吸灯） ---------- */
+/* ---------- 右下角悬浮状态卡（实时时间 + 呼吸灯） ---------- */
 .hero {
     position: fixed;
-    left: calc(var(--sidebar-w) + 22px);
+    right: 22px;
     bottom: 22px;
     z-index: 800;
     display: block;

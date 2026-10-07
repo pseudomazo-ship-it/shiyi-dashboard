@@ -220,7 +220,7 @@
         });
     }
 
-    /* ---------- 母分类展开 / 收起（默认全部收起） ---------- */
+    /* ---------- 母分类展开 / 收起（默认全部展开） ---------- */
     function bindGroups() {
         var btns = document.querySelectorAll('.sb-group-btn');
         for (var i = 0; i < btns.length; i++) {
@@ -268,11 +268,11 @@
             var live = 0;
             for (var k = 0; k < g.items.length; k++) { if (g.items[k].href) { live++; } }
 
-            return '<div class="sb-group" data-gi="' + gi + '">' +
-                       '<button class="sb-group-btn" type="button" aria-expanded="false">' +
+            return '<div class="sb-group open" data-gi="' + gi + '">' +
+                       '<button class="sb-group-btn" type="button" aria-expanded="true">' +
                            '<span class="sb-group-name">' + esc(g.title) + '</span>' +
                            '<span class="sb-group-cnt">' + live + '</span>' +
-                           '<span class="sb-arrow">▸</span>' +
+                           '<span class="sb-arrow">▾</span>' +
                        '</button>' +
                        '<div class="sb-group-items">' + rows + '</div>' +
                    '</div>';
