@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>十一.11个人工作台</title>
-<link rel="stylesheet" href="/common/style.css?v=1">
+<link rel="stylesheet" href="/common/style.css?v=2">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -15,180 +15,192 @@
 </head>
 <body>
 
+<!-- 左侧竖导航（由 common/nav.js 渲染） -->
 <div id="app-nav"></div>
-<script src="/common/nav.js?v=1" data-search="1" data-nav="0"></script>
+<script src="/common/nav.js?v=2" data-sidebar="1" data-clock="1" data-search="1"></script>
 
-<div class="container">
+<!-- 主区 -->
+<div class="main">
 
-    <!-- ========== 欢迎区 ========== -->
-    <div class="hero">
-        <div class="hero-txt">
-            <h1>欢迎回来</h1>
-            <p>所有看板入口都汇总在这里，点卡片直接打开</p>
-        </div>
-        <div class="hero-meta">
-            最近更新
-            <strong>2026/10/07</strong>
+    <!-- 顶部栏：移动端菜单按钮 + 搜索框 -->
+    <div class="topbar">
+        <button class="sb-toggle" id="sbToggle" type="button" aria-label="打开菜单">☰</button>
+        <div class="nav-search">
+            <span class="ico">🔍</span>
+            <input id="appNavSearch" type="search" placeholder="搜索看板…" autocomplete="off">
         </div>
     </div>
 
-    <!-- ========== 常用入口 ========== -->
-    <h2 class="section-title">常用入口</h2>
-    <div class="quick-grid">
+    <div class="container">
 
-        <a class="quick-card" href="/daily/">
-            <div class="qic">📊</div>
-            <div>
-                <div class="qt">数据日报</div>
-                <div class="qd">每天 23:55 更新</div>
+        <!-- ========== 欢迎区 ========== -->
+        <div class="hero">
+            <h1>欢迎回来，十一。</h1>
+            <div class="hero-sub">所有看板入口都汇总在这里，点卡片直接打开</div>
+            <div class="hero-live">
+                <span id="liveTime">加载中…</span>
+                <span class="pulse-dot" title="运行正常"></span>
             </div>
-        </a>
+        </div>
 
-        <a class="quick-card" href="/finance/">
-            <div class="qic">💰</div>
-            <div>
-                <div class="qt">主体财务看板</div>
-                <div class="qd">每周一 9:00 更新</div>
+        <!-- ========== 常用入口 ========== -->
+        <h2 class="section-title">常用入口</h2>
+        <div class="quick-grid">
+
+            <a class="quick-card" href="/daily/">
+                <div class="qic">📊</div>
+                <div>
+                    <div class="qt">数据日报</div>
+                    <div class="qd">每天 23:55 更新</div>
+                </div>
+            </a>
+
+            <a class="quick-card" href="/finance/">
+                <div class="qic">💰</div>
+                <div>
+                    <div class="qt">主体财务看板</div>
+                    <div class="qd">每周一 9:00 更新</div>
+                </div>
+            </a>
+
+            <a class="quick-card" href="/logistics/">
+                <div class="qic">🚚</div>
+                <div>
+                    <div class="qt">快递决策速查</div>
+                    <div class="qd">按省份 / 重量查</div>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- ========== 全部看板 ========== -->
+        <h2 class="section-title">全部看板</h2>
+
+        <!-- ---------- 运营数据 ---------- -->
+        <div class="cat">
+            <h3 class="cat-title">运营数据 <span class="cat-count">3</span></h3>
+            <div class="dashboard-grid">
+
+                <a class="dashboard-link" href="/daily/"
+                   data-name="数据日报 每日经营数据 业绩 操作 运营 daily">
+                    <div class="icon">📊</div>
+                    <h3>数据日报</h3>
+                    <p>每日经营数据 · 业绩与操作动态</p>
+                    <span class="open-link">打开看板 →</span>
+                </a>
+
+                <a class="dashboard-link" href="/finance/"
+                   data-name="主体财务看板 销售额 流水 税务 主体 财务 finance">
+                    <div class="icon">💰</div>
+                    <h3>主体财务看板</h3>
+                    <p>各主体销售额 · 流水 · 税务口径</p>
+                    <span class="open-link">打开看板 →</span>
+                </a>
+
+                <a class="dashboard-link" href="/logistics/"
+                   data-name="快递决策速查表 省份 重量 快递 仓库 分配 物流 logistics">
+                    <div class="icon">🚚</div>
+                    <h3>快递决策速查表</h3>
+                    <p>按省份 / 重量选快递 · 仓库分配</p>
+                    <span class="open-link">打开看板 →</span>
+                </a>
+
             </div>
-        </a>
+        </div>
 
-        <a class="quick-card" href="/logistics/">
-            <div class="qic">🚚</div>
-            <div>
-                <div class="qt">快递决策速查</div>
-                <div class="qd">按省份 / 重量查</div>
+        <!-- ---------- 办公工具 ---------- -->
+        <div class="cat">
+            <h3 class="cat-title">办公工具 <span class="cat-count">0</span></h3>
+            <div class="dashboard-grid">
+
+                <a class="dashboard-link disabled" href="#"
+                   data-name="待办清单 任务 提醒 todo">
+                    <div class="icon">📝</div>
+                    <h3>待办清单</h3>
+                    <p>任务与提醒管理</p>
+                    <span class="open-link">待接入</span>
+                </a>
+
+                <a class="dashboard-link disabled" href="#"
+                   data-name="退款工作台 售后 退款 申诉 复议">
+                    <div class="icon">🛠️</div>
+                    <h3>退款处理工作台</h3>
+                    <p>售后申诉 / 复议处理</p>
+                    <span class="open-link">待接入</span>
+                </a>
+
+                <a class="dashboard-link disabled" href="#"
+                   data-name="商品上架控制台 上架 商品 规格">
+                    <div class="icon">📦</div>
+                    <h3>商品上架控制台</h3>
+                    <p>批量上架 / 规格维护</p>
+                    <span class="open-link">待接入</span>
+                </a>
+
             </div>
-        </a>
-
-    </div>
-
-    <!-- ========== 全部看板 ========== -->
-    <h2 class="section-title">全部看板</h2>
-
-    <!-- ---------- 运营数据 ---------- -->
-    <div class="cat">
-        <h3 class="cat-title">运营数据 <span class="cat-count">3</span></h3>
-        <div class="dashboard-grid">
-
-            <a class="dashboard-link" href="/daily/"
-               data-name="数据日报 每日经营数据 业绩 操作 运营 daily">
-                <div class="icon">📊</div>
-                <h3>数据日报</h3>
-                <p>每日经营数据 · 业绩与操作动态</p>
-                <span class="open-link">打开看板 →</span>
-            </a>
-
-            <a class="dashboard-link" href="/finance/"
-               data-name="主体财务看板 销售额 流水 税务 主体 财务 finance">
-                <div class="icon">💰</div>
-                <h3>主体财务看板</h3>
-                <p>各主体销售额 · 流水 · 税务口径</p>
-                <span class="open-link">打开看板 →</span>
-            </a>
-
-            <a class="dashboard-link" href="/logistics/"
-               data-name="快递决策速查表 省份 重量 快递 仓库 分配 物流 logistics">
-                <div class="icon">🚚</div>
-                <h3>快递决策速查表</h3>
-                <p>按省份 / 重量选快递 · 仓库分配</p>
-                <span class="open-link">打开看板 →</span>
-            </a>
-
         </div>
-    </div>
 
-    <!-- ---------- 办公工具 ---------- -->
-    <div class="cat">
-        <h3 class="cat-title">办公工具 <span class="cat-count">0</span></h3>
-        <div class="dashboard-grid">
+        <!-- ---------- 技能资源 ---------- -->
+        <div class="cat">
+            <h3 class="cat-title">技能资源 <span class="cat-count">0</span></h3>
+            <div class="dashboard-grid">
 
-            <a class="dashboard-link disabled" href="#"
-               data-name="待办清单 任务 提醒 todo">
-                <div class="icon">📝</div>
-                <h3>待办清单</h3>
-                <p>任务与提醒管理</p>
-                <span class="open-link">待接入</span>
-            </a>
+                <a class="dashboard-link disabled" href="#"
+                   data-name="Agent Skills 管理台 技能 skill">
+                    <div class="icon">🧩</div>
+                    <h3>Agent Skills 管理台</h3>
+                    <p>技能清单与说明</p>
+                    <span class="open-link">待接入</span>
+                </a>
 
-            <a class="dashboard-link disabled" href="#"
-               data-name="退款工作台 售后 退款 申诉 复议">
-                <div class="icon">🛠️</div>
-                <h3>退款处理工作台</h3>
-                <p>售后申诉 / 复议处理</p>
-                <span class="open-link">待接入</span>
-            </a>
+                <a class="dashboard-link disabled" href="#"
+                   data-name="客服话术库 话术 客服 机器人 小倩">
+                    <div class="icon">💬</div>
+                    <h3>客服话术库</h3>
+                    <p>场景话术 / 机器人配置</p>
+                    <span class="open-link">待接入</span>
+                </a>
 
-            <a class="dashboard-link disabled" href="#"
-               data-name="商品上架控制台 上架 商品 规格">
-                <div class="icon">📦</div>
-                <h3>商品上架控制台</h3>
-                <p>批量上架 / 规格维护</p>
-                <span class="open-link">待接入</span>
-            </a>
-
+            </div>
         </div>
-    </div>
 
-    <!-- ---------- 技能资源 ---------- -->
-    <div class="cat">
-        <h3 class="cat-title">技能资源 <span class="cat-count">0</span></h3>
-        <div class="dashboard-grid">
+        <!-- ---------- 知识资料 ---------- -->
+        <div class="cat">
+            <h3 class="cat-title">知识资料 <span class="cat-count">0</span></h3>
+            <div class="dashboard-grid">
 
-            <a class="dashboard-link disabled" href="#"
-               data-name="Agent Skills 管理台 技能 skill">
-                <div class="icon">🧩</div>
-                <h3>Agent Skills 管理台</h3>
-                <p>技能清单与说明</p>
-                <span class="open-link">待接入</span>
-            </a>
+                <a class="dashboard-link disabled" href="#"
+                   data-name="规则库 平台规则 拼多多 得物 帮助中心">
+                    <div class="icon">📚</div>
+                    <h3>平台规则库</h3>
+                    <p>拼多多 / 得物规则汇编</p>
+                    <span class="open-link">待接入</span>
+                </a>
 
-            <a class="dashboard-link disabled" href="#"
-               data-name="客服话术库 话术 客服 机器人 小倩">
-                <div class="icon">💬</div>
-                <h3>客服话术库</h3>
-                <p>场景话术 / 机器人配置</p>
-                <span class="open-link">待接入</span>
-            </a>
+                <a class="dashboard-link disabled" href="#"
+                   data-name="快递物流规则 对账 云仓 结算">
+                    <div class="icon">📋</div>
+                    <h3>快递物流规则汇总</h3>
+                    <p>对账口径 / 云仓结算</p>
+                    <span class="open-link">待接入</span>
+                </a>
 
+            </div>
         </div>
-    </div>
 
-    <!-- ---------- 知识资料 ---------- -->
-    <div class="cat">
-        <h3 class="cat-title">知识资料 <span class="cat-count">0</span></h3>
-        <div class="dashboard-grid">
-
-            <a class="dashboard-link disabled" href="#"
-               data-name="规则库 平台规则 拼多多 得物 帮助中心">
-                <div class="icon">📚</div>
-                <h3>平台规则库</h3>
-                <p>拼多多 / 得物规则汇编</p>
-                <span class="open-link">待接入</span>
-            </a>
-
-            <a class="dashboard-link disabled" href="#"
-               data-name="快递物流规则 对账 云仓 结算">
-                <div class="icon">📋</div>
-                <h3>快递物流规则汇总</h3>
-                <p>对账口径 / 云仓结算</p>
-                <span class="open-link">待接入</span>
-            </a>
-
+        <!-- 搜索无结果 -->
+        <div class="empty-hint" id="searchEmpty">
+            没有匹配的看板，换个关键词试试
         </div>
+
+        <!-- ========== 页脚 ========== -->
+        <footer class="site-footer">
+            <p><strong>十一.11个人工作台</strong> · 内部使用，请勿外传</p>
+            <p>维护：新增看板 → 建目录 + 放 index.html → 在 common/nav.js 的 NAV_ITEMS 加一项</p>
+            <p>shiyi11.com.cn</p>
+        </footer>
+
     </div>
-
-    <!-- 搜索无结果 -->
-    <div class="empty-hint" id="searchEmpty">
-        没有匹配的看板，换个关键词试试
-    </div>
-
-    <!-- ========== 页脚 ========== -->
-    <footer class="site-footer">
-        <p><strong>十一.11个人工作台</strong> · 内部使用，请勿外传</p>
-        <p>维护：新增看板 → 建目录 + 引 common/style.css、common/nav.js 两个文件 → 在 common/nav.js 的 NAV_ITEMS 加一项</p>
-        <p>shiyi11.com.cn</p>
-    </footer>
-
 </div>
 
 </body>

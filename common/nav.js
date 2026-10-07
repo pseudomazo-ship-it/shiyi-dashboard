@@ -1,34 +1,35 @@
 /* ============================================================
-   统一顶部导航组件
+   统一导航组件（两种模式）
    ------------------------------------------------------------
-   用法（在每个看板 <body> 最顶部）：
+   顶部横导航（默认，给子页面用）：
        <div id="app-nav"></div>
        <script src="/common/nav.js"></script>
 
-   可选属性：
-       data-search="1"   渲染搜索框（首页用）
-       data-nav="0"      隐藏右上角菜单（首页用，页面本身就是导航）
+   左侧竖导航（首页工作台用）：
+       <div id="app-nav"></div>
+       <script src="/common/nav.js" data-sidebar="1" data-clock="1"></script>
 
-   说明：
-     - 自动按当前页面 URL 路径高亮对应菜单项，匹配不到时回退用 <title> 匹配
-     - 移动端（<=768px）折叠为汉堡菜单，搜索框自动隐藏
-     - 增删菜单项只改下面的 NAV_ITEMS 数组
+   可选属性：
+       data-sidebar="1"   渲染左侧竖导航（含品牌区、菜单、页脚）
+       data-clock="1"     启动实时时钟（更新 #liveTime）
+       data-search="1"    绑定 #appNavSearch 搜索框（过滤 .dashboard-link）
+       data-nav="0"       隐藏菜单（顶部模式下用）
    ============================================================ */
 (function () {
     'use strict';
 
-    /* ---------- 菜单配置（改这里就能增减入口） ---------- */
+    /* ---------- 菜单配置 ---------- */
     var NAV_ITEMS = [
-        { label: '首页',         href: '/',           match: ['/'] },
-        { label: '数据日报',     href: '/daily/',     match: ['/daily/'] },
-        { label: '主体财务看板', href: '/finance/',   match: ['/finance/'] },
-        { label: '快递决策速查', href: '/logistics/', match: ['/logistics/'] }
+        { label: '首页',         href: '/',           match: ['/'],           icon: '🏠' },
+        { label: '数据日报',     href: '/daily/',     match: ['/daily/'],     icon: '📊' },
+        { label: '主体财务看板', href: '/finance/',   match: ['/finance/'],   icon: '💰' },
+        { label: '快递决策速查', href: '/logistics/', match: ['/logistics/'], icon: '🚚' }
     ];
 
-    /* ---------- 品牌（logo 留空则不显示方块图标） ---------- */
     var BRAND = { text: '十一.11个人工作台', logo: '', href: '/' };
+    var SB_BRAND = { name: '十一.11', sub: '个人工作台', logo: '11', href: '/' };
+    var SB_FOOT = '内部使用 · 请勿外传<br>shiyi11.com.cn';
 
-    /* 页面标题关键字 → 菜单项（路径匹配失败时的兜底） */
     var TITLE_HINTS = [
         { key: '数据日报', href: '/daily/' },
         { key: '主体财务', href: '/finance/' },
@@ -36,15 +37,18 @@
         { key: '工作台',   href: '/' }
     ];
 
-    /* ---------- 读取本脚本上的配置属性 ---------- */
+    /* ---------- 读取脚本属性 ---------- */
     function scriptTag() {
         if (document.currentScript) { return document.currentScript; }
         var all = document.querySelectorAll('script[src*="nav.js"]');
         return all.length ? all[all.length - 1] : null;
     }
     var ME = scriptTag();
-    var ENABLE_SEARCH = !!(ME && ME.getAttribute('data-search') === '1');
-    var ENABLE_MENU   = !(ME && ME.getAttribute('data-nav') === '0');
+    function attr(n) { return ME ? ME.getAttribute(n) : null; }
+    var SIDEBAR  = attr('data-sidebar') === '1';
+    var CLOCK    = attr('data-clock') === '1';
+    var SEARCH   = attr('data-search') === '1';
+    var MENU     = attr('data-nav') !== '0';
 
     /* ---------- 工具 ---------- */
     function normPath(p) {
@@ -54,7 +58,6 @@
         if (p === '') { p = '/'; }
         return p;
     }
-
     function activeByPath(cur) {
         var best = -1, bestLen = -1;
         for (var i = 0; i < NAV_ITEMS.length; i++) {
@@ -67,7 +70,6 @@
         }
         return best;
     }
-
     function activeByTitle() {
         var t = (document.title || '');
         for (var i = 0; i < TITLE_HINTS.length; i++) {
@@ -79,22 +81,38 @@
         }
         return -1;
     }
-
     function esc(s) {
         return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function activeIndex() {
+        var a = activeByPath(normPath(window.location.pathname));
+        return a < 0 ? activeByTitle() : a;
+    }
+
+    /* ---------- 实时时钟 ---------- */
+    function bindClock() {
+        var el = document.getElementById('liveTime');
+        if (!el) { return; }
+        function pad(n) { return n < 10 ? '0' + n : '' + n; }
+        function tick() {
+            var d = new Date();
+            el.textContent = d.getFullYear() + '年' + (d.getMonth() + 1) + '月' +
+                             d.getDate() + '日 ' + pad(d.getHours()) + ':' +
+                             pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+        }
+        tick();
+        setInterval(tick, 1000);
     }
 
     /* ---------- 搜索过滤 ---------- */
     function bindSearch() {
         var input = document.getElementById('appNavSearch');
         if (!input) { return; }
-
         var hint = document.getElementById('searchEmpty');
 
         function apply() {
             var q = (input.value || '').trim().toLowerCase();
 
-            /* 卡片过滤 */
             var cards = document.querySelectorAll('.dashboard-link');
             var shown = 0;
             for (var i = 0; i < cards.length; i++) {
@@ -105,7 +123,6 @@
                 if (hit) { shown++; }
             }
 
-            /* 空分类整体隐藏 + 同步分类计数 */
             var cats = document.querySelectorAll('.cat');
             for (var k = 0; k < cats.length; k++) {
                 var list = cats[k].querySelectorAll('.dashboard-link');
@@ -118,43 +135,77 @@
                 if (cnt) { cnt.textContent = n; }
             }
 
-            /* 搜索时收起常用入口和分区标题，让结果更聚焦 */
             var quicks = document.querySelectorAll('.quick-grid');
             for (var p = 0; p < quicks.length; p++) { quicks[p].style.display = q ? 'none' : ''; }
             var secs = document.querySelectorAll('.section-title');
             for (var s = 0; s < secs.length; s++) { secs[s].style.display = q ? 'none' : ''; }
 
-            /* 无结果提示 */
             if (hint) { hint.classList.toggle('show', shown === 0 && q !== ''); }
         }
 
         input.addEventListener('input', apply);
         input.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                input.value = '';
-                apply();
-            }
+            if (e.key === 'Escape') { input.value = ''; apply(); }
         });
-
-        /* 快捷键：按 / 聚焦搜索框 */
         document.addEventListener('keydown', function (e) {
             if (e.key === '/' && document.activeElement !== input &&
                 !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) {
-                e.preventDefault();
-                input.focus();
+                e.preventDefault(); input.focus();
             }
         });
     }
 
-    /* ---------- 构建导航 ---------- */
-    function build() {
-        var host = document.getElementById('app-nav');
-        if (!host) { return; }
+    /* ---------- 移动端侧边栏开合 ---------- */
+    function bindSidebarToggle() {
+        var sb = document.getElementById('appSidebar');
+        var mask = document.getElementById('sbMask');
+        var btn = document.getElementById('sbToggle');
+        if (!sb || !btn) { return; }
+        function close() {
+            sb.classList.remove('open');
+            if (mask) { mask.classList.remove('show'); }
+        }
+        btn.addEventListener('click', function () {
+            sb.classList.toggle('open');
+            if (mask) { mask.classList.toggle('show', sb.classList.contains('open')); }
+        });
+        if (mask) { mask.addEventListener('click', close); }
+        sb.addEventListener('click', function (e) {
+            if (e.target && e.target.tagName === 'A') { close(); }
+        });
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 900) { close(); }
+        });
+    }
 
-        var cur = normPath(window.location.pathname);
-        var active = activeByPath(cur);
-        if (active < 0) { active = activeByTitle(); }
+    /* ---------- 构建左侧竖导航 ---------- */
+    function buildSidebar(host, active) {
+        var items = NAV_ITEMS.map(function (it, i) {
+            var cls = (i === active) ? ' class="active"' : '';
+            return '<a href="' + esc(it.href) + '"' + cls + '>' +
+                   (it.icon ? '<span class="i">' + it.icon + '</span>' : '') +
+                   esc(it.label) + '</a>';
+        }).join('');
 
+        host.outerHTML =
+            '<aside class="sidebar" id="appSidebar">' +
+                '<a class="sb-brand" href="' + esc(SB_BRAND.href) + '">' +
+                    '<span class="sb-logo">' + esc(SB_BRAND.logo) + '</span>' +
+                    '<span class="sb-name">' + esc(SB_BRAND.name) +
+                        '<small>' + esc(SB_BRAND.sub) + '</small>' +
+                    '</span>' +
+                '</a>' +
+                '<nav class="sb-nav">' + items + '</nav>' +
+                '<div class="sb-foot">' + SB_FOOT + '</div>' +
+            '</aside>' +
+            '<div class="sb-mask" id="sbMask"></div>';
+
+        document.body.classList.add('has-sidebar');
+        bindSidebarToggle();
+    }
+
+    /* ---------- 构建顶部横导航 ---------- */
+    function buildTopbar(host, active) {
         var items = NAV_ITEMS.map(function (it, i) {
             var cls = (i === active) ? ' class="active"' : '';
             return '<li><a href="' + esc(it.href) + '"' + cls + '>' + esc(it.label) + '</a></li>';
@@ -166,24 +217,19 @@
                 '<span>' + esc(BRAND.text) + '</span>' +
             '</a>';
 
-        var searchHtml = ENABLE_SEARCH
-            ? '<div class="nav-search">' +
-                  '<span class="ico">🔍</span>' +
-                  '<input id="appNavSearch" type="search" placeholder="搜索看板…" autocomplete="off">' +
-              '</div>'
+        var searchHtml = SEARCH
+            ? '<div class="nav-search"><span class="ico">🔍</span>' +
+              '<input id="appNavSearch" type="search" placeholder="搜索看板…" autocomplete="off"></div>'
             : '';
 
-        var menuHtml = ENABLE_MENU
+        var menuHtml = MENU
             ? '<button class="nav-toggle" type="button" aria-label="打开菜单" aria-expanded="false">☰</button>' +
               '<ul class="nav-links" id="appNavLinks">' + items + '</ul>'
             : '';
 
         host.outerHTML = '<nav class="app-nav">' + brandHtml + searchHtml + menuHtml + '</nav>';
-
-        /* 给 body 打标：样式库据此留出导航高度 */
         document.body.classList.add('has-nav');
 
-        /* 汉堡菜单交互 */
         var toggle = document.querySelector('.nav-toggle');
         var links = document.getElementById('appNavLinks');
         if (toggle && links) {
@@ -199,16 +245,21 @@
                     toggle.textContent = '☰';
                 }
             });
-            document.addEventListener('click', function (e) {
-                if (!links.classList.contains('open')) { return; }
-                if (links.contains(e.target) || toggle.contains(e.target)) { return; }
-                links.classList.remove('open');
-                toggle.setAttribute('aria-expanded', 'false');
-                toggle.textContent = '☰';
-            });
         }
+    }
 
-        if (ENABLE_SEARCH) { bindSearch(); }
+    /* ---------- 入口 ---------- */
+    function build() {
+        var host = document.getElementById('app-nav');
+        if (!host) { return; }
+        var active = activeIndex();
+        if (SIDEBAR) {
+            buildSidebar(host, active);
+        } else {
+            buildTopbar(host, active);
+        }
+        if (SEARCH) { bindSearch(); }
+        if (CLOCK)  { bindClock(); }
     }
 
     if (document.readyState === 'loading') {
