@@ -27,7 +27,7 @@
                 { label: '数据日报',     href: '/daily/',     icon: '📊', match: ['/daily/'] },
                 { label: '主体财务看板', href: '/finance/',   icon: '💰', match: ['/finance/'] },
                 { label: '快递决策看板', href: '/logistics/board/', icon: '🚛', match: ['/logistics/board/'] },
-                { label: '快递决策速查', href: '/logistics/', icon: '🚚', match: ['/logistics/'] }
+                { label: '快递价格表', href: '/logistics/', icon: '🚚', match: ['/logistics/'] }
             ]
         },
         {
