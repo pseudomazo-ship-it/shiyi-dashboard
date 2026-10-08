@@ -270,14 +270,18 @@
     table.sortable th[data-col]::after{content:"⇅";margin-left:5px;font-size:11px;color:#94a3b8}
     table.sortable th[data-col].asc::after{content:"▲";color:#2563eb}
     table.sortable th[data-col].desc::after{content:"▼";color:#2563eb}
-    /* 判断口径收成可折叠小条（2026-10-08 十一要求：不单独占一块） */
-    details.alert.rulerow{padding:12px 16px;align-self:start}
-    details.alert.rulerow summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--muted);
+    /* 判断口径：固定在页面右下角，点击向上展开（2026-10-08 十一要求） */
+    details.alert.rulerow{position:fixed;right:18px;bottom:18px;z-index:80;background:#fff;
+      border:1px solid var(--line);border-radius:11px;box-shadow:0 10px 28px rgba(15,23,42,.16);
+      padding:10px 14px;max-width:345px;width:max-content;align-self:auto}
+    details.alert.rulerow[open]{display:flex;flex-direction:column-reverse}
+    details.alert.rulerow summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--muted);
       list-style:none;display:flex;align-items:center;gap:6px}
     details.alert.rulerow summary::-webkit-details-marker{display:none}
-    details.alert.rulerow summary::before{content:"▸";color:#94a3b8;font-size:12px}
+    details.alert.rulerow summary::before{content:"▴";color:#94a3b8;font-size:11px}
     details.alert.rulerow[open] summary::before{content:"▾"}
-    details.alert.rulerow[open] summary{margin-bottom:10px;color:var(--ink)}
+    details.alert.rulerow[open] summary{margin-top:9px;margin-bottom:0;color:var(--ink)}
+    details.alert.rulerow .alert-list{margin:0}
     .band{border:1px solid var(--line);border-radius:10px;padding:11px 13px;background:#fff;border-left-width:4px}
     .band.ok{border-left-color:#16a34a}
     .band.w1{border-left-color:#eab308}
@@ -414,11 +418,11 @@
     </section>
   </div>
 
-  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-08 14:09</span></footer>
+  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-08 14:10</span></footer>
 </main>
 <script>
 (function(){
-  const meta={"gen":"2026-10-08 14:09","base_day":"2026-10-06","v":2};
+  const meta={"gen":"2026-10-08 14:10","base_day":"2026-10-06","v":2};
   const names=["蒙倩官方旗舰店", "蒙倩美发官方旗舰店（丽）", "蒙倩旗舰店", "蒙倩化妆品官方旗舰店", "蒙倩美发护发官方旗舰店（盼）", "蒙倩美妆旗舰店", "蒙倩美容美发官方旗舰店（博）", "蒙倩个护官方旗舰店（熙）", "蒙倩美容护肤官方旗舰店", "蒙倩护发旗舰店（涛）", "蒙倩美妆洗护官方旗舰店", "蒙倩彩妆官方旗舰店", "蒙倩个人护理官方旗舰店", "蒙倩染发旗舰店（涛）", "蒙倩精油官方旗舰店", "蒙倩洗护官方旗舰店", "蒙倩造型官方旗舰店", "蒙倩药妆官方旗舰店", "蒙倩美发护发旗舰店（盼）", "蒙倩护发官方旗舰店（涛）", "蒙倩美发旗舰店（炜）", "植萃草本染发坊", "蒙倩染发官方旗舰店（珍）"];
   function rows(raw){return raw.split("|").map((s,i)=>{const a=s.split(",");return {name:names[i],money:+a[0],moneyRaw:a[0],delta:+a[1],deltaRaw:a[1],score:+a[2],scoreRaw:a[2],ad:+a[3],adRaw:a[3],refund:+a[4],refundRaw:a[4],aov:+a[5],aovRaw:a[5]}})}
   function sourceNumber(v){return String(v)}
