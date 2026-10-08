@@ -255,6 +255,29 @@
       font-variant-numeric:tabular-nums}
     .ttip b{color:var(--blue);font-weight:800}
     .ttip .tt-d{color:var(--muted);font-weight:700;margin-right:8px}
+    /* 数值分档（2026-10-08 十一要求：按 46/48/50 三线分四档排列） */
+    .bands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+    @media(max-width:900px){.bands{grid-template-columns:1fr}}
+    .band{border:1px solid var(--line);border-radius:10px;padding:11px 13px;background:#fff;border-left-width:4px}
+    .band.ok{border-left-color:#16a34a}
+    .band.w1{border-left-color:#eab308}
+    .band.w2{border-left-color:#f97316}
+    .band.w3{border-left-color:#dc2626}
+    .band-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+    .band-h b{font-size:13.5px;color:var(--ink)}
+    .band-h span{font-size:12px;color:var(--muted);font-weight:700}
+    .band.ok .band-h b{color:#15803d}
+    .band.w3 .band-h b{color:#b91c1c}
+    .band-list{display:flex;flex-direction:column;gap:5px}
+    .chip{display:flex;justify-content:space-between;gap:10px;align-items:baseline;
+          padding:4px 9px;border-radius:7px;background:#f7f9fc;font-size:12.5px;color:var(--ink)}
+    .chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .chip i{font-style:normal;font-weight:800;font-variant-numeric:tabular-nums;flex:0 0 auto}
+    .band.ok .chip i{color:#15803d}
+    .band.w1 .chip i{color:#a16207}
+    .band.w2 .chip i{color:#c2410c}
+    .band.w3 .chip i{color:#b91c1c}
+    .band .none{font-size:12.5px;color:var(--muted)}
   </style>
 </head>
 <body>
@@ -301,6 +324,7 @@
           <div class="donut" id="donut"></div>
           <div class="legend" id="legend"></div>
         </div>
+        <div class="bands" id="waterBands" aria-label="按数值分档的店铺"></div>
       </div>
     </section>
 
@@ -352,11 +376,11 @@
     </section>
   </div>
 
-  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-07 23:46</span><a href="https://pseudomazo-ship-it.github.io/shiyi-dashboard/daily/" target="_blank" rel="noopener">查看原始看板</a></footer>
+  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-08 12:59</span><a href="https://pseudomazo-ship-it.github.io/shiyi-dashboard/daily/" target="_blank" rel="noopener">查看原始看板</a></footer>
 </main>
 <script>
 (function(){
-  const meta={"gen":"2026-10-07 23:46","base_day":"2026-10-06","v":2};
+  const meta={"gen":"2026-10-08 12:59","base_day":"2026-10-06","v":2};
   const names=["蒙倩官方旗舰店", "蒙倩美发官方旗舰店（丽）", "蒙倩旗舰店", "蒙倩化妆品官方旗舰店", "蒙倩美发护发官方旗舰店（盼）", "蒙倩美妆旗舰店", "蒙倩美容美发官方旗舰店（博）", "蒙倩个护官方旗舰店（熙）", "蒙倩美容护肤官方旗舰店", "蒙倩护发旗舰店（涛）", "蒙倩美妆洗护官方旗舰店", "蒙倩彩妆官方旗舰店", "蒙倩个人护理官方旗舰店", "蒙倩染发旗舰店（涛）", "蒙倩精油官方旗舰店", "蒙倩洗护官方旗舰店", "蒙倩造型官方旗舰店", "蒙倩药妆官方旗舰店", "蒙倩美发护发旗舰店（盼）", "蒙倩护发官方旗舰店（涛）", "蒙倩美发旗舰店（炜）", "植萃草本染发坊", "蒙倩染发官方旗舰店（珍）"];
   function rows(raw){return raw.split("|").map((s,i)=>{const a=s.split(",");return {name:names[i],money:+a[0],moneyRaw:a[0],delta:+a[1],deltaRaw:a[1],score:+a[2],scoreRaw:a[2],ad:+a[3],adRaw:a[3],refund:+a[4],refundRaw:a[4],aov:+a[5],aovRaw:a[5]}})}
   function sourceNumber(v){return String(v)}
@@ -425,10 +449,26 @@
   }
   function sortedRows(d){return d.rows.slice().sort((a,b)=>b.money-a.money)}
   function renderRanking(d){const list=sortedRows(d).slice(0,10),max=list[0].money;$("#rankMeta").textContent=d.compare;$("#ranking").innerHTML=list.map((r,i)=>`<div class="rank-row"><span class="rank-no">${String(i+1).padStart(2,'0')}</span><span class="shop" title="${r.name}">${r.name}</span><span class="track"><i class="fill" style="--w:${r.money/max*100}%"></i></span><span class="money">${r.moneyRaw}万</span><span class="score ${r.score>46?'warn-cell':''}">${r.scoreRaw}%</span></div>`).join('')}
+  function renderBands(d){
+    const box=$("#waterBands"); if(!box) return;
+    const bands=[
+      {t:'46% 以内（达标）',note:'数值 ≤46%',f:r=>r.score<=46,c:'ok'},
+      {t:'46% – 48%',note:'轻度超标',f:r=>r.score>46&&r.score<=48,c:'w1'},
+      {t:'48% – 50%',note:'中度超标',f:r=>r.score>48&&r.score<=50,c:'w2'},
+      {t:'50% 以上',note:'超标较多',f:r=>r.score>50,c:'w3'}
+    ];
+    box.innerHTML=bands.map(b=>{
+      const list=sortedRows(d).filter(b.f);
+      return `<div class="band ${b.c}">
+        <div class="band-h"><b>${b.t}</b><span>${list.length} 家 · ${b.note}</span></div>
+        <div class="band-list">${list.map(r=>`<div class="chip"><span title="${r.name}">${r.name}</span><i>${r.scoreRaw}%</i></div>`).join('')||'<span class="none">本时段无</span>'}</div>
+      </div>`;
+    }).join('');
+  }
   function renderTable(d){let list=sortedRows(d).filter(r=>r.name.includes(query));if(abnormal)list=list.filter(r=>r.score>46);$("#tableBody").innerHTML=list.map(r=>`<tr><td>${r.name}</td><td data-label="业绩">${r.moneyRaw}万</td><td data-label="环比" class="${r.delta>=0?'delta up':'delta down'}">${r.delta>=0?'▲':'▼'} ${sourceNumber(Math.abs(r.delta))}%</td><td data-label="数值" class="${r.score>46?'warn-cell':''}">${r.scoreRaw}%</td><td data-label="推广占比">${r.adRaw}%</td><td data-label="退款占比">${r.refundRaw}%</td><td data-label="客单价">${r.aovRaw}</td></tr>`).join('')+(!query&&!abnormal?`<tr class="total"><td>合计</td><td data-label="业绩">${d.total}</td><td data-label="环比">${d.kpis[0][2]>0?'▲':'▼'} ${sourceNumber(Math.abs(d.kpis[0][2]))}%</td><td data-label="数值">${sourceNumber(d.score)}%</td><td data-label="推广占比">${sourceNumber(d.totals[0])}%</td><td data-label="退款占比">${sourceNumber(d.totals[1])}%</td><td data-label="客单价">${sourceNumber(d.totals[2])}</td></tr>`:'')}
   function renderSummary(d){$("#summarySub").textContent=period==='day'?'当日口径':period==='month'?'本月口径':period==='d3'?'近3天口径':'近7天口径';$("#summary").innerHTML=d.summary.map((x,i)=>`<div class="summary-block"><strong>${['业绩','成本','订单'][i]}</strong><p>${x}</p></div>`).join('')+`<div class="actions"><strong>下一步</strong><ol>${d.actions.map(x=>`<li>${x}</li>`).join('')}</ol></div>`}
   function renderMonthly(){const max=monthly[0][1];$("#monthlyRows").innerHTML=monthly.map((r,i)=>`<div class="monthly-row"><span class="shop">${String(i+1).padStart(2,'0')}　${r[0]}</span><span class="compare-bar"><i style="--current:${r[1]/max*100}%"></i></span><span class="current">${sourceNumber(r[1])}万</span><span class="delta ${r[2]>=0?'up':'down'}">${r[2]>=0?'▲':'▼'} ${sourceNumber(Math.abs(r[2]))}%</span></div>`).join('');$("#monthlySummary").innerHTML=`<div class="summary-block"><strong>整体</strong><p>23 家店合计 902.15万，较上一个30天下降 3.4%。</p></div><div class="summary-block"><strong>结构</strong><p>前3名合计 360.5万；上升 11 家、下滑 11 家、持平 1 家。</p></div><div class="summary-block"><strong>最大波动</strong><p>增长最快 蒙倩个人护理官方旗舰店（425.9%）；下滑最重 蒙倩染发旗舰店（涛）（-65.7%）。</p></div><div class="actions"><strong>下一步</strong><ol><li>11 家下滑店铺逐店检查活动、推广与转化节奏。</li><li>优先复盘 蒙倩染发旗舰店（涛）（-65.7%）的下滑原因。</li><li>核对 蒙倩个人护理官方旗舰店（425.9%）的增长是否来自低基数或新增链接。</li><li>拆解高增长店铺的商品与投放结构，提炼可复制动作。</li><li>复盘上升的 11 家店铺，把有效动作整理成统一执行清单。</li><li>下个30天继续使用相同区间对比，验证动作是否带来持续改善。</li></ol></div>`}
-  function render(){const d=data[period];$("#rangeText").textContent=d.range;renderKpis(d);document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.period===period)));const is30=period==='d30';$("#standardView").classList.toggle('hidden',is30);$("#monthlyView").classList.toggle('hidden',!is30);if(is30){renderMonthly();return}renderCore(d);renderTrend(d);renderRanking(d);renderTable(d);renderSummary(d)}
+  function render(){const d=data[period];$("#rangeText").textContent=d.range;renderKpis(d);document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.period===period)));const is30=period==='d30';$("#standardView").classList.toggle('hidden',is30);$("#monthlyView").classList.toggle('hidden',!is30);if(is30){renderMonthly();return}renderCore(d);renderBands(d);renderTrend(d);renderRanking(d);renderTable(d);renderSummary(d)}
   function initCollapsibles(){document.querySelectorAll('.section').forEach((section,index)=>{const head=Array.from(section.children).find(el=>el.classList.contains('section-head'));if(!head||head.querySelector('.section-toggle'))return;const left=head.firstElementChild,actions=document.createElement('div');actions.className='section-head-actions';Array.from(head.children).filter(el=>el!==left).forEach(el=>actions.appendChild(el));const button=document.createElement('button');button.type='button';button.className='section-toggle';button.tabIndex=-1;button.setAttribute('aria-hidden','true');button.innerHTML='<span class="toggle-label">展开</span><i class="chevron" aria-hidden="true"></i>';actions.appendChild(button);head.appendChild(actions);section.classList.add('collapsed');section.dataset.sectionIndex=String(index);const label=left.querySelector('h2')?.textContent||'板块';head.setAttribute('role','button');head.setAttribute('tabindex','0');head.setAttribute('aria-expanded','false');head.setAttribute('aria-label',`展开${label}`);const toggle=()=>{const collapsed=section.classList.toggle('collapsed');head.setAttribute('aria-expanded',String(!collapsed));head.setAttribute('aria-label',`${collapsed?'展开':'收起'}${label}`);button.querySelector('.toggle-label').textContent=collapsed?'展开':'收起'};head.addEventListener('click',toggle);head.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}})})}
   $("#tabs").addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;period=b.dataset.period;query='';abnormal=false;$("#search").value='';$("#abnormalBtn").classList.remove('active');render()});
   $("#search").addEventListener('input',e=>{query=e.target.value.trim();if(period!=='d30')renderTable(data[period])});
