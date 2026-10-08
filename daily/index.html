@@ -269,6 +269,14 @@
     table.sortable th[data-col]::after{content:"⇅";margin-left:5px;font-size:11px;color:#94a3b8}
     table.sortable th[data-col].asc::after{content:"▲";color:#2563eb}
     table.sortable th[data-col].desc::after{content:"▼";color:#2563eb}
+    /* 判断口径收成可折叠小条（2026-10-08 十一要求：不单独占一块） */
+    details.alert.rulerow{padding:12px 16px;align-self:start}
+    details.alert.rulerow summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--muted);
+      list-style:none;display:flex;align-items:center;gap:6px}
+    details.alert.rulerow summary::-webkit-details-marker{display:none}
+    details.alert.rulerow summary::before{content:"▸";color:#94a3b8;font-size:12px}
+    details.alert.rulerow[open] summary::before{content:"▾"}
+    details.alert.rulerow[open] summary{margin-bottom:10px;color:var(--ink)}
     .band{border:1px solid var(--line);border-radius:10px;padding:11px 13px;background:#fff;border-left-width:4px}
     .band.ok{border-left-color:#16a34a}
     .band.w1{border-left-color:#eab308}
@@ -386,9 +394,9 @@
         <article class="alert"><h3>业绩与数值异常波动</h3><ul class="alert-list">
           <li><span>洗护官方旗舰店 · 业绩</span><b class="danger">-23.7%</b></li><li><span>美发旗舰店（炜） · 数值</span><b class="danger">73.64% → 49.91%</b></li><li><span>染发官方旗舰店（珍） · 数值</span><b class="danger">42.88% → 54.58%</b></li><li><span>染发旗舰店（涛） · 数值</span><b class="danger">43.59% → 34.84%</b></li><li><span>精油官方旗舰店 · 业绩</span><b class="danger">-24.8%</b></li>
         </ul><span class="scope-note">每条已标明异常指标；本组统一为 10/06 对比 10/05</span></article>
-        <article class="alert"><h3>登记完整性</h3><ul class="alert-list"><li><span>基准日登记</span><b class="ok">23/23 家</b></li><li><span>近30天漏登</span><b class="ok">无</b></li><li><span>近30天重复登记</span><b class="danger">3 处</b></li><li><span>10-05 ｜ 洗护官方旗舰店</span><b class="danger">同日登记 2 条（当日业绩 7491.70 元）</b></li><li><span>10-05 ｜ 美发官方旗舰店（丽）</span><b class="danger">同日登记 2 条（当日业绩 26212.95 元）</b></li><li><span>10-05 ｜ 美妆洗护官方旗舰店</span><b class="danger">同日登记 2 条（当日业绩 16609.85 元）</b></li></ul></article>
+        <article class="alert"><h3>登记完整性</h3><ul class="alert-list"><li><span>基准日登记</span><b class="ok">23/23 家</b></li><li><span>近30天漏登</span><b class="ok">无</b></li><li><span>近30天重复登记</span><b class="ok">无</b></li></ul></article>
         <article class="alert"><h3>数值离谱（疑似登记或口径异常）</h3><ul class="alert-list"><li><span>当月 ｜ 植萃草本染发坊</span><b class="danger">数值 237.05%（退款占 195.50% ＋ 推广占 41.55%，业绩 7220 元）</b></li><li><span>近7天 ｜ 植萃草本染发坊</span><b class="danger">数值 207.20%（退款占 166.54% ＋ 推广占 40.66%，业绩 8602 元）</b></li></ul><span class="scope-note">判定：当日数值 ≥100% 或 退款占业绩 ≥100%；出现这种值多半是当日业绩极小、或退款/推广填错，需人工核一遍</span></article>
-        <article class="alert"><h3>判断口径</h3><ul class="alert-list"><li><span>下滑最重</span><b>10/06 业绩 vs 前3天日均</b></li><li><span>异常波动</span><b>10/06 vs 10/05</b></li><li><span>业绩异常门槛</span><b>变动绝对值 ≥20% 且金额差 ≥800 元</b></li><li><span>数值异常门槛</span><b>变动绝对值 ≥8 个百分点</b></li><li><span>数值定义</span><b>退款金额占比 + 推广花费占比</b></li><li><span>数值标准线</span><b>46%</b></li></ul></article>
+        <details class="alert rulerow"><summary>判断口径（点开看规则）</summary><ul class="alert-list"><li><span>下滑最重</span><b>10/06 业绩 vs 前3天日均</b></li><li><span>异常波动</span><b>10/06 vs 10/05</b></li><li><span>业绩异常门槛</span><b>变动绝对值 ≥20% 且金额差 ≥800 元</b></li><li><span>数值异常门槛</span><b>变动绝对值 ≥8 个百分点</b></li><li><span>数值定义</span><b>退款金额占比 + 推广花费占比</b></li><li><span>数值标准线</span><b>46%</b></li></ul></details>
       </div>
     </section>
 
@@ -405,11 +413,11 @@
     </section>
   </div>
 
-  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-08 13:32</span><a href="https://pseudomazo-ship-it.github.io/shiyi-dashboard/daily/" target="_blank" rel="noopener">查看原始看板</a></footer>
+  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-08 14:03</span></footer>
 </main>
 <script>
 (function(){
-  const meta={"gen":"2026-10-08 13:32","base_day":"2026-10-06","v":2};
+  const meta={"gen":"2026-10-08 14:03","base_day":"2026-10-06","v":2};
   const names=["蒙倩官方旗舰店", "蒙倩美发官方旗舰店（丽）", "蒙倩旗舰店", "蒙倩化妆品官方旗舰店", "蒙倩美发护发官方旗舰店（盼）", "蒙倩美妆旗舰店", "蒙倩美容美发官方旗舰店（博）", "蒙倩个护官方旗舰店（熙）", "蒙倩美容护肤官方旗舰店", "蒙倩护发旗舰店（涛）", "蒙倩美妆洗护官方旗舰店", "蒙倩彩妆官方旗舰店", "蒙倩个人护理官方旗舰店", "蒙倩染发旗舰店（涛）", "蒙倩精油官方旗舰店", "蒙倩洗护官方旗舰店", "蒙倩造型官方旗舰店", "蒙倩药妆官方旗舰店", "蒙倩美发护发旗舰店（盼）", "蒙倩护发官方旗舰店（涛）", "蒙倩美发旗舰店（炜）", "植萃草本染发坊", "蒙倩染发官方旗舰店（珍）"];
   function rows(raw){return raw.split("|").map((s,i)=>{const a=s.split(",");return {name:names[i],money:+a[0],moneyRaw:a[0],delta:+a[1],deltaRaw:a[1],score:+a[2],scoreRaw:a[2],ad:+a[3],adRaw:a[3],refund:+a[4],refundRaw:a[4],aov:+a[5],aovRaw:a[5]}})}
   function sourceNumber(v){return String(v)}
