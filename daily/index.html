@@ -256,7 +256,8 @@
     .ttip b{color:var(--blue);font-weight:800}
     .ttip .tt-d{color:var(--muted);font-weight:700;margin-right:8px}
     /* 数值分档（2026-10-08 十一要求：按 46/48/50 三线分四档排列） */
-    .bands{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+    .bands{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px;
+      grid-column:1/-1;align-items:start}
     @media(max-width:1100px){.bands{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:640px){.bands{grid-template-columns:1fr}}
     .band{padding:9px 11px}
@@ -413,11 +414,11 @@
     </section>
   </div>
 
-  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-08 14:03</span></footer>
+  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-08 14:09</span></footer>
 </main>
 <script>
 (function(){
-  const meta={"gen":"2026-10-08 14:03","base_day":"2026-10-06","v":2};
+  const meta={"gen":"2026-10-08 14:09","base_day":"2026-10-06","v":2};
   const names=["蒙倩官方旗舰店", "蒙倩美发官方旗舰店（丽）", "蒙倩旗舰店", "蒙倩化妆品官方旗舰店", "蒙倩美发护发官方旗舰店（盼）", "蒙倩美妆旗舰店", "蒙倩美容美发官方旗舰店（博）", "蒙倩个护官方旗舰店（熙）", "蒙倩美容护肤官方旗舰店", "蒙倩护发旗舰店（涛）", "蒙倩美妆洗护官方旗舰店", "蒙倩彩妆官方旗舰店", "蒙倩个人护理官方旗舰店", "蒙倩染发旗舰店（涛）", "蒙倩精油官方旗舰店", "蒙倩洗护官方旗舰店", "蒙倩造型官方旗舰店", "蒙倩药妆官方旗舰店", "蒙倩美发护发旗舰店（盼）", "蒙倩护发官方旗舰店（涛）", "蒙倩美发旗舰店（炜）", "植萃草本染发坊", "蒙倩染发官方旗舰店（珍）"];
   function rows(raw){return raw.split("|").map((s,i)=>{const a=s.split(",");return {name:names[i],money:+a[0],moneyRaw:a[0],delta:+a[1],deltaRaw:a[1],score:+a[2],scoreRaw:a[2],ad:+a[3],adRaw:a[3],refund:+a[4],refundRaw:a[4],aov:+a[5],aovRaw:a[5]}})}
   function sourceNumber(v){return String(v)}
