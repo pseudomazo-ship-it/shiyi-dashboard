@@ -49,6 +49,7 @@
         {
             title: '知识资料',
             items: [
+                { label: '历史文档库', href: '/docs/', icon: '文', match: ['/docs/'] },
                 { label: '平台规则库',       href: '', icon: '📚' },
                 { label: '快递物流规则汇总', href: '', icon: '📋' }
             ]
