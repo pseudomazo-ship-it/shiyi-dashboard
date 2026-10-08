@@ -256,8 +256,19 @@
     .ttip b{color:var(--blue);font-weight:800}
     .ttip .tt-d{color:var(--muted);font-weight:700;margin-right:8px}
     /* 数值分档（2026-10-08 十一要求：按 46/48/50 三线分四档排列） */
-    .bands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
-    @media(max-width:900px){.bands{grid-template-columns:1fr}}
+    .bands{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+    @media(max-width:1100px){.bands{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:640px){.bands{grid-template-columns:1fr}}
+    .band{padding:9px 11px}
+    .band-h{margin-bottom:6px}
+    .band-h b{font-size:13px}
+    .band-h span{font-size:11.5px}
+    .chip{padding:3px 8px;font-size:12px}
+    table.sortable th[data-col]{cursor:pointer;user-select:none}
+    table.sortable th[data-col]:hover{background:#e2e8f0}
+    table.sortable th[data-col]::after{content:"⇅";margin-left:5px;font-size:11px;color:#94a3b8}
+    table.sortable th[data-col].asc::after{content:"▲";color:#2563eb}
+    table.sortable th[data-col].desc::after{content:"▼";color:#2563eb}
     .band{border:1px solid var(--line);border-radius:10px;padding:11px 13px;background:#fff;border-left-width:4px}
     .band.ok{border-left-color:#16a34a}
     .band.w1{border-left-color:#eab308}
@@ -363,7 +374,7 @@
     <section class="section">
       <div class="section-head"><div><h2>店铺明细</h2><div class="sub" id="tableSub">23 家 · 点击上方时间段切换口径</div></div></div>
       <div class="toolbar"><input class="search" id="search" placeholder="搜索店铺" aria-label="搜索店铺"><button class="filter" id="abnormalBtn" type="button">仅看数值超线</button></div>
-      <div class="table-wrap"><table class="table"><thead><tr><th>店铺</th><th>业绩</th><th>环比</th><th>数值</th><th>推广占比</th><th>退款占比</th><th>客单价</th></tr></thead><tbody id="tableBody"></tbody></table></div>
+      <div class="table-wrap"><table class="table sortable"><thead><tr><th data-col="0">店铺</th><th data-col="1" data-type="num">业绩</th><th data-col="2" data-type="num">环比</th><th data-col="3" data-type="num">数值</th><th data-col="4" data-type="num">推广占比</th><th data-col="5" data-type="num">退款占比</th><th data-col="6" data-type="num">客单价</th></tr></thead><tbody id="tableBody"></tbody></table></div>
     </section>
 
     <section class="section">
@@ -394,11 +405,11 @@
     </section>
   </div>
 
-  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-08 13:23</span><a href="https://pseudomazo-ship-it.github.io/shiyi-dashboard/daily/" target="_blank" rel="noopener">查看原始看板</a></footer>
+  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-08 13:32</span><a href="https://pseudomazo-ship-it.github.io/shiyi-dashboard/daily/" target="_blank" rel="noopener">查看原始看板</a></footer>
 </main>
 <script>
 (function(){
-  const meta={"gen":"2026-10-08 13:23","base_day":"2026-10-06","v":2};
+  const meta={"gen":"2026-10-08 13:32","base_day":"2026-10-06","v":2};
   const names=["蒙倩官方旗舰店", "蒙倩美发官方旗舰店（丽）", "蒙倩旗舰店", "蒙倩化妆品官方旗舰店", "蒙倩美发护发官方旗舰店（盼）", "蒙倩美妆旗舰店", "蒙倩美容美发官方旗舰店（博）", "蒙倩个护官方旗舰店（熙）", "蒙倩美容护肤官方旗舰店", "蒙倩护发旗舰店（涛）", "蒙倩美妆洗护官方旗舰店", "蒙倩彩妆官方旗舰店", "蒙倩个人护理官方旗舰店", "蒙倩染发旗舰店（涛）", "蒙倩精油官方旗舰店", "蒙倩洗护官方旗舰店", "蒙倩造型官方旗舰店", "蒙倩药妆官方旗舰店", "蒙倩美发护发旗舰店（盼）", "蒙倩护发官方旗舰店（涛）", "蒙倩美发旗舰店（炜）", "植萃草本染发坊", "蒙倩染发官方旗舰店（珍）"];
   function rows(raw){return raw.split("|").map((s,i)=>{const a=s.split(",");return {name:names[i],money:+a[0],moneyRaw:a[0],delta:+a[1],deltaRaw:a[1],score:+a[2],scoreRaw:a[2],ad:+a[3],adRaw:a[3],refund:+a[4],refundRaw:a[4],aov:+a[5],aovRaw:a[5]}})}
   function sourceNumber(v){return String(v)}
@@ -451,7 +462,8 @@
     const paths=multi.map(s=>`<polyline class="tline" points="${s.map(i=>`${X(i).toFixed(1)},${Y(V[i]).toFixed(1)}`).join(' ')}"/>`).join('');
     let dots='';
     V.forEach((v,i)=>{ if(v===null||v===undefined) return;
-      dots+=`<circle class="tdot" cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3.4"/>` });
+      const vd=(VL&&VL[i]!=null?VL[i]:sourceNumber(v))+'万';
+      dots+=`<circle class="tdot" cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3.4" data-d="${L[i]}" data-v="${vd}"/>` });
     const iMax=V.indexOf(Math.max.apply(null,kn)), iMin=V.indexOf(Math.min.apply(null,kn));
     dots+=`<circle class="tdot hi" cx="${X(iMax).toFixed(1)}" cy="${Y(V[iMax]).toFixed(1)}" r="5.4"/>`;
     dots+=`<circle class="tdot lo" cx="${X(iMin).toFixed(1)}" cy="${Y(V[iMin]).toFixed(1)}" r="5.4"/>`;
@@ -483,7 +495,7 @@
       </div>`;
     }).join('');
   }
-  function renderTable(d){let list=sortedRows(d).filter(r=>r.name.includes(query));if(abnormal)list=list.filter(r=>r.score>46);$("#tableBody").innerHTML=list.map(r=>`<tr><td>${r.name}</td><td data-label="业绩">${r.moneyRaw}万</td><td data-label="环比" class="${r.delta>=0?'delta up':'delta down'}">${r.delta>=0?'▲':'▼'} ${sourceNumber(Math.abs(r.delta))}%</td><td data-label="数值" class="${r.score>46?'warn-cell':''}">${r.scoreRaw}%</td><td data-label="推广占比">${r.adRaw}%</td><td data-label="退款占比">${r.refundRaw}%</td><td data-label="客单价">${r.aovRaw}</td></tr>`).join('')+(!query&&!abnormal?`<tr class="total"><td>合计</td><td data-label="业绩">${d.total}</td><td data-label="环比">${d.kpis[0][2]>0?'▲':'▼'} ${sourceNumber(Math.abs(d.kpis[0][2]))}%</td><td data-label="数值">${sourceNumber(d.score)}%</td><td data-label="推广占比">${sourceNumber(d.totals[0])}%</td><td data-label="退款占比">${sourceNumber(d.totals[1])}%</td><td data-label="客单价">${sourceNumber(d.totals[2])}</td></tr>`:'')}
+  function renderTable(d){let list=sortedRows(d).filter(r=>r.name.includes(query));if(abnormal)list=list.filter(r=>r.score>46);$("#tableBody").innerHTML=list.map(r=>`<tr><td data-v="${r.name}">${r.name}</td><td data-v="${r.money}" data-label="业绩">${r.moneyRaw}万</td><td data-v="${r.delta}" data-label="环比" class="${r.delta>=0?'delta up':'delta down'}">${r.delta>=0?'▲':'▼'} ${sourceNumber(Math.abs(r.delta))}%</td><td data-v="${r.score}" data-label="数值" class="${r.score>46?'warn-cell':''}">${r.scoreRaw}%</td><td data-v="${r.ad}" data-label="推广占比">${r.adRaw}%</td><td data-v="${r.refund}" data-label="退款占比">${r.refundRaw}%</td><td data-v="${r.aov}" data-label="客单价">${r.aovRaw}</td></tr>`).join('')+(!query&&!abnormal?`<tr class="total"><td>合计</td><td data-label="业绩">${d.total}</td><td data-label="环比">${d.kpis[0][2]>0?'▲':'▼'} ${sourceNumber(Math.abs(d.kpis[0][2]))}%</td><td data-label="数值">${sourceNumber(d.score)}%</td><td data-label="推广占比">${sourceNumber(d.totals[0])}%</td><td data-label="退款占比">${sourceNumber(d.totals[1])}%</td><td data-label="客单价">${sourceNumber(d.totals[2])}</td></tr>`:'')}
   function renderSummary(d){$("#summarySub").textContent=period==='day'?'当日口径':period==='month'?'本月口径':period==='d3'?'近3天口径':'近7天口径';$("#summary").innerHTML=d.summary.map((x,i)=>`<div class="summary-block"><strong>${['业绩','成本','订单'][i]}</strong><p>${x}</p></div>`).join('')+`<div class="actions"><strong>下一步</strong><ol>${d.actions.map(x=>`<li>${x}</li>`).join('')}</ol></div>`}
   function renderMonthly(){const max=monthly[0][1];$("#monthlyRows").innerHTML=monthly.map((r,i)=>`<div class="monthly-row"><span class="shop">${String(i+1).padStart(2,'0')}　${r[0]}</span><span class="compare-bar"><i style="--current:${r[1]/max*100}%"></i></span><span class="current">${sourceNumber(r[1])}万</span><span class="delta ${r[2]>=0?'up':'down'}">${r[2]>=0?'▲':'▼'} ${sourceNumber(Math.abs(r[2]))}%</span></div>`).join('');$("#monthlySummary").innerHTML=`<div class="summary-block"><strong>整体</strong><p>23 家店合计 902.15万，较上一个30天下降 3.4%。</p></div><div class="summary-block"><strong>结构</strong><p>前3名合计 360.5万；上升 11 家、下滑 11 家、持平 1 家。</p></div><div class="summary-block"><strong>最大波动</strong><p>增长最快 蒙倩个人护理官方旗舰店（425.9%）；下滑最重 蒙倩染发旗舰店（涛）（-65.7%）。</p></div><div class="actions"><strong>下一步</strong><ol><li>11 家下滑店铺逐店检查活动、推广与转化节奏。</li><li>优先复盘 蒙倩染发旗舰店（涛）（-65.7%）的下滑原因。</li><li>核对 蒙倩个人护理官方旗舰店（425.9%）的增长是否来自低基数或新增链接。</li><li>拆解高增长店铺的商品与投放结构，提炼可复制动作。</li><li>复盘上升的 11 家店铺，把有效动作整理成统一执行清单。</li><li>下个30天继续使用相同区间对比，验证动作是否带来持续改善。</li></ol></div>`}
   function render(){const d=data[period];$("#rangeText").textContent=d.range;renderKpis(d);document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.period===period)));const is30=period==='d30';$("#standardView").classList.toggle('hidden',is30);$("#monthlyView").classList.toggle('hidden',!is30);if(is30){renderMonthly();return}renderCore(d);renderBands(d);renderTrend(d);renderRanking(d);renderTable(d);renderSummary(d)}
@@ -498,16 +510,41 @@
     tp.style.display='block';
   }
   function ttipHide(){const tp=document.getElementById('ttip'); if(tp) tp.style.display='none';}
-  document.addEventListener('mouseover',function(e){const r=e.target.closest&&e.target.closest('.thit'); if(r) ttipShow(r)});
-  document.addEventListener('mouseout',function(e){const r=e.target.closest&&e.target.closest('.thit'); if(r) ttipHide()});
+  document.addEventListener('mouseover',function(e){const r=e.target.closest&&e.target.closest('.thit,.tdot'); if(r) ttipShow(r)});
+  document.addEventListener('mouseout',function(e){const r=e.target.closest&&e.target.closest('.thit,.tdot'); if(r) ttipHide()});
   document.addEventListener('mousemove',function(e){
     const tp=document.getElementById('ttip'); if(!tp||tp.style.display!=='block') return;
     const x=Math.min(window.innerWidth-tp.offsetWidth-12,Math.max(12,e.clientX+16));
     const y=Math.max(12,e.clientY-42);
     tp.style.left=x+'px'; tp.style.top=y+'px';
   });
+  /* 店铺明细：点表头排序（2026-10-08 十一要求） */
+  document.querySelectorAll('table.sortable').forEach(function(tb){
+    var body=tb.querySelector('tbody');
+    tb.querySelectorAll('th[data-col]').forEach(function(th){
+      th.onclick=function(){
+        var c=+th.dataset.col, num=th.dataset.type==='num';
+        var dir=(th.dataset.dir==='asc')?'desc':'asc';
+        tb.querySelectorAll('th[data-col]').forEach(function(x){delete x.dataset.dir;x.classList.remove('asc','desc');});
+        th.dataset.dir=dir; th.classList.add(dir);
+        var rows=Array.prototype.slice.call(body.querySelectorAll('tr')).filter(function(r){return !r.classList.contains('total')});
+        var total=body.querySelector('tr.total');
+        rows.sort(function(a,b){
+          if(num){
+            var x=parseFloat(a.children[c].dataset.v); if(isNaN(x)) x=-1e9;
+            var y=parseFloat(b.children[c].dataset.v); if(isNaN(y)) y=-1e9;
+            return dir==='asc'?x-y:y-x;
+          }
+          var p=a.children[c].textContent.trim(), q=b.children[c].textContent.trim();
+          return dir==='asc'?p.localeCompare(q,'zh'):q.localeCompare(p,'zh');
+        });
+        rows.forEach(function(r){body.appendChild(r);});
+        if(total) body.appendChild(total);
+      };
+    });
+  });
   document.addEventListener('touchstart',function(e){
-    const r=e.target.closest&&e.target.closest('.thit'); if(!r) return;
+    const r=e.target.closest&&e.target.closest('.thit,.tdot'); if(!r) return;
     ttipShow(r);
     const tp=document.getElementById('ttip');
     if(tp){const b=r.getBoundingClientRect();
