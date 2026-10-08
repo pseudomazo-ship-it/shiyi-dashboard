@@ -400,7 +400,7 @@
           <li><span>洗护官方旗舰店 · 业绩</span><b class="danger">-23.7%</b></li><li><span>美发旗舰店（炜） · 数值</span><b class="danger">73.64% → 49.91%</b></li><li><span>染发官方旗舰店（珍） · 数值</span><b class="danger">42.88% → 54.58%</b></li><li><span>染发旗舰店（涛） · 数值</span><b class="danger">43.59% → 34.84%</b></li><li><span>精油官方旗舰店 · 业绩</span><b class="danger">-24.8%</b></li>
         </ul><span class="scope-note">每条已标明异常指标；本组统一为 10/06 对比 10/05</span></article>
         <article class="alert"><h3>登记完整性</h3><ul class="alert-list"><li><span>基准日登记</span><b class="ok">23/23 家</b></li><li><span>近30天漏登</span><b class="ok">无</b></li><li><span>近30天重复登记</span><b class="ok">无</b></li></ul></article>
-        <article class="alert"><h3>数值离谱（疑似登记或口径异常）</h3><ul class="alert-list"><li><span>当月 ｜ 植萃草本染发坊</span><b class="danger">数值 237.05%（退款占 195.50% ＋ 推广占 41.55%，业绩 7220 元）</b></li><li><span>近7天 ｜ 植萃草本染发坊</span><b class="danger">数值 207.20%（退款占 166.54% ＋ 推广占 40.66%，业绩 8602 元）</b></li></ul><span class="scope-note">判定：当日数值 ≥100% 或 退款占业绩 ≥100%；出现这种值多半是当日业绩极小、或退款/推广填错，需人工核一遍</span></article>
+        <article class="alert"><h3>数值离谱（疑似登记或口径异常）</h3><ul class="alert-list"><li><span>2026-10-03 ｜ 植萃草本染发坊</span><b class="danger">数值 1195.50%（退款占 1152.22% ＋ 推广占 43.29%，业绩 1148 元）</b></li></ul><span class="scope-note">判定：当日数值 ≥100% 或 退款占业绩 ≥100%；出现这种值多半是当日业绩极小、或退款/推广填错，需人工核一遍</span></article>
         <details class="alert rulerow"><summary>判断口径（点开看规则）</summary><ul class="alert-list"><li><span>下滑最重</span><b>10/06 业绩 vs 前3天日均</b></li><li><span>异常波动</span><b>10/06 vs 10/05</b></li><li><span>业绩异常门槛</span><b>变动绝对值 ≥20% 且金额差 ≥800 元</b></li><li><span>数值异常门槛</span><b>变动绝对值 ≥8 个百分点</b></li><li><span>数值定义</span><b>退款金额占比 + 推广花费占比</b></li><li><span>数值标准线</span><b>46%</b></li></ul></details>
       </div>
     </section>
@@ -418,11 +418,11 @@
     </section>
   </div>
 
-  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-08 14:13</span></footer>
+  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-08 14:52</span></footer>
 </main>
 <script>
 (function(){
-  const meta={"gen":"2026-10-08 14:13","base_day":"2026-10-06","v":2};
+  const meta={"gen":"2026-10-08 14:52","base_day":"2026-10-06","v":2};
   const names=["蒙倩官方旗舰店", "蒙倩美发官方旗舰店（丽）", "蒙倩旗舰店", "蒙倩化妆品官方旗舰店", "蒙倩美发护发官方旗舰店（盼）", "蒙倩美妆旗舰店", "蒙倩美容美发官方旗舰店（博）", "蒙倩个护官方旗舰店（熙）", "蒙倩美容护肤官方旗舰店", "蒙倩护发旗舰店（涛）", "蒙倩美妆洗护官方旗舰店", "蒙倩彩妆官方旗舰店", "蒙倩个人护理官方旗舰店", "蒙倩染发旗舰店（涛）", "蒙倩精油官方旗舰店", "蒙倩洗护官方旗舰店", "蒙倩造型官方旗舰店", "蒙倩药妆官方旗舰店", "蒙倩美发护发旗舰店（盼）", "蒙倩护发官方旗舰店（涛）", "蒙倩美发旗舰店（炜）", "植萃草本染发坊", "蒙倩染发官方旗舰店（珍）"];
   function rows(raw){return raw.split("|").map((s,i)=>{const a=s.split(",");return {name:names[i],money:+a[0],moneyRaw:a[0],delta:+a[1],deltaRaw:a[1],score:+a[2],scoreRaw:a[2],ad:+a[3],adRaw:a[3],refund:+a[4],refundRaw:a[4],aov:+a[5],aovRaw:a[5]}})}
   function sourceNumber(v){return String(v)}
