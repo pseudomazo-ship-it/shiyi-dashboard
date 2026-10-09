@@ -65,7 +65,9 @@ footer{margin-top:26px;padding-top:16px}
 </style>
 <div class="skill-gate" id="skill-gate"><form class="skill-login" id="skill-login"><h1>Agent Skills 管理台</h1><p>输入密码进入技能资源库</p><input id="skill-password" type="password" autocomplete="current-password" aria-label="进入密码" required autofocus><button type="submit">进入</button><div class="skill-error" id="skill-error" role="alert"></div></form></div><div id="skill-content" hidden>
 <header><div class="brand"><span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/></svg></span>Agent Skills 管理台</div><div class="header-search"><input id="search" type="search" aria-label="搜索技能" placeholder="搜索技能名称或关键词…"></div><div class="header-meta"><span id="header-total"></span><span>更新于 2026-10-07</span></div></header>
-<!-- COCOLOOP-BEGIN -->
+
+
+<main><section class="intro"><div><h1>你的技能，有序管理。</h1><p>从能力查找，到安装资料，每一个 Skill 都清晰可见。</p></div><span class="edition">十一 · 本地资源库</span></section><!-- COCOLOOP-BEGIN -->
 <style>
 .src-tabs{display:flex;gap:8px;margin:14px 0 4px}.src-tabs button{padding:7px 16px;border-radius:999px;border:1px solid #cbd8e6;background:#fff;color:#4a5a6c;font-size:13.5px;cursor:pointer}.src-tabs button.on{background:#2b6cb0;border-color:#2b6cb0;color:#fff;font-weight:600}#shop-view[hidden]{display:none!important}.shop-card{border:1px solid #e2e9f2;border-radius:12px;padding:13px 14px;background:#fff;cursor:pointer;display:flex;flex-direction:column;gap:7px;transition:box-shadow .15s,transform .15s}.shop-card:hover{box-shadow:0 6px 20px #20334c1a;transform:translateY(-2px)}.shop-card .row1{display:flex;align-items:center;gap:8px;justify-content:space-between}.shop-card .en{font-weight:700;font-size:14.5px;color:#1b2a3a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.shop-card .cn{font-size:13px;color:#2b6cb0;font-weight:600}.shop-card .de{font-size:12.5px;color:#66788c;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.shop-card .foot{display:flex;gap:12px;align-items:center;font-size:12px;color:#8496a8;margin-top:auto}.lv{display:inline-block;min-width:22px;text-align:center;padding:1px 6px;border-radius:5px;font-weight:700;font-size:11.5px;color:#fff}.lv-S,.lv-S\+{background:#0f9d58}.lv-A{background:#2b6cb0}.lv-B{background:#e0a500}.lv-C{background:#e2733a}.lv-D{background:#c0392b}.lv-{background:#98a6b5}.shop-empty{padding:40px;text-align:center;color:#8496a8}
 </style>
@@ -127,8 +129,7 @@ paintCats(); paint();
 })();
 </script>
 <!-- COCOLOOP-END -->
-
-<main><section class="intro"><div><h1>你的技能，有序管理。</h1><p>从能力查找，到安装资料，每一个 Skill 都清晰可见。</p></div><span class="edition">十一 · 本地资源库</span></section><div id="sentinel" class="sentinel"></div>
+<div id="sentinel" class="sentinel"></div>
 
 <input id="category" type="hidden" value=""><nav class="category-buttons" id="category-buttons" aria-label="技能分类"></nav><div class="section-head"><h2>技能目录</h2><span id="count" aria-live="polite"></span></div><div class="workspace"><section class="grid" id="grid" aria-label="技能卡片"></section><aside class="detail" id="detail" aria-label="技能详情" tabindex="-1"><div class="detail-content" id="detail-content"></div></aside></div>
 <footer><span>维护说明：安装资料需核验来源与版本，未知信息不作为安装依据。</span><button class="feedback" id="feedback">失效链接反馈 / 复制问题说明</button><span>更新：2026-10-07</span></footer></main><div class="toast" id="toast" role="status" hidden></div><div class="manual" id="manual" hidden><div class="manual-inner"><h3>浏览器未允许自动复制</h3><p>文本已选中，请按 Ctrl+C（手机长按复制）。</p><textarea id="manual-text" aria-label="待复制文本" readonly></textarea><button class="btn" id="manual-close">完成</button></div></div>
