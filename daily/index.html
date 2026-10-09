@@ -29,8 +29,8 @@
     .range{margin:10px 0 0;color:var(--muted);font-size:15px}
     .stamp{text-align:right;color:var(--muted);font-size:13px}.stamp strong{display:block;color:var(--ink);font-size:16px}
     .tabs-wrap{position:sticky;top:0;z-index:10;padding:10px 0;background:color-mix(in srgb,var(--bg) 91%,transparent)}
-    .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;padding:5px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px}
-    .tab{border:0;background:transparent;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer;color:var(--muted)}
+    .tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;padding:5px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px}
+    .tab{border:0;background:transparent;border-radius:9px;padding:10px 8px;font-weight:700;cursor:pointer;color:var(--muted);white-space:nowrap}
     .tab[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 2px 10px rgba(25,48,34,.08)}
     .kpis{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin:12px 0 18px}
     .kpi{grid-column:span 2;background:var(--surface);border:1px solid var(--line);padding:18px;border-radius:var(--radius-sm);min-width:0;position:relative;overflow:hidden}
@@ -73,7 +73,7 @@
     footer{padding:26px 4px 0;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}footer a{color:var(--green)}
     @media(max-width:1050px){.kpi{grid-column:span 4}.core{grid-template-columns:1fr}.core>div+div{border-left:0;border-top:1px solid var(--line)}.summary{grid-template-columns:1fr 1fr}.rank-row{grid-template-columns:28px minmax(150px,1.2fr) minmax(100px,2fr) 72px 60px}}
     @media(max-width:720px){
-      body{font-size:15px}.page{padding:16px 12px 48px}.mast{grid-template-columns:1fr;gap:10px}.stamp{text-align:left;display:flex;gap:8px;align-items:center}.stamp strong{font-size:14px}.range{font-size:13px}.tabs-wrap{margin:0 -4px}.tabs{gap:2px}.tab{padding:10px 3px;font-size:13px}.kpis{gap:8px}.kpi{grid-column:span 6;padding:14px}.kpi-value{font-size:24px}.section-head{padding:16px}.section-meta{display:none}.core>div{padding:18px}.gauge-row{gap:16px}.gauge{width:130px}.gauge:before{width:96px}.gauge strong{font-size:26px}.composition{grid-template-columns:120px 1fr;gap:16px}.donut{width:120px}.donut:after{inset:25px;font-size:13px}.legend{grid-template-columns:1fr;gap:7px}.trend{padding:14px 12px 22px}.trend-bars{gap:4px;height:190px}.day .val{font-size:10px}.day small{font-size:11px}.ranking{padding:10px 14px 16px}.rank-row{grid-template-columns:24px minmax(0,1fr) 68px 55px;gap:7px}.rank-row .track{display:none}.shop{font-size:13px}.money,.score{font-size:12px}.toolbar{padding:12px}.table thead{display:none}.table,.table tbody,.table tr,.table td{display:block;width:100%}.table tr{padding:14px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}.table tr:first-child{border-top:0}.table td{border:0;padding:0;text-align:right}.table td:before{content:attr(data-label);display:block;font-size:11px;color:var(--muted);font-weight:500}.table td:first-child{grid-column:1/-1;text-align:left;font-size:15px}.table td:first-child:before{display:none}.alerts{grid-template-columns:1fr;padding:12px}.summary{grid-template-columns:1fr;padding:18px}.actions{grid-column:auto}.monthly{padding:8px 14px 18px}.monthly-row{grid-template-columns:minmax(0,1fr) 72px 64px}.monthly-row .compare-bar{display:none}.monthly-row .shop{white-space:normal}.section{border-radius:14px}}
+      body{font-size:15px}.page{padding:16px 12px 48px}.mast{grid-template-columns:1fr;gap:10px}.stamp{text-align:left;display:flex;gap:8px;align-items:center}.stamp strong{font-size:14px}.range{font-size:13px}.tabs-wrap{margin:0 -4px}.tabs{gap:2px;padding:4px}.tab{padding:9px 2px;font-size:11.5px}.kpis{gap:8px}.kpi{grid-column:span 6;padding:14px}.kpi-value{font-size:24px}.section-head{padding:16px}.section-meta{display:none}.core>div{padding:18px}.gauge-row{gap:16px}.gauge{width:130px}.gauge:before{width:96px}.gauge strong{font-size:26px}.composition{grid-template-columns:120px 1fr;gap:16px}.donut{width:120px}.donut:after{inset:25px;font-size:13px}.legend{grid-template-columns:1fr;gap:7px}.trend{padding:14px 12px 22px}.trend-bars{gap:4px;height:190px}.day .val{font-size:10px}.day small{font-size:11px}.ranking{padding:10px 14px 16px}.rank-row{grid-template-columns:24px minmax(0,1fr) 68px 55px;gap:7px}.rank-row .track{display:none}.shop{font-size:13px}.money,.score{font-size:12px}.toolbar{padding:12px}.table thead{display:none}.table,.table tbody,.table tr,.table td{display:block;width:100%}.table tr{padding:14px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}.table tr:first-child{border-top:0}.table td{border:0;padding:0;text-align:right}.table td:before{content:attr(data-label);display:block;font-size:11px;color:var(--muted);font-weight:500}.table td:first-child{grid-column:1/-1;text-align:left;font-size:15px}.table td:first-child:before{display:none}.alerts{grid-template-columns:1fr;padding:12px}.summary{grid-template-columns:1fr;padding:18px}.actions{grid-column:auto}.monthly{padding:8px 14px 18px}.monthly-row{grid-template-columns:minmax(0,1fr) 72px 64px}.monthly-row .compare-bar{display:none}.monthly-row .shop{white-space:normal}.section{border-radius:14px}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
     /* 2026-10-06：更专业的经营看板视觉体系 */
@@ -371,8 +371,8 @@
     <button class="tab" data-period="d3" aria-selected="false">近3天</button>
     <button class="tab" data-period="d7" aria-selected="true">近7天</button>
     <button class="tab" data-period="d15" aria-selected="false">近15天</button>
-    <button class="tab" data-period="month" aria-selected="false">当月</button>
     <button class="tab" data-period="d30" aria-selected="false">近30天</button>
+    <button class="tab" data-period="month" aria-selected="false">当月</button>
   </div></nav>
 
   <section class="kpis" id="kpis" aria-label="核心指标"></section>
@@ -449,11 +449,11 @@
     </section>
   </div>
 
-  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-09 19:16</span></footer>
+  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-09 19:28</span></footer>
 </main>
 <script>
 (function(){
-  const meta={"gen":"2026-10-09 19:16","base_day":"2026-10-07","v":2};
+  const meta={"gen":"2026-10-09 19:28","base_day":"2026-10-07","v":2};
   const names=["蒙倩官方旗舰店", "蒙倩美发官方旗舰店（丽）", "蒙倩旗舰店", "蒙倩化妆品官方旗舰店", "蒙倩美发护发官方旗舰店（盼）", "蒙倩美妆旗舰店", "蒙倩美容美发官方旗舰店（博）", "蒙倩个护官方旗舰店（熙）", "蒙倩美容护肤官方旗舰店", "蒙倩护发旗舰店（涛）", "蒙倩美妆洗护官方旗舰店", "蒙倩彩妆官方旗舰店", "蒙倩个人护理官方旗舰店", "蒙倩染发旗舰店（涛）", "蒙倩精油官方旗舰店", "蒙倩洗护官方旗舰店", "蒙倩造型官方旗舰店", "蒙倩药妆官方旗舰店", "蒙倩美发护发旗舰店（盼）", "蒙倩护发官方旗舰店（涛）", "蒙倩美发旗舰店（炜）", "植萃草本染发坊", "蒙倩染发官方旗舰店（珍）"];
   function rows(raw){return raw.split("|").map((s,i)=>{const a=s.split(",");return {name:names[i],money:+a[0],moneyRaw:a[0],delta:+a[1],deltaRaw:a[1],score:+a[2],scoreRaw:a[2],ad:+a[3],adRaw:a[3],refund:+a[4],refundRaw:a[4],aov:+a[5],aovRaw:a[5]}})}
   function sourceNumber(v){return String(v)}
