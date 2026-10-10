@@ -70,6 +70,18 @@
       50%{box-shadow:0 0 0 9px transparent;opacity:.55;transform:scale(.88)}
     }
     @media(prefers-reduced-motion:reduce){.lampdot{animation:none!important}}
+    /* 30天店铺业绩趋势（每店一条线，2026-10-09） */
+    .mseries{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px;padding:14px 22px 22px}
+    .mser{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:11px 13px 7px}
+    .mser .mhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}
+    .mser .mnm{font-size:13.5px;font-weight:800;color:var(--ink)}
+    .mser .msum{font-size:12px;color:var(--muted);white-space:nowrap}
+    .mser .msum b{color:var(--ink)}
+    .mser svg{width:100%;height:74px;display:block;overflow:visible}
+    .mser .mline{fill:none;stroke:var(--green);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+    .mser .mgrid{stroke:var(--line);stroke-width:1}
+    .mser .mdot{fill:var(--surface);stroke:var(--green);stroke-width:1.5;cursor:crosshair}
+    .mser .mzero{stroke:var(--line);stroke-dasharray:3 3}
     footer{padding:26px 4px 0;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}footer a{color:var(--green)}
     @media(max-width:1050px){.kpi{grid-column:span 4}.core{grid-template-columns:1fr}.core>div+div{border-left:0;border-top:1px solid var(--line)}.summary{grid-template-columns:1fr 1fr}.rank-row{grid-template-columns:28px minmax(150px,1.2fr) minmax(100px,2fr) 72px 60px}}
     @media(max-width:720px){
@@ -440,6 +452,10 @@
       <div class="strk" id="scoreTrend30" aria-label="近30天每日数值走势"></div>
     </section>
     <section class="section">
+      <div class="section-head"><div><h2>30天店铺业绩趋势</h2><div class="sub">近30天 · 每店一条业绩走势 · 鼠标移到节点看当日业绩</div></div><div class="section-meta" id="monthlySeriesMeta"></div></div>
+      <div class="mseries" id="monthlySeries" aria-label="各店30天业绩走势"></div>
+    </section>
+    <section class="section">
       <div class="section-head"><div><h2>30天店铺趋势</h2><div class="sub">2026-09-09 至 2026-10-08 · 对比上一个30天</div></div><div class="section-meta" id="monthlyMeta">上升 11 家 · 下滑 12 家</div></div>
       <div class="monthly" id="monthlyRows"></div>
     </section>
@@ -449,11 +465,11 @@
     </section>
   </div>
 
-  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-10 10:21</span></footer>
+  <footer><span>数据源：飞书「运营数据登记」 · 数据生成于 2026-10-10 15:44</span></footer>
 </main>
 <script>
 (function(){
-  const meta={"gen":"2026-10-10 10:21","base_day":"2026-10-08","v":2};
+  const meta={"gen":"2026-10-10 15:44","base_day":"2026-10-08","v":2};
   const names=["蒙倩官方旗舰店", "蒙倩美发官方旗舰店（丽）", "蒙倩旗舰店", "蒙倩化妆品官方旗舰店", "蒙倩美发护发官方旗舰店（盼）", "蒙倩美妆旗舰店", "蒙倩美容美发官方旗舰店（博）", "蒙倩个护官方旗舰店（熙）", "蒙倩美容护肤官方旗舰店", "蒙倩护发旗舰店（涛）", "蒙倩美妆洗护官方旗舰店", "蒙倩彩妆官方旗舰店", "蒙倩个人护理官方旗舰店", "蒙倩染发旗舰店（涛）", "蒙倩精油官方旗舰店", "蒙倩洗护官方旗舰店", "蒙倩造型官方旗舰店", "蒙倩药妆官方旗舰店", "蒙倩美发护发旗舰店（盼）", "蒙倩护发官方旗舰店（涛）", "蒙倩美发旗舰店（炜）", "植萃草本染发坊", "蒙倩染发官方旗舰店（珍）"];
   function rows(raw){return raw.split("|").map((s,i)=>{const a=s.split(",");return {name:names[i],money:+a[0],moneyRaw:a[0],delta:+a[1],deltaRaw:a[1],score:+a[2],scoreRaw:a[2],ad:+a[3],adRaw:a[3],refund:+a[4],refundRaw:a[4],aov:+a[5],aovRaw:a[5]}})}
   function sourceNumber(v){return String(v)}
@@ -468,6 +484,8 @@
     d30:{range:"统计 2026-09-09 至 2026-10-08 · 对比上一个30天",kpis:[["业绩", "899.68万", -3.8], ["退款金额", "165.91万", -2.3], ["推广花费", "262.72万", -3.5], ["数值", "47.64%", 0.4, "pt", true], ["成团单量", "323811单", -2.3], ["退款单量", "73830单", -5.2]],score:47.64,total:"899.68万",totals:[29.2, 18.44, 27.78],scoreTrend:{"labels": ["09/09", "09/10", "09/11", "09/12", "09/13", "09/14", "09/15", "09/16", "09/17", "09/18", "09/19", "09/20", "09/21", "09/22", "09/23", "09/24", "09/25", "09/26", "09/27", "09/28", "09/29", "09/30", "10/01", "10/02", "10/03", "10/04", "10/05", "10/06", "10/07", "10/08"], "values": [47.28, 46.62, 47.51, 47.34, 47.11, 46.2, 45.25, 45.78, 46.41, 46.9, 45.55, 45.88, 46.42, 46.74, 47.15, 47.86, 48.06, 48.22, 47.83, 48.66, 49.76, 48.19, 48.44, 48.85, 49.57, 50.93, 51.55, 49.02, 48.74, 48.53], "std": 46, "unit": "%"}}
   };
   const monthly=[["蒙倩官方旗舰店", 145.9, 48.8], ["蒙倩美发官方旗舰店（丽）", 118.1, -20.9], ["蒙倩旗舰店", 94.5, -20.0], ["蒙倩化妆品官方旗舰店", 87.8, -18.4], ["蒙倩美发护发官方旗舰店（盼）", 59.6, -13.1], ["蒙倩美妆旗舰店", 57.3, -18.9], ["蒙倩美容美发官方旗舰店（博）", 45.5, 33.6], ["蒙倩个护官方旗舰店（熙）", 39.6, 34.0], ["蒙倩美容护肤官方旗舰店", 35.1, -3.3], ["蒙倩护发旗舰店（涛）", 34.4, 2.1], ["蒙倩美妆洗护官方旗舰店", 29.9, 165.9], ["蒙倩彩妆官方旗舰店", 24.6, -3.8], ["蒙倩个人护理官方旗舰店", 23.3, 302.6], ["蒙倩染发旗舰店（涛）", 22.8, -65.2], ["蒙倩精油官方旗舰店", 18.4, -25.2], ["蒙倩洗护官方旗舰店", 15.8, 40.8], ["蒙倩造型官方旗舰店", 13.6, -2.7], ["蒙倩药妆官方旗舰店", 8.4, 17.4], ["蒙倩美发护发旗舰店（盼）", 7.9, 22.8], ["蒙倩护发官方旗舰店（涛）", 5.6, -4.8], ["蒙倩美发旗舰店（炜）", 5.3, -15.0], ["植萃草本染发坊", 3.2, 8.5], ["蒙倩染发官方旗舰店（珍）", 3.0, 3.3]];
+  const monthlyLabels=["9/9", "9/10", "9/11", "9/12", "9/13", "9/14", "9/15", "9/16", "9/17", "9/18", "9/19", "9/20", "9/21", "9/22", "9/23", "9/24", "9/25", "9/26", "9/27", "9/28", "9/29", "9/30", "10/1", "10/2", "10/3", "10/4", "10/5", "10/6", "10/7", "10/8"];
+  const monthlySeries=[["蒙倩官方旗舰店", [3.92, 3.43, 4.17, 4.07, 4.5, 4.6, 4.96, 4.95, 5.11, 4.96, 5.21, 5.76, 5.81, 5.86, 5.43, 5.02, 5.23, 5.62, 5.67, 5.73, 5.51, 4.84, 5.15, 4.88, 4.55, 4.4, 4.06, 3.73, 4.04, 4.75]], ["蒙倩美发官方旗舰店（丽）", [3.73, 3.95, 3.88, 3.82, 4.47, 4.44, 4.62, 4.64, 4.51, 4.68, 4.82, 5.16, 5.11, 5.35, 3.96, 3.91, 3.45, 4.12, 4.67, 4.26, 3.2, 3.16, 3.02, 2.93, 2.86, 2.99, 2.62, 3.07, 3.27, 3.47]], ["蒙倩旗舰店", [3.6, 3.12, 2.94, 2.82, 3.1, 3.04, 3.04, 3.16, 3.2, 2.99, 3.32, 3.29, 3.38, 3.46, 3.54, 3.67, 3.77, 4.09, 4.27, 3.61, 2.48, 3.16, 3.34, 2.99, 2.58, 2.3, 2.18, 2.19, 2.73, 3.09]], ["蒙倩化妆品官方旗舰店", [3.05, 3.09, 2.81, 2.76, 3.34, 3.26, 3.3, 3.5, 3.12, 3.09, 3.12, 3.25, 3.15, 3.23, 3.15, 2.97, 2.78, 3.15, 3.03, 2.96, 2.86, 2.84, 2.93, 2.97, 2.32, 2.34, 1.98, 2.12, 2.52, 2.75]], ["蒙倩美发护发官方旗舰店（盼）", [1.65, 1.65, 1.76, 1.77, 2.0, 2.08, 2.15, 2.39, 2.14, 2.12, 2.29, 2.34, 2.0, 1.95, 1.87, 1.85, 2.05, 1.97, 2.26, 2.17, 2.21, 2.27, 2.49, 2.25, 2.15, 2.04, 1.47, 1.46, 1.61, 1.25]], ["蒙倩美妆旗舰店", [2.17, 2.15, 2.11, 1.95, 2.31, 2.29, 2.4, 2.49, 2.25, 2.28, 2.39, 2.47, 2.18, 1.92, 2.03, 1.9, 2.23, 2.22, 2.14, 1.87, 1.76, 1.68, 1.68, 1.59, 1.14, 1.05, 0.98, 1.03, 1.21, 1.42]], ["蒙倩美容美发官方旗舰店（博）", [1.12, 1.01, 1.02, 1.05, 1.17, 1.42, 1.59, 1.46, 1.28, 1.3, 1.62, 1.55, 1.66, 1.54, 1.42, 1.49, 1.72, 1.71, 1.89, 1.97, 2.02, 1.88, 1.73, 1.86, 1.8, 1.39, 1.25, 1.35, 1.57, 1.62]], ["蒙倩个护官方旗舰店（熙）", [0.57, 0.62, 0.58, 0.54, 0.58, 0.82, 0.89, 1.09, 1.02, 1.13, 1.07, 1.48, 1.36, 1.38, 1.23, 1.33, 1.48, 1.08, 1.61, 1.62, 1.65, 1.71, 1.88, 2.07, 1.85, 1.47, 1.63, 1.66, 2.24, 1.97]], ["蒙倩美容护肤官方旗舰店", [0.93, 1.15, 1.14, 1.08, 1.05, 1.15, 1.33, 1.41, 1.29, 1.31, 1.24, 1.37, 1.3, 1.37, 1.2, 1.15, 1.23, 1.26, 1.39, 1.27, 1.21, 1.34, 1.2, 0.99, 0.97, 0.91, 0.87, 0.83, 1.01, 1.17]], ["蒙倩护发旗舰店（涛）", [1.0, 1.25, 1.14, 1.16, 1.36, 1.35, 1.44, 1.54, 1.39, 1.38, 1.52, 1.41, 1.38, 1.15, 1.27, 1.13, 1.28, 1.34, 1.26, 1.06, 1.02, 0.84, 0.91, 0.92, 0.92, 0.66, 0.7, 0.68, 0.93, 1.03]], ["蒙倩美妆洗护官方旗舰店", [0.39, 0.51, 0.51, 0.52, 0.6, 0.55, 0.58, 0.55, 0.6, 0.56, 0.72, 0.58, 0.46, 0.51, 0.59, 0.64, 0.82, 1.16, 1.34, 1.33, 1.56, 1.42, 1.4, 1.49, 1.66, 1.69, 1.66, 1.76, 1.81, 1.94]], ["蒙倩彩妆官方旗舰店", [0.77, 0.76, 0.75, 0.79, 0.93, 0.9, 0.93, 1.02, 1.1, 0.99, 0.82, 0.8, 0.81, 0.83, 1.04, 0.82, 0.8, 0.8, 0.8, 0.74, 0.82, 0.81, 0.74, 0.67, 0.77, 0.73, 0.57, 0.64, 0.77, 0.86]], ["蒙倩个人护理官方旗舰店", [0.84, 0.78, 0.9, 0.83, 0.95, 0.89, 0.92, 0.96, 1.05, 0.96, 0.94, 1.28, 1.45, 1.64, 1.13, 0.79, 0.83, 0.85, 0.79, 0.65, 0.55, 0.49, 0.47, 0.41, 0.39, 0.32, 0.29, 0.29, 0.38, 0.32]], ["蒙倩染发旗舰店（涛）", [0.69, 0.78, 0.55, 0.68, 0.71, 0.73, 0.75, 0.77, 0.65, 0.72, 0.8, 0.84, 1.0, 1.0, 1.09, 0.57, 0.57, 0.72, 0.77, 0.61, 0.8, 0.81, 0.94, 0.65, 0.65, 0.71, 0.9, 0.84, 0.85, 0.63]], ["蒙倩精油官方旗舰店", [0.59, 0.67, 0.64, 0.64, 0.83, 0.81, 0.83, 0.83, 0.7, 0.76, 0.76, 0.85, 0.73, 0.72, 0.65, 0.54, 0.69, 0.62, 0.59, 0.56, 0.58, 0.48, 0.53, 0.44, 0.44, 0.44, 0.39, 0.29, 0.38, 0.46]], ["蒙倩洗护官方旗舰店", [0.42, 0.38, 0.37, 0.4, 0.37, 0.4, 0.42, 0.42, 0.62, 0.66, 0.66, 0.64, 0.64, 0.72, 0.52, 0.56, 0.63, 0.6, 0.5, 0.61, 0.66, 0.6, 0.5, 0.59, 0.44, 0.4, 0.75, 0.57, 0.46, 0.31]], ["蒙倩造型官方旗舰店", [0.55, 0.55, 0.55, 0.44, 0.55, 0.53, 0.64, 0.53, 0.54, 0.54, 0.54, 0.55, 0.53, 0.47, 0.48, 0.47, 0.52, 0.48, 0.5, 0.36, 0.46, 0.35, 0.44, 0.31, 0.33, 0.3, 0.27, 0.24, 0.27, 0.3]], ["蒙倩药妆官方旗舰店", [0.26, 0.18, 0.22, 0.19, 0.23, 0.22, 0.3, 0.32, 0.31, 0.28, 0.3, 0.41, 0.32, 0.37, 0.31, 0.27, 0.31, 0.27, 0.38, 0.3, 0.26, 0.21, 0.21, 0.29, 0.32, 0.27, 0.23, 0.26, 0.29, 0.31]], ["蒙倩美发护发旗舰店（盼）", [0.31, 0.26, 0.28, 0.25, 0.24, 0.3, 0.26, 0.25, 0.3, 0.27, 0.33, 0.36, 0.41, 0.43, 0.48, 0.31, 0.28, 0.2, 0.21, 0.2, 0.25, 0.23, 0.21, 0.2, 0.19, 0.16, 0.15, 0.17, 0.21, 0.21]], ["蒙倩护发官方旗舰店（涛）", [0.22, 0.23, 0.26, 0.3, 0.24, 0.29, 0.27, 0.17, 0.24, 0.18, 0.22, 0.35, 0.25, 0.26, 0.24, 0.17, 0.17, 0.17, 0.18, 0.12, 0.16, 0.07, 0.09, 0.12, 0.13, 0.11, 0.06, 0.08, 0.1, 0.11]], ["蒙倩美发旗舰店（炜）", [0.13, 0.18, 0.27, 0.28, 0.28, 0.24, 0.26, 0.24, 0.24, 0.21, 0.28, 0.2, 0.23, 0.24, 0.18, 0.17, 0.22, 0.19, 0.2, 0.17, 0.14, 0.14, 0.13, 0.16, 0.12, 0.05, 0.04, 0.04, 0.02, 0.06]], ["植萃草本染发坊", [0.06, 0.09, 0.07, 0.06, 0.1, 0.07, 0.05, 0.09, 0.08, 0.1, 0.11, 0.13, 0.14, 0.12, 0.11, 0.12, 0.12, 0.11, 0.12, 0.14, 0.13, 0.14, 0.11, 0.12, 0.11, 0.14, 0.12, 0.11, 0.11, 0.12]], ["蒙倩染发官方旗舰店（珍）", [0.08, 0.05, 0.04, 0.06, 0.06, 0.06, 0.04, 0.08, 0.06, 0.07, 0.09, 0.09, 0.15, 0.14, 0.14, 0.16, 0.14, 0.12, 0.2, 0.19, 0.14, 0.11, 0.09, 0.13, 0.09, 0.07, 0.09, 0.1, 0.08, 0.06]]];
   let period="d7", abnormal=false, query="";
   const $=s=>document.querySelector(s);
   function deltaHtml(v,unit,badMetric){if(v===null)return '<span class="delta-note">暂无对比</span>';const cls=badMetric?(v>0?'bad':'good'):(v>0?'up':'down');return `<span class="delta ${cls}">${v>0?'▲':'▼'} ${sourceNumber(Math.abs(v))}${unit||'%'}</span><span class="delta-note">环比</span>`}
@@ -580,8 +598,46 @@
   }
   function renderTable(d){let list=sortedRows(d).filter(r=>r.name.includes(query));if(abnormal)list=list.filter(r=>r.score>46);$("#tableBody").innerHTML=list.map(r=>`<tr><td data-v="${r.name}">${r.name}</td><td data-v="${r.money}" data-label="业绩">${r.moneyRaw}万</td><td data-v="${r.delta}" data-label="环比" class="${r.delta>=0?'delta up':'delta down'}">${r.delta>=0?'▲':'▼'} ${sourceNumber(Math.abs(r.delta))}%</td><td data-v="${r.score}" data-label="数值" class="${r.score>46?'warn-cell':''}">${r.scoreRaw}%</td><td data-v="${r.ad}" data-label="推广占比">${r.adRaw}%</td><td data-v="${r.refund}" data-label="退款占比">${r.refundRaw}%</td><td data-v="${r.aov}" data-label="客单价">${r.aovRaw}</td></tr>`).join('')+(!query&&!abnormal?`<tr class="total"><td>合计</td><td data-label="业绩">${d.total}</td><td data-label="环比">${d.kpis[0][2]>0?'▲':'▼'} ${sourceNumber(Math.abs(d.kpis[0][2]))}%</td><td data-label="数值">${sourceNumber(d.score)}%</td><td data-label="推广占比">${sourceNumber(d.totals[0])}%</td><td data-label="退款占比">${sourceNumber(d.totals[1])}%</td><td data-label="客单价">${sourceNumber(d.totals[2])}</td></tr>`:'')}
   function renderSummary(d){$("#summarySub").textContent=period==='day'?'当日口径':period==='month'?'本月口径':period==='d3'?'近3天口径':period==='d15'?'近15天口径':period==='d30'?'近30天口径':'近7天口径';$("#summary").innerHTML=d.summary.map((x,i)=>`<div class="summary-block"><strong>${['业绩','成本','订单'][i]}</strong><p>${x}</p></div>`).join('')+`<div class="actions"><strong>下一步</strong><ol>${d.actions.map(x=>`<li>${x}</li>`).join('')}</ol></div>`}
+  function wanJs(v){
+    // 注意：monthlySeries 里的数值单位已经是「万」，这里只负责补单位和小数位
+    if(v===null||v===undefined||isNaN(v)) return '—';
+    const a=Math.abs(v);
+    if(a>=100) return v.toFixed(0)+'万';
+    if(a>=10) return v.toFixed(1).replace(/\.0$/,'')+'万';
+    return v.toFixed(2).replace(/\.?0+$/,'')+'万';
+  }
+  function renderMonthlySeries(){
+    const box=$("#monthlySeries"); if(!box||typeof monthlySeries==="undefined"||!monthlySeries.length) return;
+    const L=monthlyLabels, wrap=$("#monthlySeriesMeta");
+    const allv=[]; monthlySeries.forEach(x=>x[1].forEach(v=>{if(v!==null&&v!==undefined) allv.push(v)}));
+    if(!allv.length){box.innerHTML='';return}
+    const gmax=Math.max.apply(null,allv)||1;
+    if(wrap) wrap.innerHTML=monthlySeries.length+' 家 · 纵轴统一 <b>0 ~ '+wanJs(gmax)+'</b> · 悬停看当日业绩';
+    const W=320,H=74,PT=8,PB=8,n=L.length;
+    const X=i=>n<=1?(W/2):(2+(W-4)*i/(n-1));
+    const Y=v=>PT+(H-PT-PB)*(1-(v/gmax));
+    box.innerHTML=monthlySeries.map(function(row){
+      const nm=row[0], V=row[1];
+      const segs=[];let cur=[];
+      V.forEach((v,i)=>{if(v===null||v===undefined){if(cur.length)segs.push(cur);cur=[]}else cur.push(i)});
+      if(cur.length)segs.push(cur);
+      const multi=segs.filter(s=>s.length>1);
+      const paths=multi.map(s=>`<polyline class="mline" points="${s.map(i=>`${X(i).toFixed(1)},${Y(V[i]).toFixed(1)}`).join(' ')}"/>`).join('');
+      let dots='';
+      V.forEach((v,i)=>{if(v===null||v===undefined)return;
+        dots+=`<circle class="mdot" cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="2.6" data-d="${L[i]}" data-v="${wanJs(v)}"/>`});
+      const tot=V.reduce((a,b)=>a+(b||0),0);
+      const kn=V.filter(v=>v!==null&&v!==undefined);
+      const mx=kn.length?Math.max.apply(null,kn):0, mn=kn.length?Math.min.apply(null,kn):0;
+      return `<div class="mser"><div class="mhead"><span class="mnm">${nm}</span>`
+        +`<span class="msum">30天合计 <b>${wanJs(tot)}</b> · 高 <b>${wanJs(mx)}</b> 低 <b>${wanJs(mn)}</b></span></div>`
+        +`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">`
+        +`<line class="mzero" x1="0" y1="${(H-PB).toFixed(1)}" x2="${W}" y2="${(H-PB).toFixed(1)}"/>`
+        +paths+dots+`</svg></div>`;
+    }).join('');
+  }
   function renderMonthly(){const max=monthly[0][1];$("#monthlyRows").innerHTML=monthly.map((r,i)=>`<div class="monthly-row"><span class="shop">${String(i+1).padStart(2,'0')}　${r[0]}</span><span class="compare-bar"><i style="--current:${r[1]/max*100}%"></i></span><span class="current">${sourceNumber(r[1])}万</span><span class="delta ${r[2]>=0?'up':'down'}">${r[2]>=0?'▲':'▼'} ${sourceNumber(Math.abs(r[2]))}%</span></div>`).join('');$("#monthlySummary").innerHTML=`<div class="summary-block"><strong>整体</strong><p>23 家店合计 899.68万，较上一个30天下降 3.8%。</p></div><div class="summary-block"><strong>结构</strong><p>前3名合计 358.5万；上升 11 家、下滑 12 家、持平 0 家。</p></div><div class="summary-block"><strong>最大波动</strong><p>增长最快 蒙倩个人护理官方旗舰店（302.6%）；下滑最重 蒙倩染发旗舰店（涛）（-65.2%）。</p></div><div class="actions"><strong>下一步</strong><ol><li>12 家下滑店铺逐店检查活动、推广与转化节奏。</li><li>优先复盘 蒙倩染发旗舰店（涛）（-65.2%）的下滑原因。</li><li>核对 蒙倩个人护理官方旗舰店（302.6%）的增长是否来自低基数或新增链接。</li><li>拆解高增长店铺的商品与投放结构，提炼可复制动作。</li><li>复盘上升的 11 家店铺，把有效动作整理成统一执行清单。</li><li>下个30天继续使用相同区间对比，验证动作是否带来持续改善。</li></ol></div>`}
-  function render(){const d=data[period];$("#rangeText").textContent=d.range;renderKpis(d);document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.period===period)));const is30=period==='d30';$("#standardView").classList.toggle('hidden',is30);$("#monthlyView").classList.toggle('hidden',!is30);if(is30){renderMonthly();renderScoreTrend(d,"#scoreTrend30");
+  function render(){const d=data[period];$("#rangeText").textContent=d.range;renderKpis(d);document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.period===period)));const is30=period==='d30';$("#standardView").classList.toggle('hidden',is30);$("#monthlyView").classList.toggle('hidden',!is30);if(is30){renderMonthly();renderMonthlySeries();renderScoreTrend(d,"#scoreTrend30");
       const st30=d.scoreTrend;
       if(st30){const kn=st30.values.filter(v=>v!==null&&v!==undefined);
         if(kn.length){const avg=kn.reduce((a,b)=>a+b,0)/kn.length;
@@ -601,8 +657,8 @@
     tp.style.display='block';
   }
   function ttipHide(){const tp=document.getElementById('ttip'); if(tp) tp.style.display='none';}
-  document.addEventListener('mouseover',function(e){const r=e.target.closest&&e.target.closest('.thit,.tdot'); if(r) ttipShow(r)});
-  document.addEventListener('mouseout',function(e){const r=e.target.closest&&e.target.closest('.thit,.tdot'); if(r) ttipHide()});
+  document.addEventListener('mouseover',function(e){const r=e.target.closest&&e.target.closest('.thit,.tdot,.mdot'); if(r) ttipShow(r)});
+  document.addEventListener('mouseout',function(e){const r=e.target.closest&&e.target.closest('.thit,.tdot,.mdot'); if(r) ttipHide()});
   document.addEventListener('mousemove',function(e){
     const tp=document.getElementById('ttip'); if(!tp||tp.style.display!=='block') return;
     const x=Math.min(window.innerWidth-tp.offsetWidth-12,Math.max(12,e.clientX+16));
